@@ -9,7 +9,7 @@
 
 
   <!-- /.website title -->
-  <title>Backyard App Landing Page</title>
+  <title>GREMI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <link rel="stylesheet" href="css/bootstrap-3.3.7/bootstrap.min.css">
@@ -17,6 +17,9 @@
 
   <script src="js/jquery-3.2.1/jquery-3.2.1.js"></script>
   <script src="js/bootstrap-3.3.7/bootstrap.min.js"></script>
+  <script src="js/map/map.js""> </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwU-cbgXFnLRSM-Qh5rjAnsXu0SjGBQac&callback=initMap">
+  </script>
 
 </head>
 
@@ -26,46 +29,46 @@
     <div class="container">
       <div class="navbar-header">
         <button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle" data-target="#bs-navbar" data-toggle="collapse" type="button"> 
-					<span class="sr-only">Toggle navigation</span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-				</button>
+         <span class="sr-only">Toggle navigation</span> 
+         <span class="icon-bar"></span> 
+         <span class="icon-bar"></span> 
+         <span class="icon-bar"></span> 
+       </button>
 
-        <a href="./" class="navbar-brand">GREMI</a>
-      </div>
+       <a href="./" class="navbar-brand">GREMI</a>
+     </div>
 
-      <nav class="collapse navbar-collapse" id="bs-navbar">
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a href="#">Profile</a>
-          </li>
+     <nav class="collapse navbar-collapse" id="bs-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="#">Profile</a>
+        </li>
 
-          <li>
-            <a href="#">Search</a>
-          </li>
+        <li>
+          <a href="#">Search</a>
+        </li>
 
-          <li>
-            <a href="#">_</a>
-          </li>
+        <li>
+          <a href="#">_</a>
+        </li>
 
-          <li>
-            <a href="#">_</a>
-          </li>
+        <li>
+          <a href="#">_</a>
+        </li>
 
 
-        </ul>
+      </ul>
 
-      </nav>
-    </div>
-  </header>
+    </nav>
+  </div>
+</header>
 
-  <!-- /.intro section -->
-  <section id="intro">
-    <div class="container-fulid">
-      <div class="row">
-        <!-- /.intro video -->
-        <div class="col-md-5 map">
+<!-- /.intro section -->
+<section id="intro">
+  <div class="container-fulid">
+    <div class="row">
+      <!-- /.intro video -->
+      <div class="col-md-5 map">
           <!-- <div class="input-group" style="padding-top:10px; margin-bottom: 10px;">
 						<input type="text" class="form-control" placeholder="Search for...">
 						<span class="input-group-btn">
@@ -77,9 +80,9 @@
 
             <div class="btn-group">
               <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								나라
-								<span class="caret"></span> 
-							</button>
+                나라
+                <span class="caret"></span> 
+              </button>
 
               <ul class="dropdown-menu">
                 <li>
@@ -96,9 +99,9 @@
 
             <div class="btn-group">
               <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								도시
-								<span class="caret"></span> 
-							</button>
+                도시
+                <span class="caret"></span> 
+              </button>
 
               <ul class="dropdown-menu">
                 <li>
@@ -115,9 +118,9 @@
 
             <div class="btn-group">
               <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								도로명
-								<span class="caret"></span> 
-							</button>
+                도로명
+                <span class="caret"></span> 
+              </button>
 
               <ul class="dropdown-menu">
                 <li>
@@ -131,6 +134,9 @@
                 </li>
               </ul>
             </div>
+
+            <input id="address" type="textbox" value="Sydney, NSW">
+            <input id="submit" type="button" value="Geocode">
           </div>
 
           <div id="map" style="width:100%;"></div>
@@ -140,293 +146,49 @@
 
         <div class="col-md-7 ">
           <ul class="nav nav-tabs product_menu" style="margin-bottom: 10px;">
-            <li class="active"><a href="#">매매</a></li>
-            <li><a href="#">전세</a></li>
-            <li><a href="#">월세</a></li>
-            <li><a href="#">Micro</a></li>
+            <li class="active">
+              <a href="#">Micro_1</a>
+            </li>
+            <li>
+              <a href="#">Micro_2</a>
+            </li>
           </ul>
 
-          <div id="product_list">
+          <div class="list-group" id="product_list">
 
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
+            <a href="#" class="list-group-item row">
+              <div class="col-md-3">
+                <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
+              </div>
+              <div class="col-md-8">
+                <div>
+                  서울특별시 관악구 신림로 379 501호
                 </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
+                <div>
+                  <div class="col-md-10" style="padding: 0px;">
+                    <div class=" progress">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 80%;"> 6억
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    평수 아아아아아
+                  <div class="col-md-2">
+                    6억
                   </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
 
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
                 </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item row">
-                <div class="col-md-3">
-                  <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
-                </div>
-                <div class="col-md-9">
-                  <div>
-                    서울특별시 관악구 신림로 379 501호
-                  </div>
-                  <div>
-                    평수 아아아아아
-                  </div>
-                  <div>
-                    가격입니다.
-                  </div>
-                </div>
-              </a>
-            </div>
-
+              </div>
+              <div class="col-md-1">
+                <button class="btn">투자하기</button>
+              </div>
+            </a>
+            
+            <a href="/building_register" class="list-group-item text-center">매물올리기</a>
+            
           </div>
         </div>
       </div>
     </div>
-  </section>
-
-  <script type="text/javascript">
-    var infoWin = new google.maps.InfoWindow(); //말풍선
-    window.onload = initLocation;
-
-    function initLocation() {
-      var myLoc = getLocation();
-      if (myLoc == null) return false;
-      myLocation(myLoc);
-    }
-
-    function getLocation() {
-      if (navigator.geolocation) { // geolocation 객체지원여부
-        return navigator.geolocation;
-      }
-      document.getElementById("map").innerHTML = "<b>위치정보 지원 안함</b>";
-      return null;
-    }
-
-    function myLocation(myLoc) {
-      myLoc.getCurrentPosition(function(position) { // getCurrentPosition() 최초 위치를 얻음
-        var lat = position.coords.latitude; //위도를 얻음
-        var lon = position.coords.longitude; //경도를 얻음
-        //구글맵사용
-        var initLoc = new google.maps.LatLng(lat, lon);
-        var map = new google.maps.Map(
-          document.getElementById("map"), {
-            zoom: 8,
-            mapTypeId: google.maps.MapTypeId.ROADMAP // 2d
-              //mapTypeId:google.maps.MapTypeId.SATELLITE	//위성사진
-          }
-        );
-        map.setCenter(initLoc); // 현재 위치를 지도 중앙에 표시
-        //말풍선
-        infoWin.setContent("현재 내 위치 : " + lat + "," + lon);
-        infoWin.setPosition(initLoc);
-        infoWin.open(map);
-      });
-    }
-    $(document).ready(function() {
-      $(window).on('resize', function() {
-        $('#map').css('height', this.innerHeight - 106);
-        $('#product_list').css('height', this.innerHeight - 114);
-      }).resize();
-    });
-  </script>
+  </div>
+</section>
 </body>
-
 </html>

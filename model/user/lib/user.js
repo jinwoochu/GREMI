@@ -10,7 +10,7 @@ var CoinStack = require('coinstack-sdk-js')
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-  host: "localhost",
+  host: "192.168.70.95",
   user: "root",
   password: "mysql!!",
   database: "gremi"
