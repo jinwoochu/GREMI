@@ -11,8 +11,6 @@ var con = mysql.createConnection({
   database: "gremi"
 });
 
-
-
 // 회원목록 반환 , 나중에 쓸 예정
 exports.list = function(req, res) {
   var read_sql =
@@ -23,9 +21,6 @@ exports.list = function(req, res) {
     res.render('user_list.html', { list: result })
   });
 }
-
-
-
 
 //회원가입
 exports.register = function(req, res) {
@@ -43,8 +38,8 @@ exports.register = function(req, res) {
     }
 
     if (exists_email) { //등록된 이메일 있으면 등록실패
-      console.log("이미 등록된 아이디입니다.")
-      res.redirect('/app');
+      console.log("이미 등록된 아이디입니다.");
+      res.redirect('/');
     } else { // 등록 성공시
       var insert_sql =
         "INSERT INTO USERS (email, password,country) VALUES (?,?,?)";
@@ -64,8 +59,7 @@ exports.register = function(req, res) {
 
       mapping_func(email, myAddress, privateKey);
 
-
-      res.redirect('/map')
+      res.redirect('/investment')
     }
   });
 }

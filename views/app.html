@@ -2,65 +2,36 @@
 <html>
 
 <head>
+  <title>GREMI</title>
 
-  <!-- /.website title -->
-  <title>Backyard App Landing Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-
   <link rel="stylesheet" href="css/bootstrap-3.3.7/bootstrap.min.css">
-
+  
   <script src="js/jquery-3.2.1/jquery-3.2.1.js"></script>
   <script src="js/bootstrap-3.3.7/bootstrap.min.js"></script>
-
 </head>
 
 <body data-spy="scroll" data-target="#navbar-scroll" style="">
-  <!-- NAVIGATION -->
-  <header class="navbar navbar-inverse" id="top" style="border-radius: 0px;">
-    <div class="container">
-      <div class="navbar-header">
-        <button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle" data-target="#bs-navbar" data-toggle="collapse" type="button"> 
-					<span class="sr-only">Toggle navigation</span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-				</button>
-
-        <a href="./" class="navbar-brand">GREMI</a>
-      </div>
-
-      <nav class="collapse navbar-collapse" id="bs-navbar">
-
-        <form action="/user_login" method="post" id="signin" class="navbar-form navbar-right" role="form">
-          <input id="email" type="email" class="form-control" name="email" value="" placeholder="E-mail">
-          <input id="password" type="password" class="form-control" name="password" value="" placeholder="Password">
-          <button type="submit" class="btn btn-success">Login</button>
-        </form>
-      </nav>
-    </div>
-  </header>
+  <%- include partial/header.html %>
 
   <section class="content dashboard">
     <div class="container">
-
-      <header>
+      <header class="text-center">
         <span class="live">LIVE</span>
         <h2>
           <span style="white-space: nowrap">GREMI</span>
           <span style="white-space: nowrap">현황</span>
-        </h2>
-
-        <span class="clock">2017.08.16&nbsp;&nbsp;02:23:58&nbsp;&nbsp;PM</span>
-
-        <ul class="amounts">
-          <li class="invest-amount">
-            <span id="label-invest-amount">91,020,970,000</span> 원
-          </li>
-        </ul>
+        </h2> 
+        <div>
+          <span class="clock block">2017.08.16&nbsp;&nbsp;02:23:58&nbsp;&nbsp;PM</span>
+        </div>
+        <div>
+          <span id="label-invest-amount">91,020,970,000</span> 원
+        </div>
       </header>
 
-      <div class="stats row">
+      <div class="row text-center">
         <div class="col-sm-3 col-xs-6">
           <dl>
             <dd>▲ 305</dd>
@@ -93,7 +64,6 @@
             <dt>연체율</dt>
           </dl>
         </div>
-
       </div>
     </div>
   </section>
@@ -102,6 +72,7 @@
   <section id="intro">
     <div class="container">
       <div class="row">
+
         <!-- /.intro video -->
         <div class="col-md-6">
           <iframe width="100%" height="345" src="https://www.youtube.com/embed/BzYnNdJhZQw"> </iframe>
@@ -129,14 +100,6 @@
   </section>
 
   <!-- /.footer -->
-  <footer id="footer">
-    <div class="container">
-      <div class="text-center">
-        Copyright stompesi 2017
-      </div>
-    </div>
-    </div>
-  </footer>
+  <%- include partial/footer.html %>
 </body>
-
 </html>

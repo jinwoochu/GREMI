@@ -2,9 +2,8 @@
 var myCenter = new google.maps.LatLng(37.250943, 127.028344);
 var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 
-
 function initMap() {
-  var map = new google.maps.Map(
+  map = new google.maps.Map(
     document.getElementById('map'), {
       zoom: 12,
       center: {lat: -34.397, lng: 150.644}
@@ -52,14 +51,43 @@ function geocodeAddress(geocoder, resultsMap) {
 
 
 $(document).ready(function() {
-  $(window).on('resize', function() {
-    $('#map').css('height', this.innerHeight - 106);
-    $('#product_list').css('height', this.innerHeight - 114);
-  }).resize();
-
-  $('#investment_menu').on('click', 'li', function(event) {
+  $('#investment_menu').on('click', 'a', function(event) {
     event.preventDefault();
     $('#investment_menu li').removeClass('active');
     $(this).addClass('active');
+
+    $('.profile_item').css('display', 'none');
+    $($(this).attr('href')).css('display', 'block');
   });
+
+  $('#calendar').fullCalendar({
+    header: {
+          // lef  t: 'prev,next today',
+          // center: 'title',
+          // right: 'month,agendaWeek,agendaDay'
+        },
+        defaultDate: '2017-05-12',
+      selectable: true,
+      selectHelper: true,
+      height: 420,
+      select: function(start, end) {
+        var title = prompt('Event Title:');
+        var eventData;
+        if (title) {
+          eventData = {
+            title: title,
+            start: start,
+            end: end
+          };
+          $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+        }
+        $('#calendar').fullCalendar('unselect');
+      },
+      editable: true,
+      eventLimit: true, // allow "more" link when too many events
+      events: [{
+        title: 'All Day Event',
+        start: '2017-05-01'
+      }]
+    });
 });
