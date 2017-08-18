@@ -17,44 +17,68 @@ var crypto = require('crypto');
 
 // 빌딩 등록
 exports.register = function(req, res) {
-  var address = req.body.address;
-  var price = req.body.price;
-  var ex_area = req.body.ex_area;
-  var con_area = req.body.con_area;
-  var register_email = req.body.register_email;
-  var certi_num = req.body.certi_num; // 민증 or 운전면허증
-  var copy_right = req.body.copy_right; // 등기부등본
-  var building_block = req.body.building_block; // 건축물대장
 
+  var lat = req.body.lat;
+  var lng = req.body.lng;
+  var country = req.body.country;
+  var state = req.body.state;
+  var city = req.body.city;
+  var street = req.body.street;
+  var price = req.body.price;
+
+  var address = country + " " + state + " " + city + " " + street;
+
+  // console.log(lat)
+  // console.log(lng)
+  // console.log(title)
+  // console.log(country)
+  // console.log(state)
+  // console.log(city)
+  // console.log(street)
+  // console.log(price)
 
   // 빌딩 db 등록 
 
-  // var exists_address = false;
+  var exists_address = false;
 
-  // var read_sql = " SELECT address FROM buildings";
-  // con.query(read_sql, function(err, result, field) {
-  //   if (err) throw err;
-  //   for (var i = 0; i < result.length; i++) { // 등록된 이메일이 있는지 체크함.
-  //     if (result[i].address === address) {
-  //       exists_address = true;
-  //       break;
-  //     }
-  //   }
+  var read_sql = " SELECT country, state, city, street FROM buildings";
+  con.query(read_sql, function(err, result, field) {
+    if (err) throw err;
+    for (var i = 0; i < result.length; i++) { // 등록된 이메일이 있는지 체크함.
+      if (result[i].country + " " + result[i].state + " " + result[i].city + " " + result[i].street === address) {
+        exists_address = true;
+        break;
+      }
+    }
 
-  //   if (exists_address) { //등록된 이메일 있으면 등록실패
-  //     console.log("이미 등록된 빌딩입니다.")
-  //     res.redirect('/app');
-  //   } else { // 등록 성공시
-  //     var insert_sql =
-  //       "INSERT INTO buildings (address, price, ex_area, con_area, register_email) VALUES (?,?,?,?,?)";
-  //     var values = [address, price, ex_area, con_area, register_email];
-  //     con.query(insert_sql, values, function(err2, result2, field2) {
-  //       if (err2) throw err2;
-  //       console.log("등록 성공")
-  //     });
+    if (exists_address) { //등록된 이메일 있으면 등록실패
+      console.log("이미 등록된 빌딩입니다.")
+      response = makeResponse(0, "이미 등록된 빌딩입니다.", {});
+      res.json(response);
 
-  //     res.redirect('/app')
-  //   }
-  // });
+    } else { // 등록 성공시
+      var insert_sql =
+        "INSERT INTO buildings (lat, lng, country, state, city, street, price) VALUES (?,?,?,?,?,?,?)";
+      var values = [lat, lng, country, state, city, street, price];
+      con.query(insert_sql, values, function(err2, result2, field2) {
+        if (err2) throw err2;
+        response = makeResponse(1, "", {});
+        res.json(response);
+      });
+    }
+  });
 
+};
+
+
+function makeResponse(status, errorMessage, data) {
+  var response = {
+    status: status,
+    error_message: errorMessage
+  };
+
+  for (var key in data) {
+    response[key] = data[key];
+  }
+  return response;
 }

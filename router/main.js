@@ -8,7 +8,6 @@ module.exports = function(app) {
   //   res.render('home.html', { vari: "test" })
   // });
 
-
   //메인
   app.get('/', function(req, res) {
     res.render('app.html');
