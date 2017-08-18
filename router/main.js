@@ -4,10 +4,6 @@ var building = require('../model/building');
 
 module.exports = function(app) {
 
-  // app.get('/test', function(req, res) {
-  //   res.render('home.html', { vari: "test" })
-  // });
-
   //메인
   app.get('/', function(req, res) {
     res.render('app.html');
@@ -27,6 +23,14 @@ module.exports = function(app) {
   app.get('/building', function(req, res) {
     res.render('building.html');
   });
+
+  //집상세정보
+  app.get('/building/:building_id', function(req, res) {
+    res.render('detail_building.html', { "building_id": req.params.building_id })
+  })
+
+
+
 
   //여행가기
   app.get('/traveling', function(req, res) {

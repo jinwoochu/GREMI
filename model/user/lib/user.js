@@ -11,17 +11,6 @@ var con = mysql.createConnection({
   database: "gremi"
 });
 
-// 회원목록 반환 , 나중에 쓸 예정
-exports.list = function(req, res) {
-  var read_sql =
-    " SELECT * FROM USERS";
-  con.query(read_sql, function(err, result, field) {
-    if (err) throw err;
-    // console.log(result)
-    res.render('user_list.html', { list: result })
-  });
-}
-
 //회원가입
 exports.register = function(req, res) {
   var email = req.body.email;
