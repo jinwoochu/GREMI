@@ -23,12 +23,32 @@
             if (result.status == 0) {
               alert(result.error_message);
             } else {
-              document.cookie = "key=" + result.key;
+              document.cookie = "email=" + result.key;
               window.location.href = "/investment";
             }
           }
         });
+        event.preventDefault();
+      });
 
+      $('#login_form').on('submit', function(event) {
+
+        var formData = $(this).serialize();
+        $.ajax({
+          url: $(this).attr('action'),
+          type: "POST",
+          data: formData,
+          dataType: "json",
+          success: function(result) {
+            debugger;
+            if (result.status == 0) {
+              alert(result.error_message);
+            } else {
+              document.cookie = "email=" + result.key;
+              window.location.href = "/investment";
+            }
+          }
+        });
         event.preventDefault();
       });
     });
