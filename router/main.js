@@ -8,40 +8,34 @@ module.exports = function(app) {
   //   res.render('home.html', { vari: "test" })
   // });
 
+
+  //메인
   app.get('/', function(req, res) {
     res.render('app.html');
   });
 
+  //뉴스피드
+  app.get('/news_feed', function(req, res) {
+    res.render('news_feed.html');
+  });
+
+  //프로필
   app.get('/profile', function(req, res) {
     res.render('profile.html');
   });
 
-  app.get('/investment', function(req, res) {
-    res.render('investment.html');
+  //집
+  app.get('/building', function(req, res) {
+    res.render('building.html');
   });
 
-  app.get('/building_register', function(req, res) {
-    res.render('building_register.html');
+  //여행가기
+  app.get('/traveling', function(req, res) {
+    res.render('traveling.html');
   });
 
+  //로그아웃 
   app.get('/logout', function(req, res) {
     res.render('app.html');
-  });
-
-  app.get('/building_cancel', function(req, res) {
-    // TODO
-  });
-
-  app.get('/purchased_buildings', function(req, res) {
-    // TODO
-  });
-
-  app.get('/building_search', function(req, res) {
-    // TODO
-  });
-
-  app.get('/detail_investment/:building_id', function(req, res) {
-    // TODO
-    res.render('detail_investment.html');
   });
 }
