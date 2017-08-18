@@ -1,14 +1,27 @@
+var map;
 
-var myCenter = new google.maps.LatLng(37.250943, 127.028344);
-var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+// 현재위치 동의
+function getLocation_cord() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(initMap);
+  }
+}
 
+// 맵 랜더링
+function initMap(wp_position) {
+  var wplatlng = new google.maps.LatLng(wp_position.coords.latitude, wp_position.coords.longitude);
+  var wpOptions = {
+    zoom:17,        // 지도 zoom단계
+    center:wplatlng,    //지도에서 가운데로 위치할 위도와 경도(변수) 
+    mapTypeId:google.maps.MapTypeId.ROADMAP 
+  };
 
-function initMap() {
-  var map = new google.maps.Map(
-    document.getElementById('map'), {
-      zoom: 12,
-      center: {lat: -34.397, lng: 150.644}
-    });
+  map = new google.maps.Map(document.getElementById("map"), wpOptions);
+
+  var marker = new google.maps.Marker({
+        map: map,             // 마커에 마우스 포인트를 갖다댔을 때 뜨는 타이틀.
+        position: wplatlng      // 마커 표시 좌표.
+      });
 
   var geocoder = new google.maps.Geocoder();
 
@@ -16,50 +29,51 @@ function initMap() {
     geocodeAddress(geocoder, map);
   }); 
 
-  $('#address').on('keypress', function(event) {
-    if((event.keyCode ? event.keyCode : event.which) == 13){
-      geocodeAddress(geocoder, map);
-    }
-  });
+  google.maps.event.addListener(map, 'zoom_changed', function () {
+   google.maps.event.trigger(map, 'resize');
+   var bounds = map.getBounds();
+   var North = bounds.getNorthEast().lat();
+   var East = bounds.getNorthEast().lng();
+   var South = bounds.getSouthWest().lat();
+   var West = bounds.getSouthWest().lng();
+   console.log(North,East,South,West)
+ });
+
+  google.maps.event.addListener(map, 'dragend', function () {
+   google.maps.event.trigger(map, 'resize');
+   var bounds = map.getBounds();
+   var North = bounds.getNorthEast().lat();
+   var East = bounds.getNorthEast().lng();
+   var South = bounds.getSouthWest().lat();
+   var West = bounds.getSouthWest().lng();
+   console.log(North,East,South,West)
+ });
+
 }
 
-function geocodeAddress(geocoder, resultsMap) {
-  var address = document.getElementById('address').value;
-  geocoder.geocode({'address': address}, function(results, status) {
-    if (status === 'OK') {
-      resultsMap.setCenter(results[0].geometry.location);
-      marker = new google.maps.Marker({
-        map: resultsMap,
-        position: results[0].geometry.location
-      });
+  // 검색
+  function geocodeAddress(geocoder, resultsMap) {
+    var address = document.getElementById('address').value;
+    
+    geocoder.geocode({'address': address}, function(results, status) {
+      if (status === 'OK') {
+        resultsMap.setCenter(results[0].geometry.location);
+        marker = new google.maps.Marker({
+          map: resultsMap,
+          position: results[0].geometry.location
+        });
 
-      var myCity = new google.maps.Circle({
-        center: results[0].geometry.location,
-        radius:800,
-        strokeColor:"#0000FF",
-        strokeOpacity:0.8,
-        strokeWeight:2,
-        fillOpacity:0.0,
-        map: resultsMap
-      });
-      var cityCircle = new google.maps.Circle(myCity);
-    } else {
-      alert('Geocode was not successful for the following reason: ' + status);
-    }
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  };
+
+  $(document).ready(function() {
+    $(window).on('resize', function() {
+      $('#map').css('height', this.innerHeight - 106);
+      $('#product_list').css('height', this.innerHeight - 114);
+    }).resize();
   });
-}
 
-
-
-$(document).ready(function() {
-  $(window).on('resize', function() {
-    $('#map').css('height', this.innerHeight - 106);
-    $('#product_list').css('height', this.innerHeight - 114);
-  }).resize();
-
-  $('#investment_menu').on('click', 'li', function(event) {
-    event.preventDefault();
-    $('#investment_menu li').removeClass('active');
-    $(this).addClass('active');
-  });
-});
+  google.maps.event.addDomListener(window, 'load', getLocation_cord);
