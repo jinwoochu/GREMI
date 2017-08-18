@@ -1,8 +1,3 @@
-//express
-var express = require('express');
-var app = express();
-// var router = require('./router/main')(app);
-
 //코인스택쨔응
 var CoinStack = require('coinstack-sdk-js')
 
@@ -49,6 +44,7 @@ exports.register = function(req, res) {
 
     if (exists_email) { //등록된 이메일 있으면 등록실패
       console.log("이미 등록된 아이디입니다.")
+      res.redirect('/app');
     } else { // 등록 성공시
       var insert_sql =
         "INSERT INTO USERS (email, password,country) VALUES (?,?,?)";
@@ -67,6 +63,7 @@ exports.register = function(req, res) {
       var myAddress = CoinStack.ECKey.deriveAddress(privateKey);
 
       mapping_func(email, myAddress, privateKey);
+
 
       res.redirect('/map')
     }
