@@ -1,6 +1,6 @@
 // 사용자 정의 모델
 var userdb = require('../model/user');
-
+var building = require('../model/building');
 
 module.exports = function(app) {
 
@@ -20,5 +20,8 @@ module.exports = function(app) {
   app.get('/user_list', function(req, res) {
     userdb.list(req, res);
   });
+
+  
+
 
 }
