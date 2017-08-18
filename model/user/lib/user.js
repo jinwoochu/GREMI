@@ -86,15 +86,21 @@ exports.login = function(req, res) {
 
     if (email === "") {
       console.log("이메일을 입력해주세요");
+      response = makeResponse(0, "이메일을 입력해주세요", {});
+      res.json(response);
     } else if (password === "") {
       console.log("비밀번호를 입력해주세요");
-      res.redirect('/');
+      response = makeResponse(0, "비밀번호를 입력해주세요", {});
+      res.json(response);
     } else if (!exists_email) {
       console.log("존재 하지 않는 이메일입니다");
-      res.redirect('/');
+      response = makeResponse(0, "존재 하지 않는 이메일입니다", {});
+      res.json(response);
     } else if (!right_password) {
       console.log("비밀번호가 틀립니다.");
-      res.redirect('/');
+      response = makeResponse(0, "비밀번호가 틀립니다.", {});
+      res.json(response);
+
     } else {
       if (email === "admin@admin.com") { // 관리자 로그인시
         console.log("관리자 로그인 성공");
@@ -102,9 +108,6 @@ exports.login = function(req, res) {
         console.log("유저 로그인 성공");
         response = makeResponse(1, "", { 'key': email });
         res.json(response);
-
-
-        // res.redirect('/investment');
       }
     }
   });
