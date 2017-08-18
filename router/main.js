@@ -26,10 +26,13 @@ module.exports = function(app) {
 
   //집상세정보
   app.get('/building/:building_id', function(req, res) {
-    res.render('detail_building.html', { "building_id": req.params.building_id })
+    building.detail_building(req, res);
   })
 
-
+  //집등록 취소
+  app.delete('/building/:building_id', function(req, res) {
+    res.render('detail_building.html', { "building_id": req.params.building_id })
+  })
 
 
   //여행가기

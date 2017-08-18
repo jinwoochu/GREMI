@@ -37,10 +37,20 @@ app.post('/building', function(req, res) {
   building.register(req, res);
 });
 
-
-app.post('/building_edit', function(req, res) {
-  // TODO
+//집사기
+app.post('/building/buy/:building_id', function(req, res) {
+  console.log(req.params.building_id)
+  console.log(req.body.price)
 });
+
+//집정보 수정
+app.post('/building/:building_id', function(req, res) {
+  building.edit(req, res);
+});
+
+
+
+
 
 app.listen(3000, function() {
   console.log("Server listening on http://localhost:3000");

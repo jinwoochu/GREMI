@@ -15,7 +15,7 @@ var con = mysql.createConnection({
 var crypto = require('crypto');
 
 
-// 빌딩 등록
+//집 등록
 exports.register = function(req, res) {
 
   var lat = req.body.lat;
@@ -37,7 +37,6 @@ exports.register = function(req, res) {
   // console.log(street)
   // console.log(price)
 
-  // 빌딩 db 등록 
 
   var exists_address = false;
 
@@ -68,7 +67,49 @@ exports.register = function(req, res) {
     }
   });
 
-};
+}
+
+//집정보 수정
+exports.edit = function(req, res) {
+
+  // var lat = req.body.lat;
+  // var lng = req.body.lng;
+  // var country = req.body.country;
+  // var state = req.body.state;
+  // var city = req.body.city;
+  // var street = req.body.street;
+  // var price = req.body.price;
+
+  // console.log(lat)
+  // console.log(lng)
+  // console.log(country)
+  // console.log(state)
+  // console.log(city)
+  // console.log(street)
+  // console.log(price)
+
+  var select_building_id = req.params.building_id;
+  var read_sql =
+    " SELECT * FROM buildings where id=" + select_building_id;
+  con.query(read_sql, function(err, result, field) {
+    if (err) throw err;
+    console.log(result)
+  })
+}
+
+
+exports.detail_building = function(req, res) {
+  var select_building_id = req.params.building_id;
+  var read_sql =
+    " SELECT * FROM buildings where id=" + select_building_id;
+  con.query(read_sql, function(err, result, field) {
+    if (err) throw err;
+    // res.render('detail_building.html', { "buildingObject": result });
+    console.log(result)
+  })
+
+}
+
 
 
 function makeResponse(status, errorMessage, data) {
