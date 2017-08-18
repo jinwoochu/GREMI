@@ -25,20 +25,21 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
 app.post('/user_register', function(req, res) {
   userdb.register(req, res);
 });
 
-app.post('/user_login', function(req, res) {
+app.post('/login', function(req, res) {
   userdb.login(req, res);
-})
+});
+
+app.post('/building_search', function(req, res) {
+  //TODO
+});
 
 app.post('/building_register', function(req, res) {
   building.register(req, res);
-})
 
-app.post('/upload', function(req, res) {
   if (!req.files)
     return res.status(400).send('No files were uploaded.');
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file 
@@ -50,8 +51,9 @@ app.post('/upload', function(req, res) {
   });
 });
 
-
-
+app.post('/building_edit', function(req, res) {
+  // TODO
+});
 
 app.listen(3000, function() {
   console.log("Server listening on http://localhost:3000");
