@@ -1,79 +1,182 @@
-var map;
+var map = map || {};
 
-// 현재위치 동의
-function getLocation_cord() {
+map.markers = [];
+
+map.initMap = function () {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(initMap);
+    navigator.geolocation.getCurrentPosition(this.createMap);
   }
-}
+};
 
-// 맵 랜더링
-function initMap(wp_position) {
-  var wplatlng = new google.maps.LatLng(wp_position.coords.latitude, wp_position.coords.longitude);
+map.createMap = function (position) {
+  var geocoder = new google.maps.Geocoder();
+  var  wplatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   var wpOptions = {
-    zoom:17,        // 지도 zoom단계
-    center:wplatlng,    //지도에서 가운데로 위치할 위도와 경도(변수) 
+    zoom:17,       
+    center: wplatlng,    //지도에서 가운데로 위치할 위도와 경도(변수) 
     mapTypeId:google.maps.MapTypeId.ROADMAP 
   };
 
-  map = new google.maps.Map(document.getElementById("map"), wpOptions);
+  var googleMap = new google.maps.Map(document.getElementById("googleMap"), wpOptions);
 
-  var marker = new google.maps.Marker({
-        map: map,             // 마커에 마우스 포인트를 갖다댔을 때 뜨는 타이틀.
-        position: wplatlng      // 마커 표시 좌표.
-      });
+  google.maps.event.addListener(googleMap, 'zoom_changed', request_buildings);
+  google.maps.event.addListener(googleMap, 'dragend', request_buildings);
 
-  var geocoder = new google.maps.Geocoder();
+  $('#search_address').on('click', function() {
+    var address = $('#address').val();
 
-  $('#submit').on('click', function() {
-    geocodeAddress(geocoder, map);
-  }); 
-
-  google.maps.event.addListener(map, 'zoom_changed', function () {
-   google.maps.event.trigger(map, 'resize');
-   var bounds = map.getBounds();
-   var North = bounds.getNorthEast().lat();
-   var East = bounds.getNorthEast().lng();
-   var South = bounds.getSouthWest().lat();
-   var West = bounds.getSouthWest().lng();
-   console.log(North,East,South,West)
- });
-
-  google.maps.event.addListener(map, 'dragend', function () {
-   google.maps.event.trigger(map, 'resize');
-   var bounds = map.getBounds();
-   var North = bounds.getNorthEast().lat();
-   var East = bounds.getNorthEast().lng();
-   var South = bounds.getSouthWest().lat();
-   var West = bounds.getSouthWest().lng();
-   console.log(North,East,South,West)
- });
-
-}
-
-  // 검색
-  function geocodeAddress(geocoder, resultsMap) {
-    var address = document.getElementById('address').value;
-    
     geocoder.geocode({'address': address}, function(results, status) {
       if (status === 'OK') {
-        resultsMap.setCenter(results[0].geometry.location);
-        marker = new google.maps.Marker({
-          map: resultsMap,
-          position: results[0].geometry.location
-        });
-
+        googleMap.setCenter(results[0].geometry.location);
+        request_buildings();
       } else {
-        alert('Geocode was not successful for the following reason: ' + status);
+        alert(status);
       }
     });
-  };
-
-  $(document).ready(function() {
-    $(window).on('resize', function() {
-      $('#map').css('height', this.innerHeight - 106);
-      $('#product_list').css('height', this.innerHeight - 114);
-    }).resize();
   });
 
-  google.maps.event.addDomListener(window, 'load', getLocation_cord);
+  function resetMarker() {
+    for(var i in map.markers) {
+      map.markers[i].setMap(null);
+    }
+
+    map.markers = [];
+  }
+
+  function makeMarker(buildingId, position) {
+    var marker = new google.maps.Marker({
+      map: googleMap,
+      position: position,
+      buildingId: buildingId
+    });
+
+    marker.addListener('click', function() {
+      // 클릭하면 상세 메뉴로가는것 추가하기
+    });
+
+    map.markers.push(marker);
+  }
+
+  function request_buildings() {
+    google.maps.event.trigger(googleMap, 'resize');
+
+    var bounds = googleMap.getBounds();
+    var data = {
+      northeast_lat: bounds.getNorthEast().lat(),
+      northeast_lng: bounds.getNorthEast().lng(),
+      southwest_lat: bounds.getSouthWest().lat(),
+      southwest_lng:  bounds.getSouthWest().lng() 
+    };
+
+
+    var buildingInfos = [{
+      building_id: 1, 
+      lat: 37.509143,
+      lng: 127.065562,
+      pictures: [{'url': ''}],
+      title: "aaa", 
+      participant_count: 3, 
+      address: "서울특별시 관악구 신림로 379 502호", 
+      price: 100, 
+      fundraising_amount: 50
+    }, {
+      building_id: 2, 
+      lat: 37.510243,
+      lng: 127.065562,
+      pictures: [{'url': ''}],
+      title: "aaa", 
+      participant_count: 3, 
+      address: "서울특별시 관악구 신림로 379 502호", 
+      price: 3000, 
+      fundraising_amount: 500
+    }, {
+      building_id: 3, 
+      lat: 37.511243,
+      lng: 127.065562,
+      pictures: [{'url': ''}],
+      title: "aaa", 
+      participant_count: 3, 
+      address: "서울특별시 관악구 신림로 379 502호", 
+      price: 3000, 
+      fundraising_amount: 500
+    }, {
+      building_id: 4, 
+      lat: 37.512243,
+      lng: 127.065562,
+      pictures: [{'url': ''}],
+      title: "aaa", 
+      participant_count: 3, 
+      address: "서울특별시 관악구 신림로 379 502호", 
+      price: 3000, 
+      fundraising_amount: 500
+    }, {
+      building_id: 5, 
+      lat: 37.513243,
+      lng: 127.065562,
+      pictures: [{'url': ''}],
+      title: "aaa", 
+      participant_count: 3, 
+      address: "서울특별시 관악구 신림로 379 502호", 
+      price: 3000, 
+      fundraising_amount: 500
+    }, {
+      building_id: 6, 
+      lat: 37.514243,
+      lng: 127.065562,
+      pictures: [{'url': ''}],
+      title: "aaa", 
+      participant_count: 3, 
+      address: "서울특별시 관악구 신림로 379 502호", 
+      price: 3000, 
+      fundraising_amount: 500
+    }, {
+      building_id: 7, 
+      lat: 37.515243,
+      lng: 127.065562,
+      pictures: [{'url': ''}],
+      title: "aaa", 
+      participant_count: 3, 
+      address: "서울특별시 관악구 신림로 379 502호", 
+      price: 3000, 
+      fundraising_amount: 500
+    }];
+
+    resetMarker();
+
+    for(var i in buildingInfos) {
+      var position = new google.maps.LatLng(buildingInfos[i].lat, buildingInfos[i].lng);
+      makeMarker(buildingInfos[i].building_id, position);
+    }
+
+    $("#building_list").html('');
+    $("#movieTmpl").tmpl(buildingInfos).appendTo("#building_list");
+    // $.tmpl("#movieTmpl", buildingInfos ).appendTo( "#building_list" );
+    // $(building_info_template).tmpl(buildingInfos).appendTo("#building_list");
+
+    // $.ajax({
+    //   url: '/building_search',
+    //   type: "GET",
+    //   data: data,
+    //   dataType: "json",
+    //   success: function(result) { 
+
+    //     if (result.status == 0) {
+    //       alert(result.error_message);
+    //     } else {
+    //       document.cookie = "email=" + result.key;
+    //       window.location.href = "/news_feed";
+    //     }
+    //   }
+    // }); 
+  }
+  
+  google.maps.event.addListenerOnce(googleMap, 'tilesloaded', request_buildings);
+}
+
+$(document).ready(function() {
+  $(window).on('resize', function() {
+    $('#googleMap').css('height', this.innerHeight - 106);
+    $('#building_list').css('height', this.innerHeight - 114);
+  }).resize();
+});
+
