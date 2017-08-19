@@ -19,8 +19,20 @@ map.createMap = function (position) {
 
   var googleMap = new google.maps.Map(document.getElementById("googleMap"), wpOptions);
 
+  google.maps.event.addListenerOnce(googleMap, 'tilesloaded', request_buildings);
   google.maps.event.addListener(googleMap, 'zoom_changed', request_buildings);
   google.maps.event.addListener(googleMap, 'dragend', request_buildings);
+  google.maps.event.addListener(googleMap, 'click', function(event) {
+    geocoder.geocode({'location': event.latLng}, function(results, status) {
+      if (status === 'OK') {
+        // TODO
+        console.log(results[1].formatted_address);
+      } else {
+        alert(status);
+      }
+    });
+  });
+
 
   $('#search_address').on('click', function() {
     var address = $('#address').val();
@@ -150,27 +162,7 @@ map.createMap = function (position) {
 
     $("#building_list").html('');
     $("#movieTmpl").tmpl(buildingInfos).appendTo("#building_list");
-    // $.tmpl("#movieTmpl", buildingInfos ).appendTo( "#building_list" );
-    // $(building_info_template).tmpl(buildingInfos).appendTo("#building_list");
-
-    // $.ajax({
-    //   url: '/building_search',
-    //   type: "GET",
-    //   data: data,
-    //   dataType: "json",
-    //   success: function(result) { 
-
-    //     if (result.status == 0) {
-    //       alert(result.error_message);
-    //     } else {
-    //       document.cookie = "email=" + result.key;
-    //       window.location.href = "/news_feed";
-    //     }
-    //   }
-    // }); 
   }
-  
-  google.maps.event.addListenerOnce(googleMap, 'tilesloaded', request_buildings);
 }
 
 $(document).ready(function() {

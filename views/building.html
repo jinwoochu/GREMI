@@ -16,18 +16,51 @@
 </head>
 
 <body data-spy="scroll" data-target="#navbar-scroll" style="">
-  <%- include partial/header.html %>
+  <%- include partial/logined_header.html %>
 
   <section id="content">
     <div class="container">
       <div class="row">
-      <%- include partial/building/list.html %>
+
+        <div class="container-fulid ">
+          <div class="row ">
+            <!-- /.intro video -->
+            <div class="col-md-5 map ">
+              <div style="padding-top:10px; margin-bottom: 10px; ">
+                <div class="input-group ">
+                  <input id="address" type="text " class="form-control " placeholder="Search for... ">
+                  <span class="input-group-btn ">
+                    <button id="search_address" class="btn btn-default " type="button ">검색</button>
+                  </span>
+                </div>
+              </div>
+
+              <div id="googleMap" style="width:100%;"></div>
+            </div>
+
+            <div class="col-md-7">
+              <ul id="building_menu" class="nav nav-tabs product_menu" style="margin-bottom: 10px;">
+                <li class="active "><a href="#">구매하기</a></li>
+                <li><a href="#">판매하기</a></li>
+              </ul>
+
+              <div>
+                <%- include partial/building/buy.html %>
+                <%- include partial/building/sell.html %>
+              </div>
+              
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- /.footer -->
   <%- include partial/footer.html %>
+
+  <script src="/js/map/map.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwU-cbgXFnLRSM-Qh5rjAnsXu0SjGBQac&callback=map.initMap"></script>
 </body>
 
 </html>

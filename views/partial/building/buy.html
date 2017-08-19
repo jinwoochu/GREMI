@@ -1,0 +1,43 @@
+<div class="building-content">
+  <div class="list-group" id="building_list"></div>
+
+  <script src="/js/lib/jquery.tmpl/jquery.tmpl.js"></script>
+
+  <script id="movieTmpl" type="text/x-jquery-tmpl">
+    <div class="list-group-item row">
+      <a href="${building_id}">
+        <div class="col-md-3">
+          {%tmpl(pictures) imageTemplate%}
+        </div>
+
+        <div class="col-md-8">
+          <div>
+            <span>${address}</span>
+          </div>
+
+          <div>
+            <div class="col-md-9" style="padding: 0px;">
+              <div class=" progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: ${parseInt(((fundraising_amount / price) * 10000)) / 100}%; "> ${fundraising_amount} (${participant_count} 명)
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <span>${price}</span>
+              <span>${parseInt(((fundraising_amount / price) * 10000)) / 100} %</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-1">
+          <a href="/building/buy/${building_id}" class="btn">투자하기</a>
+        </div>
+      </a>
+    </div>
+  </script>
+
+  <script id="imageTemplate" type="text/x-jquery-tmpl">
+    <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
+  </script>
+</div>

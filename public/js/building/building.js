@@ -17,4 +17,10 @@ $(document).ready(function() {
     }); 
     event.preventDefault();
   });
+
+  $('#building_menu').on('click', 'a', function(event) {
+    event.preventDefault();
+    $('#building_menu li').toggleClass('active');
+    $('.building-content').toggleClass('hidden');
+  });
 });
