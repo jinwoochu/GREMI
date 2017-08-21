@@ -1,6 +1,20 @@
 $(document).ready(function() {
   $('#building_register_form').on('submit', function(event) {
-    var formData = $(this).serialize();
+    event.preventDefault();
+
+    var formData = new FormData();
+
+    var images = []
+    $.each($(".files")[0].files, function (key, file){
+      images.push(file);
+    });  
+
+    formData.append('images', images);
+
+    $.each($(this).serializeArray(), function (i, obj) {
+      formData.append(obj.name, obj.value)
+    });
+    
     $.ajax({
       url: $(this).attr('action'),
       type: "POST",
@@ -15,7 +29,7 @@ $(document).ready(function() {
         }
       }
     }); 
-    event.preventDefault();
+    
   });
 
   $('#building_menu').on('click', 'a', function(event) {

@@ -14,22 +14,10 @@
 .row {
   margin-right: 0px;
   margin-left: 0px;
-  margin-top: 47%;
 }
 
 #building_list {
   overflow-y: scroll;
   padding-left: 5px;
   padding-right: 5px;
-}
-
-body {
-  background-image: url("images/map.jpg");
-   /* Full height */
-   height: 100%; 
-   
-       /* Center and scale the image nicely */
-       background-position: center;
-       background-repeat: no-repeat;
-       background-size: cover;
 }

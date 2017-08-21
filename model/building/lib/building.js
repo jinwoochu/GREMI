@@ -15,7 +15,7 @@ var con = mysql.createConnection({
 var crypto = require('crypto');
 
 
-//집 등록
+//집 등록register
 exports.register = function(req, res) {
 
     var lat = req.body.lat;
@@ -34,7 +34,10 @@ exports.register = function(req, res) {
     //     images.push(attr)
     // }
 
-    console.log(images)
+    console.log(req.body);
+
+    response = makeResponse(0, "검색에 실패했습니다.", {});
+    res.json(response);
         // console.log(lat)
         // console.log(lng)
         // console.log(title)
@@ -109,13 +112,13 @@ exports.edit = function(req, res) {
     var select_building_id = req.params.building_id;
 
     var edit_sql = 'UPDATE buildings SET lat="' + lat +
-        '", lng="' + lng +
-        '", country="' + country +
-        '", state="' + state +
-        '", city="' + city +
-        '", street="' + street +
-        '", price="' + price +
-        '" where id=' + select_building_id;
+    '", lng="' + lng +
+    '", country="' + country +
+    '", state="' + state +
+    '", city="' + city +
+    '", street="' + street +
+    '", price="' + price +
+    '" where id=' + select_building_id;
     con.query(edit_sql, function(err, result, field) {
         if (err) {
             throw err;
@@ -127,41 +130,19 @@ exports.edit = function(req, res) {
     })
 }
 
-
-//집 상세정보 
 exports.detail_building = function(req, res) {
     var select_building_id = req.params.building_id;
     var read_sql =
-        " SELECT * FROM buildings where id=" + select_building_id;
+    " SELECT * FROM buildings where id=" + select_building_id;
     con.query(read_sql, function(err, result, field) {
         if (err) throw err;
-        res.render('detail_building.html', { "building": result[0] });
-        console.log(result[0])
+        res.render('detail_building.html', { "building": result });
+        console.log(result)
     })
+
 }
 
 
-//집 삭제
-exports.delete = function(req, res) {
-
-    var select_building_id = req.params.building_id;
-
-    var delete_sql =
-        "DELETE FROM buildings where id=" + select_building_id;
-    con.query(delete_sql, function(err, result, field) {
-        if (err) {
-            throw err;
-            response = makeResponse(0, "등록에 실패했습니다.", {});
-            res.json(response);
-        }
-        response = makeResponse(1, "", {});
-        res.json(response);
-    })
-}
-
-
-
-//집 검색
 exports.search = function(req, res) {
     var ne_x = req.query.northeast_lng
     var ne_y = req.query.northeast_lat
@@ -172,34 +153,33 @@ exports.search = function(req, res) {
         // console.log(sw_x)
         // console.log(sw_y)
 
-    var read_sql = "select * from buildings where " + sw_x + "<lng and lng<" + ne_x + " and " + sw_y + "<lat and lat<" + ne_y;
+        var read_sql = "select * from buildings where " + sw_x + "<lng and lng<" + ne_x + " and " + sw_y + "<lat and lat<" + ne_y;
 
-    con.query(read_sql, function(err, result, field) {
-        if (err) {
-            throw err;
-            response = makeResponse(0, "검색에 실패했습니다.", {});
-            res.json(response);
-        }
+        con.query(read_sql, function(err, result, field) {
+            if (err) {
+                throw err;
+                response = makeResponse(0, "검색에 실패했습니다.", {});
+                res.json(response);
+            }
 
         // console.log(result[0])
         response = makeResponse(1, "", { 'buildingInfos': result });
         console.log(response)
         res.json(response);
     });
-}
-
-
-
-
-// response 객체 만들기
-function makeResponse(status, errorMessage, data) {
-    var response = {
-        status: status,
-        error_message: errorMessage
-    };
-
-    for (var key in data) {
-        response[key] = data[key];
     }
-    return response;
-}
+
+
+
+
+    function makeResponse(status, errorMessage, data) {
+        var response = {
+            status: status,
+            error_message: errorMessage
+        };
+
+        for (var key in data) {
+            response[key] = data[key];
+        }
+        return response;
+    }
