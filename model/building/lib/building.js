@@ -27,22 +27,28 @@ exports.register = function(req, res) {
     var price = req.body.price;
 
     var address = country + " " + state + " " + city + " " + street;
-    var images = req.body.images;
+
+    var contract_address = req.body.contract_address;
+
+    console.log(contract_address)
+
+
+    // var images = req.body.images;
 
     // for (var attr in req.body) {
     //     if (attr[0] != "b") continue;
     //     images.push(attr)
     // }
 
-    console.log(images)
-        // console.log(lat)
-        // console.log(lng)
-        // console.log(title)
-        // console.log(country)
-        // console.log(state)
-        // console.log(city)
-        // console.log(street)
-        // console.log(price)
+    // console.log(images)
+    // console.log(lat)
+    // console.log(lng)
+    // console.log(title)
+    // console.log(country)
+    // console.log(state)
+    // console.log(city)
+    // console.log(street)
+    // console.log(price)
 
 
     // var exists_address = false;
