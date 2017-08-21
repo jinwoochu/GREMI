@@ -27,25 +27,22 @@ exports.register = function(req, res) {
     var price = req.body.price;
 
     var address = country + " " + state + " " + city + " " + street;
-    var images = []
+    var images = req.body.images;
 
-    for (var attr in req.body) {
-        if (attr[0] != "b") continue;
-        images.append(attr)
-    }
+    // for (var attr in req.body) {
+    //     if (attr[0] != "b") continue;
+    //     images.push(attr)
+    // }
 
     console.log(images)
-        // console.log(req.body)
-
-
-    // console.log(lat)
-    // console.log(lng)
-    // console.log(title)
-    // console.log(country)
-    // console.log(state)
-    // console.log(city)
-    // console.log(street)
-    // console.log(price)
+        // console.log(lat)
+        // console.log(lng)
+        // console.log(title)
+        // console.log(country)
+        // console.log(state)
+        // console.log(city)
+        // console.log(street)
+        // console.log(price)
 
 
     // var exists_address = false;
@@ -53,24 +50,43 @@ exports.register = function(req, res) {
     // var read_sql = " SELECT country, state, city, street FROM buildings";
     // con.query(read_sql, function(err, result, field) {
     //     if (err) throw err;
-    //     for (var i = 0; i < result.length; i++) { // 등록된 이메일이 있는지 체크함.
+    //     for (var i = 0; i < result.length; i++) { // 등록된 빌딩이 있는지 체크함.
     //         if (result[i].country + " " + result[i].state + " " + result[i].city + " " + result[i].street === address) {
     //             exists_address = true;
     //             break;
     //         }
     //     }
 
-    //     if (exists_address) { //등록된 이메일 있으면 등록실패
+    //     if (exists_address) { //등록된 빌딩 있으면 등록실패
     //         console.log("이미 등록된 빌딩입니다.")
     //         response = makeResponse(0, "이미 등록된 빌딩입니다.", {});
     //         res.json(response);
 
     //     } else { // 등록 성공시
+
+    //         // 해당 빌딩 정보 등록
     //         var insert_sql =
     //             "INSERT INTO buildings (lat, lng, country, state, city, street, price) VALUES (?,?,?,?,?,?,?)";
     //         var values = [lat, lng, country, state, city, street, price];
     //         con.query(insert_sql, values, function(err2, result2, field2) {
-    //             if (err2) throw err2;
+    //             if (err2) {
+    //                 response = makeResponse(0, "빌딩 정보등록에 실패했습니다.", {});
+    //                 res.json(response);
+    //                 throw err2;
+
+    //             }
+    //         });
+
+    //         // 해당 빌딩 이미지 등록
+    //         var insert_sql =
+    //             "INSERT INTO building_images (id, path) VALUES (?,?)";
+    //         var values = [id, path];
+    //         con.query(insert_sql, values, function(err3, result3, field3) {
+    //             if (err3) {
+    //                 response = makeResponse(1, "이미지 등록에 실패했습니다.", {});
+    //                 res.json(response);
+    //                 throw err3;
+    //             }
     //             response = makeResponse(1, "", {});
     //             res.json(response);
     //         });
@@ -164,6 +180,7 @@ exports.search = function(req, res) {
             response = makeResponse(0, "검색에 실패했습니다.", {});
             res.json(response);
         }
+
         // console.log(result[0])
         response = makeResponse(1, "", { 'buildingInfos': result });
         console.log(response)
