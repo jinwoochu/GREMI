@@ -51,12 +51,10 @@ app.post('/building/:building_id', function(req, res) {
 
 //집등록 취소
 //이거 url deep 한단계 더 올리면 오류남.
-app.delete('/building', function(req, res) {
+app.delete('/building/delete/:building_id', function(req, res) {
     // building.edit(req, res);
     console.log("delete!!")
 });
-
-
 
 
 

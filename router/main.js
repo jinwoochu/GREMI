@@ -30,8 +30,8 @@ module.exports = function(app) {
     })
 
     //집등록 취소
-    app.delete('/building/:building_id', function(req, res) {
-        res.render('detail_building.html', { "building_id": req.params.building_id })
+    app.delete('/building/delete/:building_id', function(req, res) {
+        building.delete(req, res)
     })
 
 

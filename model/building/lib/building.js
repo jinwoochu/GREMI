@@ -107,11 +107,24 @@ exports.detail_building = function(req, res) {
         " SELECT * FROM buildings where id=" + select_building_id;
     con.query(read_sql, function(err, result, field) {
         if (err) throw err;
-        res.render('detail_building.html', { "building": result });
-        console.log(result)
+        res.render('detail_building.html', { "building": result[0] });
+        console.log(result[0])
     })
-
 }
+
+exports.delete = function(req, res) {
+
+    var select_building_id = req.params.building_id;
+
+    var delete_sql =
+        "DELETE * FROM buildings where id=" + select_building_id;
+    con.query(read_sql, function(err, result, field) {
+        if (err) throw err;
+
+        console.log(result[0])
+    })
+}
+
 
 
 exports.search = function(req, res) {
