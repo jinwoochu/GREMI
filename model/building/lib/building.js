@@ -159,10 +159,15 @@ exports.search = function(req, res) {
     var read_sql = "select * from buildings where " + sw_x + "<lng and lng<" + ne_x + " and " + sw_y + "<lat and lat<" + ne_y;
 
     con.query(read_sql, function(err, result, field) {
-        // console.log(result)
-        response = makeResponse(1, "", result);
+        if (err) {
+            throw err;
+            response = makeResponse(0, "검색에 실패했습니다.", {});
+            res.json(response);
+        }
+        // console.log(result[0])
+        response = makeResponse(1, "", { 'buildingInfos': result });
+        console.log(response)
         res.json(response);
-
     });
 }
 
