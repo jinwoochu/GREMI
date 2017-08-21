@@ -107,7 +107,7 @@ exports.detail_building = function(req, res) {
         " SELECT * FROM buildings where id=" + select_building_id;
     con.query(read_sql, function(err, result, field) {
         if (err) throw err;
-        // res.render('detail_building.html', { "buildingObject": result });
+        res.render('detail_building.html', { "buildingObject": result });
         console.log(result)
     })
 
