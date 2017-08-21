@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GREMI</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <link rel="stylesheet" href="/css/bootstrap-3.3.7/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/common.css">
+
+  <script src="/js/jquery-3.2.1/jquery-3.2.1.js"></script>
+  <script src="/js/bootstrap-3.3.7/bootstrap.min.js"></script>
+
+  <script src="/js/building/building.js"></script>
+
+</head>
+
+<body data-spy="scroll" data-target="#navbar-scroll" style="">
+  <%- include partial/logined_header.html %>
+
+  <section id="content">
+    <div class="container">
+      <div class="row">
+        <%= building.id %>
+        <%= building.title %>
+        <%= building.country %>
+        <%= building.state %>
+        <%= building.city %>
+        <%= building.street %>
+        <%= building.price %>
+        <%= building.lat %>
+        <%= building.lng %>
+      </div>
+    </div>
+  </section>
+
+  <!-- /.footer -->
+  <%- include partial/footer.html %>
+
+  <script src="/js/map/map.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwU-cbgXFnLRSM-Qh5rjAnsXu0SjGBQac&callback=map.initMap"></script>
+</body>
+
+</html>

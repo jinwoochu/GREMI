@@ -1,4 +1,4 @@
-<header class="navbar navbar-inverse" id="top" style="border-radius: 0px; margin-bottom: 20px;">
+<header class="navbar" id="top" style="border-radius: 0px; margin-bottom: 20px;">
   <div class="container">
     <div class="navbar-header">
       <button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle" data-target="#bs-navbar" data-toggle="collapse" type="button"> 
@@ -7,18 +7,41 @@
         <span class="icon-bar"></span> 
         <span class="icon-bar"></span> 
       </button>
-
-      <a href="./" class="navbar-brand">GREMI</a>
+      <a href="/" style="padding: 0px;"> 
+        <img src="/images/logo.png" height="50px">
+      </a>
     </div>
 
     <nav class="collapse navbar-collapse" id="bs-navbar">
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/news_feed">뉴스피드</a></li>
-        
-        <li><a href="/building">집</a></li>
-        <li><a href="/traveling">여행하기</a></li>
-        <li><a href="/profile">프로필</a></li>
-        <li><a href="/">로그아웃</a></li>
+        <li>
+          <a href="/" style="padding: 0px;"> 
+            <img src="/images/home.png" 
+            onmouseover = "this.src='/images/home_hover.png'"
+            onmouseout = "this.src='/images/home.png'" height="50px">
+          </a>
+        </li>
+        <li>
+          <a href="/" style="padding: 0px;"> 
+            <img src="/images/travel.png" 
+            onmouseover = "this.src='/images/travel_hover.png'"
+            onmouseout = "this.src='/images/travel.png'" height="50px">
+          </a>
+        </li>
+        <li>
+          <a href="/" style="padding: 0px;"> 
+            <img src="/images/profile.png" 
+            onmouseover = "this.src='/images/profile_hover.png'"
+            onmouseout = "this.src='/images/profile.png'" height="50px">
+          </a>
+        </li>
+        <li>
+          <a href="/" style="padding: 0px;"> 
+            <img src="/images/logout.png" 
+            onmouseover = "this.src='/images/logout_hover.png'"
+            onmouseout = "this.src='/images/logout.png'" height="50px">
+          </a>
+        </li>
       </ul>
     </nav>
   </div>

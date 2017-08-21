@@ -1,0 +1,57 @@
+html, body {
+  height: 100%; 
+}
+
+body {
+  background-image: url('/images/main.png');
+  background-size: cover;                      
+  background-repeat: no-repeat;
+  background-position: center center;   
+}
+
+/*.row {
+  margin-top: 55%;
+}*/
+
+.modal-header {
+  border-bottom: 0px solid #e5e5e5;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: 50px;
+  padding: 6px 12px;
+  font-size: 25px;
+  line-height: 1.42857143;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.43);
+  border: 1px solid #ccc;
+  border-radius: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.modal-content {
+  background-color: rgba(0, 0, 0, 0.43);
+}
+
+.modal-backdrop {
+  background: rgba(0,0,0,0);
+}
+
+.modal-dialog {
+  background: rgba(255,255,255,0.68);
+  padding: 15px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.main-menu {
+  margin-top: 55%;
+}
