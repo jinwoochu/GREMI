@@ -119,8 +119,13 @@ exports.delete = function(req, res) {
     var delete_sql =
         "DELETE FROM buildings where id=" + select_building_id;
     con.query(delete_sql, function(err, result, field) {
-        if (err) throw err;
-        console.log(result)
+        if (err) {
+            throw err;
+            response = makeResponse(0, "등록에 실패했습니다.", {});
+            res.json(response);
+        }
+        response = makeResponse(1, "", {});
+        res.json(response);
     })
 }
 
