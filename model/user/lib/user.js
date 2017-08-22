@@ -24,16 +24,14 @@ exports.register = function(req, res) {
   var wallet_address=req.body.wallet_address;
 
 // console.log(wallet_address)
-
-
-console.log(password)
+// console.log(password)
 
 //암호화 
 const cipher = crypto.createCipher('aes-256-cbc', '열쇠');
 let secret_password = cipher.update(password, 'utf8', 'base64'); // 'HbMtmFdroLU0arLpMflQ'
 secret_password += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5tX5k+a8Nzw='
 
-console.log(secret_password)
+// console.log(secret_password)
 
   var exists_email = false;
 
@@ -76,16 +74,11 @@ console.log(secret_password)
 
 exports.login = function(req, res) {
 
-
   var email = req.body.email;
   var origin_password = req.body.password;
-
-
-
   // console.log(secret_password);
   console.log(origin_password);
 
-  
 //암호화 
 const cipher = crypto.createCipher('aes-256-cbc', '열쇠');
 let secret_password = cipher.update(origin_password, 'utf8', 'base64'); // 'HbMtmFdroLU0arLpMflQ'
@@ -112,7 +105,6 @@ secret_password += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5
     }
       });
 };
-
 
 // var mapping_func = function(email, address, p_key) {
 //   var mapping_sql =
