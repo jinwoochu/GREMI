@@ -1,6 +1,11 @@
 //코인스택쨔응
 var CoinStack = require('coinstack-sdk-js')
 
+// crypto!!
+const crypto = require('crypto');
+
+
+
 // mysql
 var mysql = require('mysql');
 
@@ -16,7 +21,20 @@ exports.register = function(req, res) {
   var email = req.body.email;
   var password = req.body.password;
   var country = req.body.country;
-  var response;
+  var wallet_address=req.body.wallet_address;
+
+// console.log(wallet_address)
+
+
+console.log(password)
+
+//암호화 
+const cipher = crypto.createCipher('aes-256-cbc', '열쇠');
+let secret_password = cipher.update(password, 'utf8', 'base64'); // 'HbMtmFdroLU0arLpMflQ'
+secret_password += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5tX5k+a8Nzw='
+
+console.log(secret_password)
+
   var exists_email = false;
 
   var read_sql = " SELECT * FROM USERS";
@@ -31,10 +49,10 @@ exports.register = function(req, res) {
       res.json(response);
     } else { // 등록 성공시
       var insert_sql =
-        "INSERT INTO USERS (email, password,country) VALUES (?,?,?)";
-      var values = [email, password, country];
+        "INSERT INTO USERS (email, password,country,wallet_address) VALUES (?,?,?,?)";
+      var values = [email, secret_password, country,wallet_address];
       con.query(insert_sql, values, function(err2, result2, field2) {
-        if (err2) throw err2;
+        if (err2) throw err2; 
         console.log("등록 성공")
       });
 
@@ -57,49 +75,42 @@ exports.register = function(req, res) {
 
 
 exports.login = function(req, res) {
+
+
   var email = req.body.email;
-  var password = req.body.password;
+  var origin_password = req.body.password;
+
+
+
+  // console.log(secret_password);
+  console.log(origin_password);
+
+  
+//암호화 
+const cipher = crypto.createCipher('aes-256-cbc', '열쇠');
+let secret_password = cipher.update(origin_password, 'utf8', 'base64'); // 'HbMtmFdroLU0arLpMflQ'
+secret_password += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5tX5k+a8Nzw='
+
+// console.log(secret_password)
 
   var read_sql =
-    " SELECT * FROM USERS";
+    'SELECT email,password FROM USERS where email="' + email + '" and password="' + secret_password+'"';
   con.query(read_sql, function(err, result, field) {
-    var exists_email = false,
-      right_password = false;
-    if (err) throw err;
-    for (var i = 0; i < result.length; i++) { // 등록된 아이디, 이메일이 있는지 체크함.
-      if (result[i].email === email) {
-        exists_email = true;
-        if (result[i].password === password) right_password = true;
-      }
-    }
-
-    if (email === "") {
-      console.log("이메일을 입력해주세요");
-      response = makeResponse(0, "이메일을 입력해주세요", {});
+    if(err){
+      throw err
+      response = makeResponse(0, "로그인에 실패했습니다.", {});
       res.json(response);
-    } else if (password === "") {
-      console.log("비밀번호를 입력해주세요");
-      response = makeResponse(0, "비밀번호를 입력해주세요", {});
-      res.json(response);
-    } else if (!exists_email) {
-      console.log("존재 하지 않는 이메일입니다");
-      response = makeResponse(0, "존재 하지 않는 이메일입니다", {});
-      res.json(response);
-    } else if (!right_password) {
-      console.log("비밀번호가 틀립니다.");
-      response = makeResponse(0, "비밀번호가 틀립니다.", {});
-      res.json(response);
-
-    } else {
-      if (email === "admin@admin.com") { // 관리자 로그인시
-        console.log("관리자 로그인 성공");
-      } else { // 일반 유저
+    }else{
+      if(result.length == 0) {
+        response = makeResponse(0, "로그인에 실패했습니다.", {});
+        res.json(response);
+      } else {
         console.log("유저 로그인 성공");
         response = makeResponse(1, "", { 'key': email });
         res.json(response);
       }
     }
-  });
+      });
 };
 
 
