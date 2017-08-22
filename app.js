@@ -7,6 +7,9 @@ var express = require('express'),
     path = require("path"),
     app = express(),
     router = require('./router/main')(app);
+    fileUpload = require('express-fileupload');
+
+app.use(fileUpload());
 
 //static폴더
 app.use(express.static(path.join(__dirname, "/public")))
@@ -18,8 +21,8 @@ app.set('view engine', 'ejs');
 
 //body-parser
 var bodyParser = require('body-parser');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 
 
 //회원가입
