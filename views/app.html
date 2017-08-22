@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>GREMI</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-  <link rel="stylesheet" href="css/bootstrap-3.3.7/bootstrap.min.css">
-  <link rel="stylesheet" href="css/main.css">
+  <!-- css lib import -->
+  <link href="/css/bootstrap-3.3.7/bootstrap.min.css" rel="stylesheet">
 
-  <!-- contract js -->
-  <script src="/js/contract/bignumber.min.js"></script>
-  <script src="/js/contract/crypto-js.js"></script>
-  <script src="/js/contract/utf8.js"></script>
-  <script src="/js/contract/jquery.min.js"></script>
-  <script src="/js/contract/web3.js"></script>
+  <!-- js lib import -->
+  <script src="/js/lib/contract/bignumber.min.js"></script>
+  <script src="/js/lib/contract/crypto-js.js"></script>
+  <script src="/js/lib/contract/utf8.js"></script>
+  <script src="/js/lib/contract/web3.js"></script>
+  <script src="/js/lib/jquery-3.2.1/jquery-3.2.1.js"></script>
+  <script src="/js/lib/bootstrap-3.3.7/bootstrap.min.js"></script>
 
+  <!-- costom css import -->
+  <link href="/css/main.css" rel="stylesheet" >
 
-  <script src="/js/jquery-3.2.1/jquery-3.2.1.js"></script>
-  <script src="/js/bootstrap-3.3.7/bootstrap.min.js"></script>
-
-  <script src="/js/main/main.js"></script>
+  <!-- costom js import -->
+  <script src="/js/common.js"></script>
+  <script src="/js/main.js"></script>
 </head>
 
 <body data-spy="scroll" data-target="#navbar-scroll">
@@ -28,18 +29,17 @@
   <section id="intro" >
     <div class="container">
       <div class="row main-menu">
-
         <div class="col-md-2 col-md-offset-2">
-          <a href="#" data-toggle="modal" data-target="#signUpModal"> 
-            <img id="signin" src="/images/signIn.png" 
+          <a href="#" data-toggle="modal" data-target="#sign_up_modal"> 
+            <img src="/images/signIn.png" 
             onmouseover = "this.src='/images/signIn_hover.png'"
             onmouseout = "this.src='/images/signIn.png'" width="165px" height="85px">
           </a>
         </div>
 
         <div class="col-md-2 col-md-offset-3">
-          <a href="#" data-toggle="modal" data-target="#signInModal"> 
-            <img id="signup" src="/images/signUp.png" 
+          <a href="#" data-toggle="modal" data-target="#sign_in_modal"> 
+            <img src="/images/signUp.png" 
             onmouseover = "this.src='/images/signUp_hover.png'"
             onmouseout = "this.src='/images/signUp.png'" width="165px" height="85px">
           </a>
@@ -48,92 +48,8 @@
     </div>
   </section>
 
-  <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <img src="/images/x.png" width="30px" >
-          </button>
-        </div>
-        <form id="login_form" action="/login" method="post" role="form">
-          <div class="modal-body">
-            <div class="form-group">
-              <label for="email" class="sr-only hidden-xs">email</label>
-              <input type="email" class="form-control" name="email" placeholder="email">
-            </div>
-
-            <div class="form-group">
-              <label for="password" class="sr-only hidden-xs">password</label>
-              <input type="password" class="form-control" name="password" placeholder="password">
-            </div>            
-          </div>
-          <div class="modal-footer">
-            <div class="text-center">
-              <button type="submit" tabindex="1" style="border: 0; padding: 0">
-                <img id="signup" src="/images/ok.png" 
-                onmouseover = "this.src='/images/ok_hover.png'"
-                onmouseout = "this.src='/images/ok.png'" height="60px;">
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <img src="/images/x.png" width="30px" >
-          </button>
-        </div>
-        <form id="user_register_form" action="/user_register" method="post" role="form">
-          <input id="wallet_address" type="text" name="wallet_address">
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label for="email" class="sr-only hidden-xs">email</label>
-                  <input type="email" class="form-control" name="email" placeholder="email">
-                </div>
-              </div>
-
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label for="country" class="sr-only hidden-xs">country</label>
-                  <input type="text" class="form-control" name="country" placeholder="country" >
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-8">
-                <div class="form-group">
-                  <label for="password" class="sr-only hidden-xs">password</label>
-                  <input id="password" type="password" class="form-control" name="password" placeholder="password">
-                </div>
-
-                <div class="form-group">
-                  <label for="password_check" class="sr-only hidden-xs">password</label>
-                  <input id="password_check" type="password" class="form-control" name="password_check" placeholder="password_check">
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <button type="submit" tabindex="1" style="border: 0; padding: 0">
-                  <img id="signup" src="/images/enter.png" 
-                  onmouseover = "this.src='/images/enter_hover.png'"
-                  onmouseout = "this.src='/images/enter.png'" 
-                  style="width: 100%; height: 110px;">
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </body>
-
-  </html>
+  <%- include partial/sign_up_modal.html %>
+  <%- include partial/sign_in_modal.html %>
+  
+</body>
+</html>

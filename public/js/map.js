@@ -34,6 +34,18 @@ map.createMap = function (position) {
   });
 
 
+  map.moveMap = function(address, callback) {
+    geocoder.geocode({'address': address}, function(results, status) {
+      if (status === 'OK') {
+        googleMap.setCenter(results[0].geometry.location);
+        request_buildings();
+        callback(results[0].geometry.location);
+      } else {
+        alert(status);
+      }
+    });
+  }
+
   $('#search_address').on('click', function() {
     var address = $('#address').val();
 
@@ -74,89 +86,11 @@ map.createMap = function (position) {
 
     var bounds = googleMap.getBounds();
     var formData = {
-      // northeast_lat: bounds.getNorthEast().lat(),
-      // northeast_lng: bounds.getNorthEast().lng(),
-      // southwest_lat: bounds.getSouthWest().lat(),
-      // southwest_lng:  bounds.getSouthWest().lng() 
-      northeast_lat: 37.2,
-      northeast_lng: 12.2,
-      southwest_lat: 37,
-      southwest_lng: 12
+      northeast_lat: bounds.getNorthEast().lat(),
+      northeast_lng: bounds.getNorthEast().lng(),
+      southwest_lat: bounds.getSouthWest().lat(),
+      southwest_lng:  bounds.getSouthWest().lng() 
     };
-
-
-    // var buildingInfos = [{
-    //   building_id: 1, 
-    //   lat: 37.509143,
-    //   lng: 127.065562,
-    //   pictures: [{'url': ''}],
-    //   title: "aaa", 
-    //   participant_count: 3, 
-    //   address: "서울특별시 관악구 신림로 379 502호", 
-    //   price: 100, 
-    //   fundraising_amount: 50
-    // }, {
-    //   building_id: 2, 
-    //   lat: 37.510243,
-    //   lng: 127.065562,
-    //   pictures: [{'url': ''}],
-    //   title: "aaa", 
-    //   participant_count: 3, 
-    //   address: "서울특별시 관악구 신림로 379 502호", 
-    //   price: 3000, 
-    //   fundraising_amount: 500
-    // }, {
-    //   building_id: 3, 
-    //   lat: 37.511243,
-    //   lng: 127.065562,
-    //   pictures: [{'url': ''}],
-    //   title: "aaa", 
-    //   participant_count: 3, 
-    //   address: "서울특별시 관악구 신림로 379 502호", 
-    //   price: 3000, 
-    //   fundraising_amount: 500
-    // }, {
-    //   building_id: 4, 
-    //   lat: 37.512243,
-    //   lng: 127.065562,
-    //   pictures: [{'url': ''}],
-    //   title: "aaa", 
-    //   participant_count: 3, 
-    //   address: "서울특별시 관악구 신림로 379 502호", 
-    //   price: 3000, 
-    //   fundraising_amount: 500
-    // }, {
-    //   building_id: 5, 
-    //   lat: 37.513243,
-    //   lng: 127.065562,
-    //   pictures: [{'url': ''}],
-    //   title: "aaa", 
-    //   participant_count: 3, 
-    //   address: "서울특별시 관악구 신림로 379 502호", 
-    //   price: 3000, 
-    //   fundraising_amount: 500
-    // }, {
-    //   building_id: 6, 
-    //   lat: 37.514243,
-    //   lng: 127.065562,
-    //   pictures: [{'url': ''}],
-    //   title: "aaa", 
-    //   participant_count: 3, 
-    //   address: "서울특별시 관악구 신림로 379 502호", 
-    //   price: 3000, 
-    //   fundraising_amount: 500
-    // }, {
-    //   building_id: 7, 
-    //   lat: 37.515243,
-    //   lng: 127.065562,
-    //   pictures: [{'url': ''}],
-    //   title: "aaa", 
-    //   participant_count: 3, 
-    //   address: "서울특별시 관악구 신림로 379 502호", 
-    //   price: 3000, 
-    //   fundraising_amount: 500
-    // }];
-
 
     //TODO
     // $.ajax({
@@ -193,8 +127,8 @@ map.createMap = function (position) {
 
 $(document).ready(function() {
   $(window).on('resize', function() {
-    $('#googleMap').css('height', this.innerHeight - 106);
-    $('#building_list').css('height', this.innerHeight - 114);
+    $('#googleMap').css('height', this.innerHeight - 136);
+    $('#building_list').css('height', this.innerHeight - 144);
   }).resize();
 });
 

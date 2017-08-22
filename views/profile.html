@@ -2,32 +2,37 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <title>Insert title here</title>
-  <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
 
   <title>GREMI</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-  <link rel="stylesheet" href="css/bootstrap-3.3.7/bootstrap.min.css">
-  <link rel="stylesheet" href="css/common.css">
-  <link rel="stylesheet" href="/css/profile.css">
+  <!-- css lib import -->
+  <link href="/css/bootstrap-3.3.7/bootstrap.min.css" rel="stylesheet">
+  <link href='/css/fullcalendar/fullcalendar.min.css' rel='stylesheet' />
+  <link href='/css/fullcalendar/fullcalendar.print.min.css' rel='stylesheet' />
 
-  <script src="js/jquery-3.2.1/jquery-3.2.1.js"></script>
-  <script src="js/bootstrap-3.3.7/bootstrap.min.js"></script>
-  <script src="js/sell/sell.js""> </script>
-  
-</script>
+  <!-- js lib import -->
+  <script src="/js/lib/contract/bignumber.min.js"></script>
+  <script src="/js/lib/contract/crypto-js.js"></script>
+  <script src="/js/lib/contract/utf8.js"></script>
+  <script src="/js/lib/contract/web3.js"></script>
+  <script src="/js/lib/jquery-3.2.1/jquery-3.2.1.js"></script>
+  <script src="/js/lib/bootstrap-3.3.7/bootstrap.min.js"></script>
+  <script src='/js/lib/moment/moment.js'></script>
+  <script src='/js/lib/fullcalendar/fullcalendar.min.js'></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
-<script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+  <!-- costom css import -->
+  <link href="/css/main.css" rel="stylesheet" >
+  <link href="/css/common.css" rel="stylesheet" >
+  <link href="/css/profile.css"rel="stylesheet" >
 
-<link href='css/fullcalendar/fullcalendar.min.css' rel='stylesheet' />
-<link href='css/fullcalendar/fullcalendar.print.min.css' rel='stylesheet' />
+  <!-- costom js import -->
+  <script src="/js/profile.js""> </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwU-cbgXFnLRSM-Qh5rjAnsXu0SjGBQac&callback=map.initMap"></script>
 
-<script src='js/moment/moment.js'></script>
-<script src='js/fullcalendar/fullcalendar.min.js'></script>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+  <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script> -->
 
 </head>
 
@@ -39,19 +44,6 @@ background-position: center center;">
 <%- include partial/logined_header.html %>
 
 <div class="container" style="background: rgba(255,255,255,0.68);">
-  <!-- <div class="row">
-    <div class="col-md-3 text-center" style="height: 300px; border: 1px solid; padding: 10px;">
-
-      <div>
-        
-      </div>
-    </div>
-
-    <div class="col-md-9" style="height: 300px;">
-      <div id="map" style="width:100%; height: 100%"></div>
-    </div>
-  </div> -->
-
   <div class="row">
     <div class="col-md-12" style="margin-top: 10px; position: relative;">
 
@@ -84,14 +76,14 @@ background-position: center center;">
     <div class="col-md-12" >
       <div style="height: 100px; background: rgba(255,255,255,0.68);">
         <div style="float: left;">
-          <img src="data:image/png;base64,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" width="75" height="100" style="background: white; padding: 3px;">
+          <img src="/images/main2" width="75" height="100" style="background: white; padding: 3px;">
 
           <span style="display: inline-block">한종빈</span>
           <span style="display: inline-block">한종빈</span>
         </div>
         <div style="float: right;">
           <span>3123123,123,123</span>
-          <span><img src="http://file2.instiz.net/data/file2/2016/01/05/8/1/6/816140efeb4b5edb67df6532837ad1e1.jpg" width="75" height="100" style="background: white; padding: 3px;"></span>
+          <span><img src="/images/main2" width="75" height="100" style="background: white; padding: 3px;"></span>
         </div>
       </div>
     </div>
@@ -117,7 +109,7 @@ background-position: center center;">
             <input type="password" class="form-control" name="password" placeholder="password"> 
           </div>
           <div class="col-md-5">
-            
+
           </div>
         </div>
 
@@ -149,48 +141,48 @@ background-position: center center;">
 
             <div style="display: inline-block;">
              <input type="button" class="btn btn-lg" value="EXCHANGE">
-            </div>
-          </div>
-          <div class="col-md-5">
-            <input type="button" class="btn btn-lg" value="SEND">
-          </div>
+           </div>
+         </div>
+         <div class="col-md-5">
+          <input type="button" class="btn btn-lg" value="SEND">
         </div>
-
-      </div>
-      <div class="profile_item" id="robo_adviser" style="display: none;">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Firstname</th>
-              <th>Lastname</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>John</td>
-              <td>Doe</td>
-              <td>john@example.com</td>
-            </tr>
-            <tr>
-              <td>Mary</td>
-              <td>Moe</td>
-              <td>mary@example.com</td>
-            </tr>
-            <tr>
-              <td>July</td>
-              <td>Dooley</td>
-              <td>july@example.com</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
-      <div class="profile_item" id="smart_contract" style="display: none;">
-        스마트 컨트렉트 
-      </div>
+    </div>
+    <div class="profile_item" id="robo_adviser" style="display: none;">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>John</td>
+            <td>Doe</td>
+            <td>john@example.com</td>
+          </tr>
+          <tr>
+            <td>Mary</td>
+            <td>Moe</td>
+            <td>mary@example.com</td>
+          </tr>
+          <tr>
+            <td>July</td>
+            <td>Dooley</td>
+            <td>july@example.com</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="profile_item" id="smart_contract" style="display: none;">
+      스마트 컨트렉트 
     </div>
   </div>
+</div>
 </div>
 
 </body>

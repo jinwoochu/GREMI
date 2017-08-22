@@ -35,18 +35,18 @@ $(document).ready(function() {
           // right: 'month,agendaWeek,agendaDay'
         },
         defaultDate: '2017-05-12',
-      selectable: true,
-      selectHelper: true,
-      height: 420,
-      select: function(start, end) {
-        var title = prompt('Event Title:');
-        var eventData;
-        if (title) {
-          eventData = {
-            title: title,
-            start: start,
-            end: end
-          };
+        selectable: true,
+        selectHelper: true,
+        height: 420,
+        select: function(start, end) {
+          var title = prompt('Event Title:');
+          var eventData;
+          if (title) {
+            eventData = {
+              title: title,
+              start: start,
+              end: end
+            };
           $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
         }
         $('#calendar').fullCalendar('unselect');
