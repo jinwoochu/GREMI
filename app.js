@@ -4,9 +4,9 @@ var building = require('./model/building');
 
 // express router
 var express = require('express'),
-path = require("path"),
-app = express(),
-fileUpload = require('express-fileupload');
+    path = require("path"),
+    app = express(),
+    fileUpload = require('express-fileupload');
 
 app.use(fileUpload());
 
@@ -20,8 +20,8 @@ app.set('view engine', 'ejs');
 
 //body-parser
 var bodyParser = require('body-parser');
-app.use(bodyParser.json({limit: "50mb"}));
-app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
 var cookie = require('cookie-parser');
 app.use(cookie('!@#%%@#@'));
@@ -32,7 +32,7 @@ app.post('/user_register', function(req, res) {
 });
 
 //로그인
-app.post('/login',function(req, res) {
+app.post('/login', function(req, res) {
     userdb.login(req, res);
 });
 
@@ -58,7 +58,7 @@ app.post('/admin/building/confirm', function(req, res) {
 
 //메인
 app.get('/', function(req, res) {
-    if(req.signedCookies.email === undefined) {
+    if (req.signedCookies.email === undefined) {
         res.render('app.html');
     } else {
         res.render('building.html');
@@ -77,7 +77,7 @@ app.get('/building', userdb.isLogined, function(req, res) {
 
 //집상세정보
 app.get('/building/:building_id', function(req, res) {
-    building.detail_building(req, res);
+    building.detailBuilding(req, res);
 })
 
 //집등록 취소
