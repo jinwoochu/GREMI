@@ -96,7 +96,7 @@ app.get('/logout', function(req, res) {
     res.redirect('/');
 });
 
-app.get('/building_search', function(req, res) {
+app.get('/buildingSearch', function(req, res) {
     building.search(req, res)
 });
 

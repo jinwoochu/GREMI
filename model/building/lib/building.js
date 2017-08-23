@@ -61,9 +61,9 @@ exports.register = function(req, res) {
                                         res.json(response);
                                         return;
                                     } else {
-                                        var insert_sql = "INSERT INTO building_images (b_id, path) VALUES (?,?)";
+                                        var insertSql = "INSERT INTO building_images (b_id, path) VALUES (?,?)";
                                         var values = [buildingId, imagePath.replace(/^\.\/public/, "")];
-                                        con.query(insert_sql, values, function(err3, result3, field3) {
+                                        con.query(insertSql, values, function(err3, result3, field3) {
                                             if (err3) {
                                                 response = makeResponse(0, "실패", {});
                                                 res.json(response);
@@ -109,17 +109,17 @@ exports.edit = function(req, res) {
     var street = req.body.street;
     var price = req.body.price;
 
-    var select_building_id = req.params.building_id;
+    var selectBuildingId = req.params.building_id;
 
-    var edit_sql = 'UPDATE buildings SET lat="' + lat +
+    var editSql = 'UPDATE buildings SET lat="' + lat +
         '", lng="' + lng +
         '", country="' + country +
         '", state="' + state +
         '", city="' + city +
         '", street="' + street +
         '", price="' + price +
-        '" where b_id=' + select_building_id;
-    con.query(edit_sql, function(err, result, field) {
+        '" where b_id=' + selectBuildingId;
+    con.query(editSql, function(err, result, field) {
         if (err) {
             throw err;
             response = makeResponse(0, "수정에 실패했씁니당", {});
@@ -131,10 +131,10 @@ exports.edit = function(req, res) {
 }
 
 exports.detailBuilding = function(req, res) {
-    var select_building_id = req.params.building_id;
-    var read_sql =
-        " SELECT * FROM buildings where b_id=" + select_building_id;
-    con.query(read_sql, function(err, result, field) {
+    var selectBuildingId = req.params.building_id;
+    var readSql =
+        " SELECT * FROM buildings where b_id=" + selectBuildingId;
+    con.query(readSql, function(err, result, field) {
         if (err) throw err;
         res.render('detailBuilding.html', { "building": result[0] });
         console.log(result)
@@ -147,9 +147,9 @@ exports.search = function(req, res) {
     var sw_x = req.query.southwest_lng;
     var sw_y = req.query.southwest_lat;
 
-    var read_sql = "select * from buildings where " + sw_x + "<= lng and lng <= " + ne_x + " and " + sw_y + "<= lat and lat <= " + ne_y + " AND status = 1";
+    var readSql = "select * from buildings where " + sw_x + "<= lng and lng <= " + ne_x + " and " + sw_y + "<= lat and lat <= " + ne_y + " AND status = 1";
 
-    con.query(read_sql, function(err, result, field) {
+    con.query(readSql, function(err, result, field) {
         if (err) {
             throw err;
             response = makeResponse(0, "검색에 실패했습니다.", {});
@@ -166,7 +166,7 @@ exports.getListOfUnconfirmedBuilding = function(req, res) {
 
     con.query(sql, function(err, result, field) {
         if (err) throw err;
-        res.render('admin_building.html', { "buildings": result });
+        res.render('adminBuilding.html', { "buildings": result });
         console.log(result.length);
     });
 }
