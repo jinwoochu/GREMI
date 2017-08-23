@@ -26,6 +26,9 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 5
 var cookie = require('cookie-parser');
 app.use(cookie('!@#%%@#@'));
 
+
+// --------------------------------------------- post,delete ------------------------------------------------ //
+
 //회원가입
 app.post('/user_register', function(req, res) {
     userdb.register(req, res);
@@ -41,7 +44,8 @@ app.post('/building', function(req, res) {
     building.register(req, res);
 });
 
-//집사기
+//집사기 
+// 잠시 보류 ^^
 app.post('/building/buy/:building_id', function(req, res) {
     console.log(req.params.building_id)
     console.log(req.body.price)
@@ -55,6 +59,13 @@ app.post('/building/:building_id', function(req, res) {
 app.post('/admin/building/confirm', function(req, res) {
     building.confirmBuilding(req, res);
 });
+
+
+
+
+// ------------------------------------------------------- get ------------------------------------------------ //
+
+
 
 //메인
 app.get('/', function(req, res) {
@@ -87,7 +98,11 @@ app.delete('/building/delete/:building_id', function(req, res) {
 
 //여행가기
 app.get('/traveling', function(req, res) {
-    res.render('traveling.html');
+    if (req.signedCookies.email === undefined) {
+        res.render('app.html');
+    } else {
+        res.render('traveling.html');
+    }
 });
 
 //로그아웃 
