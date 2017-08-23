@@ -77,9 +77,10 @@ app.get('/', function(req, res) {
 });
 
 //프로필
-app.get('/profile', function(req, res) {
-    res.render('profile.html');
+app.get('/profile', userdb.isLogined, function(req, res) {
+    userdb.getProfile(req, res);
 });
+
 
 //집
 app.get('/building', userdb.isLogined, function(req, res) {
