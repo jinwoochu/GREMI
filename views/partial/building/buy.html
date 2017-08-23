@@ -3,9 +3,8 @@
 
   <script id="movieTmpl" type="text/x-jquery-tmpl">
     <div class="list-group-item row">
-      <a href="${building_id}">
+      <a href="${id}">
         <div class="col-md-3">
-          {%tmpl(pictures) imageTemplate%}
         </div>
 
         <div class="col-md-8">
@@ -16,20 +15,17 @@
           <div>
             <div class="col-md-9" style="padding: 0px;">
               <div class=" progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: ${parseInt(((fundraising_amount / price) * 10000)) / 100}%; "> ${fundraising_amount} (${participant_count} 명)
-                </div>
               </div>
             </div>
 
             <div class="col-md-3">
               <span>${price}</span>
-              <span>${parseInt(((fundraising_amount / price) * 10000)) / 100} %</span>
             </div>
           </div>
         </div>
 
         <div class="col-md-1">
-          <a href="/building/${building_id}" class="btn">투자하기</a>
+          <a href="/building/${id}" class="btn">투자하기</a>
         </div>
       </a>
     </div>

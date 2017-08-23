@@ -39,6 +39,14 @@ map.createMap = function (position) {
       if (status === 'OK') {
         googleMap.setCenter(results[0].geometry.location);
         request_buildings();
+
+        var marker = new google.maps.Marker({
+          map: googleMap,
+          position: results[0].geometry.location
+        });
+
+        map.markers.push(marker);
+
         callback(results[0].geometry.location);
       } else {
         alert(status);
@@ -93,35 +101,26 @@ map.createMap = function (position) {
     };
 
     //TODO
-    // $.ajax({
-    //   url: '/building_search',
-    //   type: "get",
-    //   data: formData,
-    //   dataType: "json",
-    //   success: function(result) {
-    //     var buildingInfos = result.buildingInfos;
-    //     resetMarker();
+    $.ajax({
+      url: '/building_search',
+      type: "get",
+      data: formData,
+      dataType: "json",
+      success: function(result) {
+        var buildingInfos = result.buildingInfos;
+        resetMarker();
+        debugger;
+        for(var i in buildingInfos) {
+          buildingInfos[i].address = ((((buildingInfos[i]['country'] + ' ' + buildingInfos[i]['state']).trim() + ' ' + buildingInfos[i]['#city']).trim()) + ' ' + buildingInfos[i]['street']).trim();
 
-    //     debugger;
-    //     for(var i in buildingInfos) {
-    //       var position = new google.maps.LatLng(buildingInfos[i].lat, buildingInfos[i].lng);
-    //       makeMarker(buildingInfos[i].building_id, position);
-    //     }
+          var position = new google.maps.LatLng(buildingInfos[i].lat, buildingInfos[i].lng);
+          makeMarker(buildingInfos[i].building_id, position);
+        }
 
-    //     $("#building_list").html('');
-    //     $("#movieTmpl").tmpl(buildingInfos).appendTo("#building_list");
-    //   }
-    // });
-
-    // resetMarker();
-
-    // for(var i in buildingInfos) {
-    //   var position = new google.maps.LatLng(buildingInfos[i].lat, buildingInfos[i].lng);
-    //   makeMarker(buildingInfos[i].building_id, position);
-    // }
-
-    // $("#building_list").html('');
-    // $("#movieTmpl").tmpl(buildingInfos).appendTo("#building_list");
+        $("#building_list").html('');
+        $("#movieTmpl").tmpl(buildingInfos).appendTo("#building_list");
+      }
+    });
   }
 }
 

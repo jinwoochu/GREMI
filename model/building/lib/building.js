@@ -52,8 +52,7 @@ exports.register = function(req, res) {
             }
 
 
-            for(var i = 0 ; i < buildingImages.length ; i++) {
-              var run = true; 
+            for(var i = 0 ; i < buildingImages.length ; i++) { 
               var imagePath = imageDirPath + '/' + buildingImages[i].name;
 
               (function (i, imagePath) {
@@ -138,7 +137,7 @@ exports.detail_building = function(req, res) {
   " SELECT * FROM buildings where id=" + select_building_id;
   con.query(read_sql, function(err, result, field) {
     if (err) throw err;
-    res.render('detail_building.html', { "building": result });
+    res.render('detail_building.html', { "building": result[0] });
     console.log(result)
   });
 }
@@ -149,7 +148,7 @@ exports.search = function(req, res) {
   var sw_x = req.query.southwest_lng;
   var sw_y = req.query.southwest_lat;
 
-  var read_sql = "select * from buildings where " + sw_x + "<lng and lng<" + ne_x + " and " + sw_y + "<lat and lat<" + ne_y;
+  var read_sql = "select * from buildings where " + sw_x + "<= lng and lng <= " + ne_x + " and " + sw_y + "<= lat and lat <= " + ne_y;
 
   con.query(read_sql, function(err, result, field) {
     if (err) {

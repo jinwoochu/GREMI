@@ -38,4 +38,12 @@ $(document).ready(function() {
 		$('#building_menu li').toggleClass('active');
 		$('.building-content').toggleClass('hidden');
 	});
+
+	$('#invest_btn').on('click', function(event) {
+		if (confirm('투자 ㄲ??')) {
+			var ammount = $('#amount').val();
+			alert(ammount);
+		}
+	});
+
 });
