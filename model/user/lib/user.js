@@ -115,6 +115,7 @@ exports.login = function(req, res) {
 
 
 
+
 // 해당 email 주소를 가진 user 정보를 profile.html에 던져야한다.
 exports.getProfile = function(req, res) {
     var email = req.signedCookies.email;

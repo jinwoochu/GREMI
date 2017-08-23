@@ -90,15 +90,6 @@ exports.register = function(req, res) {
 }
 
 
-var saveImages = new Promise(function(buildingId, buildingImages, imageDirPath, index) {
-    // if(index == buildingImages.length) {
-    //   return true;
-    // } else {
-
-    // }
-})
-
-
 //집정보 수정
 exports.edit = function(req, res) {
 
@@ -123,25 +114,51 @@ exports.edit = function(req, res) {
     con.query(editSql, function(err, result, field) {
         if (err) {
             throw err;
-            response = makeResponse(0, "수정에 실패했씁니당", {});
+            response = makeResponse(0, "수정에 실패했습니다", {});
+        } else {
+            console.log("수정 성공");
+            response = makeResponse(1, "", {});
+            res.json(response);
         }
-        console.log("수정 성공");
-        response = makeResponse(1, "", {});
-        res.json(response);
     });
 }
 
+
+//집상세정보
 exports.detailBuilding = function(req, res) {
     var selectBuildingId = req.params.building_id;
     var readSql =
         " SELECT * FROM buildings where b_id=" + selectBuildingId;
     con.query(readSql, function(err, result, field) {
         if (err) throw err;
-        res.render('detailBuilding.html', { "building": result[0] });
-        console.log(result)
+
+        var imageSql =
+            " SELECT * FROM building_images where b_id=" + selectBuildingId;
+        con.query(imageSql, function(err2, result2, field2) {
+
+            var imageArr = []
+
+            for (var i = 0; i < result2.length; i++) {
+                imageArr[i] = result2[i].path;
+            }
+            res.render('detailBuilding.html', { "building": result[0], "images": imageArr });
+            // console.log(result[0])
+            // console.log(imageArr[0])
+        });
     });
 }
 
+
+//집등록 취소
+exports.delete = function(req, res) {
+    var email = req.signedCookies.email;
+    console.log(req.body)
+    console.log(email)
+}
+
+
+
+//범위 내의 집 검색
 exports.search = function(req, res) {
     var ne_x = req.query.northeast_lng;
     var ne_y = req.query.northeast_lat;
@@ -161,6 +178,9 @@ exports.search = function(req, res) {
         res.json(response);
     });
 }
+
+
+
 
 exports.getListOfUnconfirmedBuilding = function(req, res) {
     var sql = "select * from buildings where status = 0";

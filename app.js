@@ -47,6 +47,7 @@ app.post('/building', function(req, res) {
     building.register(req, res);
 });
 
+
 //집사기 
 // 잠시 보류 ^^
 app.post('/building/buy/:building_id', function(req, res) {
@@ -58,6 +59,7 @@ app.post('/building/buy/:building_id', function(req, res) {
 app.post('/building/:building_id', function(req, res) {
     building.edit(req, res);
 });
+
 
 app.post('/admin/building/confirm', function(req, res) {
     building.confirmBuilding(req, res);
@@ -90,6 +92,8 @@ app.get('/building', userdb.isLogined, function(req, res) {
     res.render('building.html');
 });
 
+
+
 //집상세정보
 app.get('/building/:building_id', function(req, res) {
     building.detailBuilding(req, res);
@@ -115,6 +119,7 @@ app.get('/logout', function(req, res) {
     res.redirect('/');
 });
 
+
 app.get('/buildingSearch', function(req, res) {
     building.search(req, res)
 });
@@ -122,19 +127,6 @@ app.get('/buildingSearch', function(req, res) {
 app.get('/admin/building', function(req, res) {
     building.getListOfUnconfirmedBuilding(req, res)
 });
-
-
-// app.get('/test', function(req, res) {
-//     var imageDirPath = './public/building_images'
-
-//     if (!fs.existsSync(imageDirPath)) {
-//         fs.mkdirSync(imageDirPath);
-//     }
-
-// })
-
-
-
 
 
 app.listen(3000, function() {
