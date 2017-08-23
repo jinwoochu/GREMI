@@ -4,8 +4,6 @@ var CoinStack = require('coinstack-sdk-js')
 // crypto!!
 const crypto = require('crypto');
 
-
-
 // mysql
 var mysql = require('mysql');
 
@@ -33,11 +31,11 @@ secret_password += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5
 
 // console.log(secret_password)
 
-  var exists_email = false;
+var exists_email = false;
 
-  var read_sql = " SELECT * FROM USERS";
-  con.query(read_sql, function(err, result, field) {
-    if (err) throw err;
+var read_sql = " SELECT * FROM USERS";
+con.query(read_sql, function(err, result, field) {
+  if (err) throw err;
     for (var i = 0; i < result.length; i++) { // 등록된 이메일이 있는지 체크함.
       if (result[i].email === email) exists_email = true;
     }
@@ -47,47 +45,41 @@ secret_password += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5
       res.json(response);
     } else { // 등록 성공시
       var insert_sql =
-        "INSERT INTO USERS (email, password,country,wallet_address) VALUES (?,?,?,?)";
+      "INSERT INTO USERS (email, password,country,wallet_address) VALUES (?,?,?,?)";
       var values = [email, secret_password, country,wallet_address];
       con.query(insert_sql, values, function(err2, result2, field2) {
-        if (err2) throw err2; 
-        console.log("등록 성공")
+        if (err2) {
+          throw err2; 
+        }
+
+        response = makeResponse(1, "", { 'key': email });
+        res.cookie('email', email, {signed:true});
+        console.log(response)
+        res.json(response);
       });
-
-      // // 회원등록 성공하면 bitcoin 주소도 발급받고 mapping됨
-      // var accessKey = "c7dbfacbdf1510889b38c01b8440b1";
-      // var secretKey = "10e88e9904f29c98356fd2d12b26de";
-      // var client = new CoinStack(accessKey, secretKey);
-
-      // var privateKey = CoinStack.ECKey.createKey();
-      // var myAddress = CoinStack.ECKey.deriveAddress(privateKey);
-
-      // mapping_func(email, myAddress, privateKey);
-
-      response = makeResponse(1, "", { 'key': email });
-      console.log(response)
-      res.json(response);
     }
   });
 }
 
+exports.isLogined = function(req, res, next) {
+  if(req.signedCookies.email === undefined) {
+    res.redirect('/');
+  } else {
+    next();
+  }
+}
 
 exports.login = function(req, res) {
-
   var email = req.body.email;
   var origin_password = req.body.password;
-  // console.log(secret_password);
-  console.log(origin_password);
 
-//암호화 
-const cipher = crypto.createCipher('aes-256-cbc', '열쇠');
-let secret_password = cipher.update(origin_password, 'utf8', 'base64'); // 'HbMtmFdroLU0arLpMflQ'
-secret_password += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5tX5k+a8Nzw='
-
-// console.log(secret_password)
+  const cipher = crypto.createCipher('aes-256-cbc', '열쇠');
+  let secret_password = cipher.update(origin_password, 'utf8', 'base64'); 
+  secret_password += cipher.final('base64'); 
 
   var read_sql =
-    'SELECT email,password FROM USERS where email="' + email + '" and password="' + secret_password+'"';
+  'SELECT email,password FROM USERS where email="' + email + '" and password="' + secret_password+'"';
+
   con.query(read_sql, function(err, result, field) {
     if(err){
       throw err
@@ -100,10 +92,11 @@ secret_password += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5
       } else {
         console.log("유저 로그인 성공");
         response = makeResponse(1, "", { 'key': email });
+        res.cookie('email', email, {signed:true});
         res.json(response);
       }
     }
-      });
+  });
 };
 
 // var mapping_func = function(email, address, p_key) {

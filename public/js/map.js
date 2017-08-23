@@ -109,7 +109,6 @@ map.createMap = function (position) {
       success: function(result) {
         var buildingInfos = result.buildingInfos;
         resetMarker();
-        debugger;
         for(var i in buildingInfos) {
           buildingInfos[i].address = ((((buildingInfos[i]['country'] + ' ' + buildingInfos[i]['state']).trim() + ' ' + buildingInfos[i]['#city']).trim()) + ' ' + buildingInfos[i]['street']).trim();
 

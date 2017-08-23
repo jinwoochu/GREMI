@@ -35,7 +35,6 @@ $(document).ready(function() {
     if (result.status == 0) {
       alert(result.error_message);
     } else {
-      document.cookie = "email=" + result.key;
       window.location.href = "/building";
     }
   }

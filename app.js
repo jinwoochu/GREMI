@@ -4,10 +4,9 @@ var building = require('./model/building');
 
 // express router
 var express = require('express'),
-    path = require("path"),
-    app = express(),
-    router = require('./router/main')(app);
-    fileUpload = require('express-fileupload');
+path = require("path"),
+app = express(),
+fileUpload = require('express-fileupload');
 
 app.use(fileUpload());
 
@@ -24,6 +23,8 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 
+var cookie = require('cookie-parser');
+app.use(cookie('!@#%%@#@'));
 
 //회원가입
 app.post('/user_register', function(req, res) {
@@ -31,7 +32,7 @@ app.post('/user_register', function(req, res) {
 });
 
 //로그인
-app.post('/login', function(req, res) {
+app.post('/login',function(req, res) {
     userdb.login(req, res);
 });
 
@@ -51,15 +52,57 @@ app.post('/building/:building_id', function(req, res) {
     building.edit(req, res);
 });
 
-
-//집등록 취소
-//이거 url deep 한단계 더 올리면 오류남.
-app.delete('/building/delete/:building_id', function(req, res) {
-    // building.edit(req, res);
-    console.log("delete!!")
+app.post('/admin/building/confirm', function(req, res) {
+    building.confirmBuilding(req, res);
 });
 
+//메인
+app.get('/', function(req, res) {
+    if(req.signedCookies.email === undefined) {
+        res.render('app.html');
+    } else {
+        res.render('building.html');
+    }
+});
 
+//프로필
+app.get('/profile', function(req, res) {
+    res.render('profile.html');
+});
+
+//집
+app.get('/building', userdb.isLogined, function(req, res) {
+    res.render('building.html');
+});
+
+//집상세정보
+app.get('/building/:building_id', function(req, res) {
+    building.detail_building(req, res);
+})
+
+//집등록 취소
+app.delete('/building/delete/:building_id', function(req, res) {
+    building.delete(req, res)
+})
+
+//여행가기
+app.get('/traveling', function(req, res) {
+    res.render('traveling.html');
+});
+
+//로그아웃 
+app.get('/logout', function(req, res) {
+    res.clearCookie("email");
+    res.redirect('/');
+});
+
+app.get('/building_search', function(req, res) {
+    building.search(req, res)
+});
+
+app.get('/admin/building', function(req, res) {
+    building.getListOfUnconfirmedBuilding(req, res)
+});
 
 app.listen(3000, function() {
     console.log("Server listening on http://localhost:3000");

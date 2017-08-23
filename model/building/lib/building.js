@@ -119,7 +119,7 @@ exports.edit = function(req, res) {
   '", city="' + city +
   '", street="' + street +
   '", price="' + price +
-  '" where id=' + select_building_id;
+  '" where b_id=' + select_building_id;
   con.query(edit_sql, function(err, result, field) {
     if (err) {
       throw err;
@@ -134,7 +134,7 @@ exports.edit = function(req, res) {
 exports.detail_building = function(req, res) {
   var select_building_id = req.params.building_id;
   var read_sql =
-  " SELECT * FROM buildings where id=" + select_building_id;
+  " SELECT * FROM buildings where b_id=" + select_building_id;
   con.query(read_sql, function(err, result, field) {
     if (err) throw err;
     res.render('detail_building.html', { "building": result[0] });
@@ -148,7 +148,7 @@ exports.search = function(req, res) {
   var sw_x = req.query.southwest_lng;
   var sw_y = req.query.southwest_lat;
 
-  var read_sql = "select * from buildings where " + sw_x + "<= lng and lng <= " + ne_x + " and " + sw_y + "<= lat and lat <= " + ne_y;
+  var read_sql = "select * from buildings where " + sw_x + "<= lng and lng <= " + ne_x + " and " + sw_y + "<= lat and lat <= " + ne_y + " AND status = 1";
 
   con.query(read_sql, function(err, result, field) {
     if (err) {
@@ -158,6 +158,33 @@ exports.search = function(req, res) {
     }
 
     response = makeResponse(1, "", { 'buildingInfos': result });
+    res.json(response);
+  });
+}
+
+exports.getListOfUnconfirmedBuilding = function(req, res) {
+  var sql = "select * from buildings where status = 0";
+
+  con.query(sql, function(err, result, field) {
+    if (err) throw err;
+    res.render('admin_building.html', { "buildings": result});
+    console.log(result.length);
+  });
+}
+
+exports.confirmBuilding = function(req, res) {
+  var sql = "UPDATE buildings SET status = 1 WHERE b_id = " + req.body.b_id;
+
+  console.log(req.body);
+  console.log(sql);
+
+  con.query(sql, function(err, result, field) {
+    if (err) {
+      response = makeResponse(0, "컨펌 실패", {});
+      res.json(response);
+      return ;
+    } 
+    response = makeResponse(1, "", {});
     res.json(response);
   });
 }
