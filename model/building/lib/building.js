@@ -19,6 +19,7 @@ var crypto = require('crypto');
 //집 등록register
 exports.register = function(req, res) {
     var data = req.body;
+    var email = req.signedCookies.email
 
     var readSql = 'SELECT * FROM buildings where country="' + data.country + '" AND state="' + data.state + '" AND city="' + data.city + '" AND street="' + data.street + '" AND NOT status=2';
 
@@ -30,9 +31,9 @@ exports.register = function(req, res) {
         }
 
         if (result.length == 0) {
-            var insertSql = "INSERT INTO buildings (lat, lng, country, state, city, street, price, contract_address) VALUES (?,?,?,?,?,?,?,?)";
+            var insertSql = "INSERT INTO buildings (lat, lng, country, state, city, street, price, email, contract_address) VALUES (?,?,?,?,?,?,?,?,?)";
 
-            var values = [data.lat, data.lng, data.country, data.state, data.city, data.street, data.price, data.contract_address];
+            var values = [data.lat, data.lng, data.country, data.state, data.city, data.street, data.price, email, data.contract_address];
 
             con.query(insertSql, values, function(err2, result2, field2) {
                 if (err2) {

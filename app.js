@@ -1,3 +1,6 @@
+// fileSystem
+var fs = require('fs');
+
 // 사용자 정의 모델
 var userdb = require('./model/user');
 var building = require('./model/building');
@@ -119,6 +122,20 @@ app.get('/buildingSearch', function(req, res) {
 app.get('/admin/building', function(req, res) {
     building.getListOfUnconfirmedBuilding(req, res)
 });
+
+
+// app.get('/test', function(req, res) {
+//     var imageDirPath = './public/building_images'
+
+//     if (!fs.existsSync(imageDirPath)) {
+//         fs.mkdirSync(imageDirPath);
+//     }
+
+// })
+
+
+
+
 
 app.listen(3000, function() {
     console.log("Server listening on http://localhost:3000");
