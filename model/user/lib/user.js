@@ -25,11 +25,10 @@ exports.register = function(req, res) {
     // console.log(password)
 
     //암호화 
-    const cipher = crypto.createCipher('aes-256-cbc', '열쇠');
-    let secret_password = cipher.update(password, 'utf8', 'base64'); // 'HbMtmFdroLU0arLpMflQ'
-    secret_password += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5tX5k+a8Nzw='
+    var cipher = crypto.createCipher('aes-256-cbc', '열쇠');
+    var secret_password = cipher.update(password, 'utf8', 'base64');
+    secret_password += cipher.final('base64');
 
-    // console.log(secret_password)
 
     var exists_email = false;
 
@@ -54,7 +53,7 @@ exports.register = function(req, res) {
 
                 response = makeResponse(1, "", { 'key': email });
                 res.cookie('email', email, { signed: true });
-                console.log(response)
+                console.log(response);
                 res.json(response);
             });
         }
@@ -77,16 +76,17 @@ exports.login = function(req, res) {
     var email = req.body.email;
     var origin_password = req.body.password;
 
-    const cipher = crypto.createCipher('aes-256-cbc', '열쇠');
-    let secret_password = cipher.update(origin_password, 'utf8', 'base64');
+    var cipher = crypto.createCipher('aes-256-cbc', '열쇠');
+    var secret_password = cipher.update(origin_password, 'utf8', 'base64');
     secret_password += cipher.final('base64');
 
     var readSql =
         'SELECT email,password FROM USERS where email="' + email + '" and password="' + secret_password + '"';
 
+
     con.query(readSql, function(err, result, field) {
         if (err) {
-            throw err
+            throw err;
             response = makeResponse(0, "로그인에 실패했습니다.", {});
             res.json(response);
         } else {
@@ -103,18 +103,6 @@ exports.login = function(req, res) {
     });
 };
 
-// var mapping_func = function(email, address, p_key) {
-//   var mapping_sql =
-//     "INSERT INTO MAPPING (email,myaddress, private_key) VALUES (?,?,?)";
-//   var values = [email, address, p_key];
-//   con.query(mapping_sql, values, function(err3, result3, field3) {
-//     if (err3) throw err3;
-//     console.log("맵핑 성공");
-//   });
-// };
-
-
-
 
 // 해당 email 주소를 가진 user 정보를 profile.html에 던져야한다.
 exports.getProfile = function(req, res) {
@@ -124,7 +112,7 @@ exports.getProfile = function(req, res) {
 
     con.query(readSql, function(err, result, field) {
         if (err) {
-            throw err
+            throw err;
             response = makeResponse(0, "Errer", {});
             res.json(response);
         } else {

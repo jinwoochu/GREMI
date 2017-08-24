@@ -19,7 +19,10 @@ var crypto = require('crypto');
 //집 등록register
 exports.register = function(req, res) {
     var data = req.body;
-    var email = req.signedCookies.email
+    var email = req.signedCookies.email;
+
+    // console.log(data)
+    // console.log(email)
 
     var readSql = 'SELECT * FROM buildings where country="' + data.country + '" AND state="' + data.state + '" AND city="' + data.city + '" AND street="' + data.street + '" AND NOT status=2';
 
@@ -29,7 +32,6 @@ exports.register = function(req, res) {
             res.json(response);
             throw err;
         }
-
         if (result.length == 0) {
             var insertSql = "INSERT INTO buildings (lat, lng, country, state, city, street, price, email, contract_address) VALUES (?,?,?,?,?,?,?,?,?)";
 
@@ -44,7 +46,6 @@ exports.register = function(req, res) {
                     if (req.files.images) {
                         var buildingImages = req.files.images;
                         var buildingId = result2.insertId;
-
                         var imageDirPath = './public/building_images/' + buildingId;
 
                         if (!fs.existsSync(imageDirPath)) {
@@ -76,12 +77,10 @@ exports.register = function(req, res) {
                             })(i, imagePath);
                         }
                     }
-
                     response = makeResponse(1, '', {});
                     res.json(response);
                 }
             });
-
         } else {
             response = makeResponse(0, "실패", {});
             res.json(response);
@@ -136,14 +135,13 @@ exports.detailBuilding = function(req, res) {
             " SELECT * FROM building_images where b_id=" + selectBuildingId;
         con.query(imageSql, function(err2, result2, field2) {
 
-            var imageArr = []
+            var imageArr = [];
 
             for (var i = 0; i < result2.length; i++) {
                 imageArr[i] = result2[i].path;
             }
             res.render('detailBuilding.html', { "building": result[0], "images": imageArr });
-            // console.log(result[0])
-            // console.log(imageArr[0])
+
         });
     });
 }
@@ -152,30 +150,76 @@ exports.detailBuilding = function(req, res) {
 //집등록 취소
 exports.delete = function(req, res) {
     var email = req.signedCookies.email;
-    console.log(req.body)
-    console.log(email)
+    // console.log(req.body);
+    // console.log(email);
 }
 
 
 
 //범위 내의 집 검색
 exports.search = function(req, res) {
+
+    // var buildingList = [];
+    // var building = [];
+
+    // var readSql = " SELECT * FROM buildings where b_id=" + 19;
+    // con.query(readSql, function(err2, buildingInfo, field2) {
+    //     building.push(buildingInfo[0]) // 빌딩 정보를 빌딩에 추가
+    // });
+
+    // var imageSql = " SELECT path FROM building_images where b_id=" + 19;
+    // con.query(imageSql, function(err2, imagePathList, field2) {
+
+    //     var imageArr = [];
+    //     for (var i = 0; i < imagePathList.length; i++) {
+    //         imageArr[i] = imagePathList[i].path;
+    //     }
+
+    //     building.push(imageArr) // 빌딩이미지path를 빌딩에 추가
+
+    //     // console.log(list);
+    //     buildingList.push(building)
+    //         // console.log(building);
+    //         // console.log(buildingList[0])
+    // });
+
+
+    var buildingList = [];
+    var building = [];
+
     var ne_x = req.query.northeast_lng;
     var ne_y = req.query.northeast_lat;
     var sw_x = req.query.southwest_lng;
     var sw_y = req.query.southwest_lat;
-
     var readSql = "select * from buildings where " + sw_x + "<= lng and lng <= " + ne_x + " and " + sw_y + "<= lat and lat <= " + ne_y + " AND status = 1";
 
-    con.query(readSql, function(err, result, field) {
+    con.query(readSql, function(err, buildingInfo, field) {
         if (err) {
             throw err;
             response = makeResponse(0, "검색에 실패했습니다.", {});
             res.json(response);
+        } else {
+            console.log("test");
+            for (var i = 0; i < buildingInfo.length; i++) {
+                building.push(buildingInfo[i]) // 빌딩 정보를 빌딩에 추가
+                var imageSql = " SELECT path FROM building_images where b_id=" + 20;
+                con.query(imageSql, function(err2, buildingInfo, field) {
+                    if (err2) {
+                        console.log("에러낫어")
+                        throw err2;
+                        response = makeResponse(0, "이미지 정보를 가져오는데 실패하였습니다.", {});
+                        res.json(response);
+                    } else {
+                        console.log("성공!!!!!!!!")
+                    }
+                });
+            }
+
+            //만든거 합쳐서 넘김
+            // response = makeResponse(1, "", { 'buildingInfos': result });
+            // res.json(response);
         }
 
-        response = makeResponse(1, "", { 'buildingInfos': result });
-        res.json(response);
     });
 }
 

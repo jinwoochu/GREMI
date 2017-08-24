@@ -51,8 +51,8 @@ app.post('/building', function(req, res) {
 //집사기 
 // 잠시 보류 ^^
 app.post('/building/buy/:building_id', function(req, res) {
-    console.log(req.params.building_id)
-    console.log(req.body.price)
+    console.log(req.params.building_id);
+    console.log(req.body.price);
 });
 
 //집정보 수정
@@ -77,7 +77,7 @@ app.get('/', function(req, res) {
     if (req.signedCookies.email === undefined) {
         res.render('app.html');
     } else {
-        res.render('building.html');
+        res.redirect('/building');
     }
 });
 
