@@ -63,7 +63,10 @@ contract.investment = function(campaignId, amount, buyer) {
         gas: 500000,
         value: amount
       }, function(error) {
-        console.log(error);
+        if(!error) {
+          alert('완료!');  
+          window.location.href = "/building";
+        }
         web3.personal.lockAccount(contract.ownerAddress);
       });
     }

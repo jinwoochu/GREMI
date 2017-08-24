@@ -64,8 +64,6 @@ $(document).ready(function() {
     var price = $(this).data('price');
     var userWalletAddress = $(this).data('address'); // user-wallet-address
     
-    debugger;
-    
     contract.createCampaign(buildingId, price, userWalletAddress,updateBuildingStatus);
   });
 
