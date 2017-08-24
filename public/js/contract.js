@@ -7,7 +7,7 @@ $(document).ready(function() {
 
 contract.url = "http://61.75.63.149:8545";
 contract.ownerAddress = "0x072fc66f7505db74e9dc242afd2df8a861271d4a";
-contract.address = "0xddcf21647499a8f839a329d57160e75874ca3091";
+contract.address = "0x6f5de9cba88c3d898340475af7eac99a4da3a65b";
 
 contract.init = function() {
   var web3 = new Web3();
@@ -29,7 +29,7 @@ contract.createCampaign = function(campaignId, price, owner, callback) {
   });
 
   var password = prompt("Please enter your password:");
- 
+
   web3.personal.unlockAccount(contract.ownerAddress, password, function(error) {
 
     if(!error) {
@@ -37,38 +37,35 @@ contract.createCampaign = function(campaignId, price, owner, callback) {
         from: contract.ownerAddress,
         gas: 500000 // toWei
       }, function(error) {
-        debugger;
         if(!error) {
           callback(campaignId);
         }
-
+        web3.personal.lockAccount(contract.ownerAddress);
       });
-      
-      web3.personal.lockAccount(contract.ownerAddress);
     }  
   });
 };
 
 contract.investment = function(campaignId, amount, buyer) {
+  var web3 = this.web3;
   var password = prompt("Please enter your password:");
-  amount = contract.web3.toWei(amount, 'ether'); //goal-price
+  amount = web3.toWei(amount, 'ether'); //goal-price
 
   console.log('start....');
   console.log('campaignId: ' + campaignId);
   console.log('amount: ' + amount);
   console.log('buyer: ' + buyer);
 
-  contract.web3.personal.unlockAccount(buyer, password, function(error) {
+  web3.personal.unlockAccount(buyer, password, function(error) {
     if(!error) {
       var txHash = contract.crowd.contribute(campaignId, {
         from: buyer,
         gas: 500000,
         value: amount
-      }, function(error, contract) {
+      }, function(error) {
         console.log(error);
+        web3.personal.lockAccount(contract.ownerAddress);
       });
-      contract.web3.personal.lockAccount(buyer);  
-      console.log('end.');
     }
   });
 };

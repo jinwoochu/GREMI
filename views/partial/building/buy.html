@@ -3,8 +3,9 @@
 
   <script id="movieTmpl" type="text/x-jquery-tmpl">
     <div class="list-group-item row">
-      <a href="${id}">
+      <a href="${b_id}">
         <div class="col-md-3">
+          {%tmpl(images) imageTemplate%}
         </div>
 
         <div class="col-md-8">
@@ -15,11 +16,13 @@
           <div>
             <div class="col-md-9" style="padding: 0px;">
               <div class=" progress">
+
               </div>
             </div>
 
             <div class="col-md-3">
               <span>${price}</span>
+              
             </div>
           </div>
         </div>

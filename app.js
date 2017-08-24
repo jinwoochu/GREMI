@@ -7,9 +7,9 @@ var building = require('./model/building');
 
 // express router
 var express = require('express'),
-    path = require("path"),
-    app = express(),
-    fileUpload = require('express-fileupload');
+path = require("path"),
+app = express(),
+fileUpload = require('express-fileupload');
 
 app.use(fileUpload());
 

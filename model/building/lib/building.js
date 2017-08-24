@@ -1,5 +1,4 @@
-//코인스택쨔응
-var CoinStack = require('coinstack-sdk-js');
+var SynJS = require('synjs');
 
 // mysql
 var mysql = require('mysql');
@@ -21,54 +20,47 @@ exports.register = function(req, res) {
   var data = req.body;
   var email = req.signedCookies.email;
 
-  var readSql = 'SELECT * FROM buildings where country="' + data.country + '" AND state="' + data.state + '" AND city="' + data.city + '" AND street="' + data.street + '" AND NOT status=2';
+  var searchQuery = "SELECT * FROM buildings WHERE country=? AND state=? AND city=? AND street=? AND NOT status=2";
+  var searchQueryParams = [data.country, data.state, data.city, data.street];
 
-  con.query(readSql, function(err, result, field) {
+  con.query(searchQuery, searchQueryParams, function(err, result, field) {
     if (err) {
       response = makeResponse(0, "계약이 끝나지 않은 중복된 주소의 건물입니다.", {});
       res.json(response);
-      throw err;
+      return;
     }
+
     if (result.length == 0) {
-      var insertSql = "INSERT INTO buildings (lat, lng, country, state, city, street, price, email, contract_address) VALUES (?,?,?,?,?,?,?,?,?)";
+      var insertQuery = "INSERT INTO buildings (lat, lng, country, state, city, street, price, email) VALUES (?,?,?,?,?,?,?,?)";
+      var insertQueryParams = [data.lat, data.lng, data.country, data.state, data.city, data.street, data.price, email];
 
-      var values = [data.lat, data.lng, data.country, data.state, data.city, data.street, data.price, email, data.contract_address];
+      console.log(insertQueryParams);
 
-      con.query(insertSql, values, function(err2, result2, field2) {
+      con.query(insertQuery, insertQueryParams, function(err2, result2, field2) {
         if (err2) {
-          response = makeResponse(0, "실패", {});
+          response = makeResponse(0, "실패1", {});
           res.json(response);
-          throw err2;
+          return;
         } else {
+          var buildingId = result2.insertId;
+          var imageDirPath = './public/building_images/' + buildingId;
+
+          if (!fs.existsSync(imageDirPath)) {
+            fs.mkdirSync(imageDirPath);
+          }
+
           if (req.files.images) {
             var buildingImages = req.files.images;
-            var buildingId = result2.insertId;
-            var imageDirPath = './public/building_images/' + buildingId;
-
-            if (!fs.existsSync(imageDirPath)) {
-              fs.mkdirSync(imageDirPath);
-            }
-
-
+            
             for (var i = 0; i < buildingImages.length; i++) {
               var imagePath = imageDirPath + '/' + buildingImages[i].name;
 
               (function(i, imagePath) {
                 buildingImages[i].mv(imagePath, function(err) {
                   if (err) {
-                    response = makeResponse(0, "실패", {});
+                    response = makeResponse(0, "실패2", {});
                     res.json(response);
                     return;
-                  } else {
-                    var insertSql = "INSERT INTO building_images (b_id, path) VALUES (?,?)";
-                    var values = [buildingId, imagePath.replace(/^\.\/public/, "")];
-                    con.query(insertSql, values, function(err3, result3, field3) {
-                      if (err3) {
-                        response = makeResponse(0, "실패", {});
-                        res.json(response);
-                        return;
-                      }
-                    });
                   }
                 });
               })(i, imagePath);
@@ -100,38 +92,80 @@ exports.confirmBuilding = function(req, res) {
 }
 //------------------------------------------------------
 
-//집정보 수정
-exports.edit = function(req, res) {
 
-  var lat = req.body.lat;
-  var lng = req.body.lng;
-  var country = req.body.country;
-  var state = req.body.state;
-  var city = req.body.city;
-  var street = req.body.street;
-  var price = req.body.price;
+//범위 내의 집 검색
+exports.search = function(req, res) {
+  var buildingList = [];
+  var building = [];
 
-  var selectBuildingId = req.params.building_id;
+  var ne_x = req.query.northeast_lng;
+  var ne_y = req.query.northeast_lat;
+  var sw_x = req.query.southwest_lng;
+  var sw_y = req.query.southwest_lat;
 
-  var editSql = 'UPDATE buildings SET lat="' + lat +
-  '", lng="' + lng +
-  '", country="' + country +
-  '", state="' + state +
-  '", city="' + city +
-  '", street="' + street +
-  '", price="' + price +
-  '" where b_id=' + selectBuildingId;
-  con.query(editSql, function(err, result, field) {
+  var query = "SELECT * FROM buildings WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 1";
+  var queryParams = [sw_x, ne_x, sw_y, ne_y];
+  
+
+  con.query(query, queryParams, function(err, rows, fields) {
     if (err) {
-      throw err;
-      response = makeResponse(0, "수정에 실패했습니다", {});
+      response = makeResponse(0, "검색에 실패했습니다.", {});
+      res.json(response);
+      return ;
     } else {
-      console.log("수정 성공");
-      response = makeResponse(1, "", {});
+      console.log(rows);
+
+      for (var i = 0; i < rows.length; i++) {
+        var imageDirPath = './public/building_images/' + rows[i]['b_id'];
+
+        rows[i]['images'] = [];
+
+        fs.readdirSync(imageDirPath).forEach(file => {
+          rows[i]['images'].push('/building_images/' + file);
+        });
+      }
+
+      response = makeResponse(1, "", {buildings: rows});
       res.json(response);
     }
   });
-}
+
+};
+
+//집정보 수정
+// exports.edit = function(req, res) {
+
+//   var lat = req.body.lat;
+//   var lng = req.body.lng;
+//   var country = req.body.country;
+//   var state = req.body.state;
+//   var city = req.body.city;
+//   var street = req.body.street;
+//   var price = req.body.price;
+
+//   var selectBuildingId = req.params.building_id;
+
+//   var editSql = 'UPDATE buildings SET lat="' + lat +
+//   '", lng="' + lng +
+//   '", country="' + country +
+//   '", state="' + state +
+//   '", city="' + city +
+//   '", street="' + street +
+//   '", price="' + price +
+//   '" where b_id=' + selectBuildingId;
+//   con.query(editSql, function(err, result, field) {
+//     if (err) {
+//       throw err;
+//       response = makeResponse(0, "수정에 실패했습니다", {});
+//     } else {
+//       console.log("수정 성공");
+//       response = makeResponse(1, "", {});
+//       res.json(response);
+//     }
+//   });
+// }
+
+
 
 
 //집상세정보
@@ -161,99 +195,30 @@ exports.detailBuilding = function(req, res) {
 //집등록 취소
 exports.delete = function(req, res) {
   var email = req.signedCookies.email;
-    // console.log(req.body);
-    // console.log(email);
+  // console.log(req.body);
+  // console.log(email);
+};
+
+exports.getListOfUnconfirmedBuilding = function(req, res) {
+  var sql = "select b.b_id, b.country, b.state, b.city, b.street, b.price, b.lat, b.lng ,u.wallet_address from buildings as b left join users as u on b.email = u.email where status = 0;";
+
+  con.query(sql, function(err, result, field) {
+    if (err) throw err;
+    res.render('adminBuilding.html', { "buildings": result });
+    console.log(result.length);
+  });
+}
+
+function makeResponse(status, errorMessage, data) {
+  var response = {
+    status: status,
+    error_message: errorMessage
+  };
+
+  for (var key in data) {
+    response[key] = data[key];
   }
+  return response;
+}
 
 
-
-//범위 내의 집 검색
-exports.search = function(req, res) {
-
-    // var buildingList = [];
-    // var building = [];
-
-    // var readSql = " SELECT * FROM buildings where b_id=" + 19;
-    // con.query(readSql, function(err2, buildingInfo, field2) {
-    //     building.push(buildingInfo[0]) // 빌딩 정보를 빌딩에 추가
-    // });
-
-    // var imageSql = " SELECT path FROM building_images where b_id=" + 19;
-    // con.query(imageSql, function(err2, imagePathList, field2) {
-
-    //     var imageArr = [];
-    //     for (var i = 0; i < imagePathList.length; i++) {
-    //         imageArr[i] = imagePathList[i].path;
-    //     }
-
-    //     building.push(imageArr) // 빌딩이미지path를 빌딩에 추가
-
-    //     // console.log(list);
-    //     buildingList.push(building)
-    //         // console.log(building);
-    //         // console.log(buildingList[0])
-    // });
-
-
-    var buildingList = [];
-    var building = [];
-
-    var ne_x = req.query.northeast_lng;
-    var ne_y = req.query.northeast_lat;
-    var sw_x = req.query.southwest_lng;
-    var sw_y = req.query.southwest_lat;
-    var readSql = "select * from buildings where " + sw_x + "<= lng and lng <= " + ne_x + " and " + sw_y + "<= lat and lat <= " + ne_y + " AND status = 1";
-
-    con.query(readSql, function(err, buildingInfo, field) {
-      if (err) {
-        throw err;
-        response = makeResponse(0, "검색에 실패했습니다.", {});
-        res.json(response);
-      } else {
-        console.log("test");
-        for (var i = 0; i < buildingInfo.length; i++) {
-                building.push(buildingInfo[i]) // 빌딩 정보를 빌딩에 추가
-                var imageSql = " SELECT path FROM building_images where b_id=" + 20;
-                con.query(imageSql, function(err2, buildingInfo, field) {
-                  if (err2) {
-                    console.log("에러낫어")
-                    throw err2;
-                    response = makeResponse(0, "이미지 정보를 가져오는데 실패하였습니다.", {});
-                    res.json(response);
-                  } else {
-                    console.log("성공!!!!!!!!")
-                  }
-                });
-              }
-
-            //만든거 합쳐서 넘김
-            // response = makeResponse(1, "", { 'buildingInfos': result });
-            // res.json(response);
-          }
-
-        });
-  }
-
-  exports.getListOfUnconfirmedBuilding = function(req, res) {
-    var sql = "select b.b_id, b.country, b.state, b.city, b.street, b.price, b.lat, b.lng ,u.wallet_address from buildings as b left join users as u on b.email = u.email where status = 0;";
-
-    con.query(sql, function(err, result, field) {
-      if (err) throw err;
-      res.render('adminBuilding.html', { "buildings": result });
-      console.log(result.length);
-    });
-  }
-
-  
-
-  function makeResponse(status, errorMessage, data) {
-    var response = {
-      status: status,
-      error_message: errorMessage
-    };
-
-    for (var key in data) {
-      response[key] = data[key];
-    }
-    return response;
-  }

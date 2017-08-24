@@ -32,8 +32,7 @@
   <section id="content">
     <div class="container">
       <div class="row">
-        <%= building.id %>
-        <%= building.title %>
+        <%= building.b_id %>
         <%= building.country %>
         <%= building.state %>
         <%= building.city %>
@@ -43,7 +42,7 @@
         <%= building.lng %>
 
         <input id="amount" type="number">
-        <button id="invest_btn" class="btn btn-primary" data-building-id="22">투자신청하기</button>
+        <button id="invest_btn" class="btn btn-primary" data-building-id="<%= building.b_id %>">투자신청하기</button>
       </div>
     </div>
   </section>

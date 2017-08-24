@@ -57,13 +57,14 @@ $(document).ready(function() {
   //   });
   // });
 
-
   $('.confirm-building').on('click', function(event) {
     event.preventDefault();
 
     var buildingId = $(this).data('building-id'); // user-wallet-address
     var price = $(this).data('price');
     var userWalletAddress = $(this).data('address'); // user-wallet-address
+    
+    debugger;
     
     contract.createCampaign(buildingId, price, userWalletAddress,updateBuildingStatus);
   });
@@ -73,7 +74,7 @@ $(document).ready(function() {
     var data = new FormData();
 
     data.append('b_id', buildingId);
-    
+
     $.ajax({
       url: '/admin/building/confirm',
       type: 'POST',
