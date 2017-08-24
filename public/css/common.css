@@ -3,8 +3,10 @@
   box-shadow: 2px 4px 8px #888888 !important;
 }
 
-.map {
-  padding: 0px !important;
+.frame {
+  background: #345;
+  border-radius: 5px;
+  padding: 10px !important;
 }
 
 .product_menu {
@@ -18,6 +20,66 @@
 
 #building_list {
   overflow-y: scroll;
-  padding-left: 5px;
-  padding-right: 5px;
+  margin-top: 10px;
+}
+
+.navbar-inverse {
+  background-color: rgb(30,30,30);
+  border-color: rgb(30,30,30);
+}
+
+.navbar-brand {
+  padding: 10px 15px !important;
+}
+
+body {
+  background-color: #040405;
+}
+
+#address {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: white;
+  background-color: rgb(30,30,30);
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 0px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+#search_address {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 0px;
+  color: white;
+  background-color: rgb(30,30,30);
+  border-color: #ccc;
+}
+
+.progress {
+  margin-bottom: 0px; 
 }

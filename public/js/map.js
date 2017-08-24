@@ -107,8 +107,6 @@ map.createMap = function(position) {
     data: formData,
     dataType: "json",
     success: function(result) {
-      debugger;
-
       var buildings = result.buildings;
       resetMarker();
 
@@ -129,6 +127,6 @@ map.createMap = function(position) {
 $(document).ready(function() {
   $(window).on('resize', function() {
     $('#googleMap').css('height', this.innerHeight - 136);
-    $('#building_list').css('height', this.innerHeight - 144);
+    $('#building_list').css('height', this.innerHeight - 174);
   }).resize();
 });

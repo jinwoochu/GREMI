@@ -3,38 +3,35 @@
 
   <script id="movieTmpl" type="text/x-jquery-tmpl">
     <div class="list-group-item row">
-      <a href="${b_id}">
-        <div class="col-md-3">
-          {%tmpl(images) imageTemplate%}
+      <div class="col-md-3" style="    padding: 0;">
+      {{each images}}
+        {{if $index == 0}}
+          <img src="${images[$index]}" width="100%" height="80%">
+        {{else}}
+          <img src="${images[$index]}" width="100%" height="80%" class="hidden">
+        {{/if}}
+      {{/each}}
+        
+      </div>
+
+      <div class="col-md-7">
+        <div style="margin-bottom: 0%; padding: 6% 0;">
+          <span style="font-size: 15px; color: #333;">${address}</span>
         </div>
 
-        <div class="col-md-8">
-          <div>
-            <span>${address}</span>
+        <div>
+          <div class="col-md-9" style="padding: 0px;">
+            <div class=" progress"></div>
           </div>
-
-          <div>
-            <div class="col-md-9" style="padding: 0px;">
-              <div class=" progress">
-
-              </div>
-            </div>
-
-            <div class="col-md-3">
-              <span>${price}</span>
-              
-            </div>
+          <div class="col-md-3">
+            <span>${price}</span>
           </div>
         </div>
+      </div>
 
-        <div class="col-md-1">
-          <a href="/building/${b_id}" class="btn">투자하기</a>
-        </div>
-      </a>
+      <div class="col-md-2">
+        <a href="/building/${b_id}" class="btn btn-primary">투자하기</a>
+      </div>
     </div>
-  </script>
-
-  <script id="imageTemplate" type="text/x-jquery-tmpl">
-    <img src="http://upload2.inven.co.kr/upload/2017/06/09/bbs/i14754277015.jpg" width="100%" height="100%">
   </script>
 </div>

@@ -20,6 +20,7 @@
   <script src="/js/lib/jquery.form/jquery.form.min.js"></script>
 
   <!-- costom css import -->
+  <link href="/css/common.css" rel="stylesheet">
 
   <!-- costom js import -->
   <script src="/js/common.js"></script>
@@ -39,18 +40,20 @@
       </div>
 
       <div class="col-md-7">
-        <ul id="building_menu" class="nav nav-tabs product_menu" style="margin-bottom: 10px;">
-          <li class="active">
-            <a href="#">구매하기_1</a>
-          </li>
-          <li>
-            <a href="#">구매하기_2</a>
-          </li>
-        </ul>
+        <div class="frame">
+        <ul id="building_menu" class="nav nav-tabs" >
+            <li class="active">
+              <a href="#">구매하기_1</a>
+            </li>
+            <li>
+              <a href="#">구매하기_2</a>
+            </li>
+          </ul>
 
-        <div>
-          <%- include partial/building/buy.html %>
-          <%- include partial/building/sell.html %>
+          <div>
+            <%- include partial/building/buy.html %>
+            <%- include partial/building/sell.html %>
+          </div>
         </div>
       </div>
     </div>

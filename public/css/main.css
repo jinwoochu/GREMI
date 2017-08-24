@@ -39,6 +39,7 @@ body {
 .modal-dialog {
   background: rgba(255,255,255,0.68);
   padding: 15px;
+  margin-top: 60px;
 }
 
 .form-group {

@@ -49,7 +49,7 @@ contract.createCampaign = function(campaignId, price, owner, callback) {
 contract.investment = function(campaignId, amount, buyer) {
   var web3 = this.web3;
   var password = prompt("Please enter your password:");
-  amount = web3.toWei(amount, 'ether'); //goal-price
+  amount = web3.toWei(amount, 'ether');
 
   console.log('start....');
   console.log('campaignId: ' + campaignId);

@@ -121,7 +121,7 @@ exports.search = function(req, res) {
         rows[i]['images'] = [];
 
         fs.readdirSync(imageDirPath).forEach(file => {
-          rows[i]['images'].push('/building_images/' + file);
+          rows[i]['images'].push('/building_images/' + rows[i]['b_id'] + '/' + file);
         });
       }
 

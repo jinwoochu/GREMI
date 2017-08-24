@@ -1,4 +1,4 @@
-<div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="sign_up_modal" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -6,25 +6,45 @@
           <img src="/images/x.png" width="30px" >
         </button>
       </div>
-      <form id="login_form" action="/login" method="post" role="form">
+      <form id="user_register_form" action="/user_register" method="post" role="form">
+        <input id="wallet_address" type="hidden" name="wallet_address">
         <div class="modal-body">
-          <div class="form-group">
-            <label for="email" class="sr-only hidden-xs">email</label>
-            <input type="email" class="form-control" name="email" placeholder="email">
-          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="email" class="sr-only hidden-xs">email</label>
+                <input type="email" class="form-control" name="email" placeholder="email">
+              </div>
+            </div>
 
-          <div class="form-group">
-            <label for="password" class="sr-only hidden-xs">password</label>
-            <input type="password" class="form-control" name="password" placeholder="password">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label  for="country" class="sr-only hidden-xs">country</label>
+                <input type="text" class="form-control" name="country" placeholder="country">
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <div class="text-center">
-            <button type="submit" tabindex="1" style="border: 0; padding: 0">
-              <img id="signup" src="/images/ok.png" 
-              onmouseover = "this.src='/images/ok_hover.png'"
-              onmouseout = "this.src='/images/ok.png'" height="60px;">
-            </button>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="password" class="sr-only hidden-xs">password</label>
+                <input id="password" type="password" class="form-control" name="password" placeholder="password">
+              </div>
+
+              <div class="form-group">
+                <label for="password_check" class="sr-only hidden-xs">password</label>
+                <input id="password_check" type="password" class="form-control" name="password_check" placeholder="password_check">
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <button type="submit" tabindex="1" style="border: 0; padding: 0">
+                <img id="signup" src="/images/enter.png" 
+                onmouseover = "this.src='/images/enter_hover.png'"
+                onmouseout = "this.src='/images/enter.png'" 
+                style="width: 100%; height: 110px;">
+              </button>
+            </div>
           </div>
         </div>
       </form>
