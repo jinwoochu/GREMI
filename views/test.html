@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transfer Sample</title>
+  <script type="text/javascript" src="./js/bignumber.min.js"></script>
+  <script type="text/javascript" src="./js/crypto-js.js"></script>
+  <script type="text/javascript" src="./js/utf8.js"></script>
+  <script type="text/javascript" src="js/web3.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+</head>
+<body>
+
+  <p>
+    사용자명:&nbsp;<input type="text" id="userName" value="0xaa1d3aab533e87a95825aa10bfc8aa5f488dac50">&nbsp; 
+    패스워드:&nbsp;<input type="text" id="password" value="1">&nbsp; <input type="button" value="login" onclick="login();" />
+  </p>
+
+  <h2>Crowdfund Contract Example</h2>
+  <div>
+    <textarea id="_log" rows="7" cols="80"></textarea>
+  </div>
+  <div>
+
+    <h3>Create</h3>
+    <button id="btnCreate">Create</button>
+    <h3>At</h3>
+    <input type="text" id="_contractAddress" size="20"/><button id="btnAt">At</button>
+
+    <h3>New Campaign</h3>
+    Beneficiery : <input type="text" id="_beneficiery" size="40"/><br/>
+    Goal (ether): <input type="text" id="_goal" size="20"/><br/>
+    <button id="btnNewCampaign">New Campaign</button>
+    <button id="btnEstimateGas">Estimate Gas</button>
+
+    <h3>Contribute</h3>
+    Campaign ID : <input type="text" id="_contributeCampaignID" size="5"/><br/>
+    Amount (ether) : <input type="text" id="_contributeEther" size="20"/><br/>
+    <button id="btnContribute">Contribute</button>
+
+    <h3>Goal Reached Check</h3>
+    Campaign ID : <input type="text" id="_checkCampaignID" size="5"/><br/>
+    Is Reached : <input type="text" id="_checkResult" size="5" readonly/><br/>
+    Goal : <input type="text" id="_checkGoal" size="20" readonly/> Ether <br/>
+    Current Amount : <input type="text" id="_checkAmount" size="20" readonly/> Ether <br/>
+    <button id="btnCheck">Check(call)</button><button id="btnCheck_Tx">Check(send)</button>
+
+    <h3>funders amount check</h3>
+    Campaign ID : <input type="text" id="_funderCampaignID" size="5"/><br/>
+    Wallet_address : <input type="text" id="funder_address" size="100"/><br/>
+    My add amount : <input type="text" id="_checkmyamount" size="20" readonly/> Ether <br/>
+    <button id="funderCheck">Check(call)</button>
+
+    <h3>revenue Contribute</h3>
+    Campaign ID : <input type="text" id="_revenuecontributeCampaignID" size="5"/><br/>
+    Amount (ether) : <input type="text" id="_revenuecontributeEther" size="20"/><br/>
+    <button id="btnrevenueContribute">Contribute</button>
+
+    <h3>revenue check</h3>
+    Campaign ID : <input type="text" id="_revenuecheckCampaignID" size="5"/><br/>
+    fund revenue : <input type="text" id="_checkfundrevenue" size="100" readonly/> Ether <br/>
+    <button id="btnfundrevenue">check</button>
+
+    <h3>revenue distribution</h3>
+    Campaign ID : <input type="text" id="_rdCampaignID" size="5"/><br/>
+    Revenue (ether) : <input type="text" id="revenue" size="20"/><br/>
+    distribution_revenue : <input type="text" id="distribution_revenue" size="100" readonly/> Ether <br/>
+    <button id="distribution">distribution(call)</button><button id="distribution_Tx">distribution(send)</button>
+
+  </div>
+
+  <script type="text/javascript">
+    function _log(content) {
+      var logger = $('#_log').append(content).append("\n");
+      logger.scrollTop(logger[0].scrollHeight);
+    }
+// web3 Initialization (Set web3 Provider)
+var url = "http://61.75.63.149:8545"
+var web3 = new Web3();
+var provider = new web3.providers.HttpProvider(url);
+web3.setProvider(provider);
+//var web3 = new Web3(new Web3.providers.HttpProvider("http://192.168.1.11:8545"));
+// Filter latest block
+var latestFilter = web3.eth.filter('latest');
+// latestFilter.watch(function(error, result) {
+//     var log = "[NEW BLOCK] " + result + "\n";
+//     var newBlock = web3.eth.getBlock(result);
+//     log += "blockNumber : " + newBlock.number + "\n";
+//     log += "Txs : " + newBlock.transactions.length + "\n";
+//     _log(log);
+// });
+
+var abi = [{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"}],"name":"revenuecontributecheck","outputs":[{"name":"reached_","type":"bool"},{"name":"revenue_","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"}],"name":"revenuecontribute","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"}],"name":"checkGoalReached","outputs":[{"name":"reached_","type":"bool"},{"name":"goal_","type":"uint256"},{"name":"amount_","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"}],"name":"distribution","outputs":[{"name":"reached_","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"}],"name":"contribute","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"},{"name":"funder","type":"address"}],"name":"checkfunders","outputs":[{"name":"reached_","type":"bool"},{"name":"amount_","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_beneficiary","type":"address"},{"name":"_goal","type":"uint256"}],"name":"newCampaign","outputs":[{"name":"campaignId_","type":"uint256"}],"payable":false,"type":"function"}];
+var Contract = web3.eth.contract(abi);
+var crowd = null;
+var user_name;
+var broker = "0x072fc66f7505db74e9dc242afd2df8a861271d4a";
+
+function login(){
+  user_name= $("#userName").val();
+  var password = $("#password").val();
+    // Unlock First Account
+    web3.personal.unlockAccount(user_name,password);
+    console.log("login 성공");
+  }
+
+  $(document).ready(function() {
+
+    $('#btnCreate').click(function(){
+      crowd = Contract.new({
+        data:code,
+        gas:1000000,
+        from:user_name
+      }, function (error, contract) {
+        if (!error) {
+          if (!contract.address) {
+            _log("Creating Contract : " + contract.transactionHash);
+          } else {
+            address = contract.address;
+            _log("Contract Deployed : " + contract.address);
+          }
+        } else{
+        }
+      });
+    });
+    $('#btnAt').click(function(){
+      var address = $('#_contractAddress').val();
+      crowd = Contract.at(address);
+    });
+    $('#btnNewCampaign').click(function(){
+      var beneficiery = $('#_beneficiery').val();
+      var goalAmountWei = web3.toWei($('#_goal').val(), 'ether');
+      var campaignID = crowd.newCampaign.call(beneficiery, goalAmountWei, {
+        from:user_name
+      });
+      console.log("newCampaign : " + beneficiery + '\n'
+        + 'amount : ' + goalAmountWei + '\n'
+        + 'ID : ' + campaignID);
+      var txHash = crowd.newCampaign.sendTransaction(beneficiery, goalAmountWei, {
+        from:user_name,
+        gas:500000
+      });
+      console.log("newCampaignTxHash : ", txHash);
+    });
+    $('#btnEstimateGas').click(function() {
+      var beneficiery = $('#_beneficiery').val();
+      var goalAmountWei = web3.toWei($('#_goal').val(), 'ether');
+      var estimatedGas = crowd.newCampaign.estimateGas(beneficiery, goalAmountWei, {
+        from:user_name});
+      alert("Estimated Gas Amount : " + estimatedGas);
+    });
+    $('#btnContribute').click(function(){
+      var campaignID = $('#_contributeCampaignID').val();
+      var contributeAmountWei = web3.toWei($('#_contributeEther').val(), "ether");
+      var txHash = crowd.contribute(campaignID, {
+        from: user_name,
+        gas: 500000,
+        value: contributeAmountWei
+      });
+      console.log("contribute TX Hash : ", txHash);
+    });
+    $('#btnCheck').click(function(){
+      var campaignID = $('#_checkCampaignID').val();
+      var checkResult = crowd.checkGoalReached.call(campaignID, {
+        from:user_name
+      });
+      $('#_checkResult').val(checkResult[0]);
+      $('#_checkGoal').val(web3.fromWei(checkResult[1], "ether"));
+      $('#_checkAmount').val(web3.fromWei(checkResult[2], "ether"));
+    });
+    $('#btnCheck_Tx').click(function(){
+      var campaignID = $('#_checkCampaignID').val();
+      var txHash = crowd.checkGoalReached.sendTransaction(campaignID, {
+        from:user_name,
+        gas:500000
+      });
+      console.log("checkTx TX Hash : " , txHash);
+    });
+
+    $('#funderCheck').click(function(){
+      var campaignID = $('#_funderCampaignID').val();
+      var funder_address = $('#funder_address').val();
+      var Wallet_address = crowd.checkfunders.call(campaignID, funder_address, {
+        from:user_name
+      });
+
+      $('#_checkmyamount').val(Wallet_address[1]);
+    });
+
+    $('#btnfundrevenue').click(function(){
+      var campaignID = $('#_revenuecheckCampaignID').val();
+      var funderrevenue = crowd.revenuecontributecheck.call(campaignID, {
+        from:user_name
+      });
+
+      $('#_checkfundrevenue').val(funderrevenue[1]);
+    });
+
+    $('#btnrevenueContribute').click(function(){
+      var campaignID = $('#_revenuecontributeCampaignID').val();
+      var contributeAmountWei = web3.toWei($('#_revenuecontributeEther').val(), "ether");
+      var txHash = crowd.revenuecontribute(campaignID, {
+        from: broker,
+        gas: 500000,
+        value: contributeAmountWei
+      });
+      console.log("contribute TX Hash : ", txHash);
+    });
+
+    $('#distribution').click(function(){
+      var campaignID = $('#_rdCampaignID').val();
+      var revenue = $('#revenue').val();
+      var checkResult = crowd.distribution.call(campaignID, broker, revenue, {
+        from:user_name
+      });
+      $('#distribution_revenue').val(checkResult[1]);
+    });
+
+    $('#distribution_Tx').click(function(){
+      var campaignID = $('#_rdCampaignID').val();
+      var revenue = $('#revenue').val();
+      var txHash = crowd.distribution.sendTransaction(campaignID, {
+        from:broker,
+        gas:500000
+      });
+      console.log("checkTx TX Hash : " , txHash);
+    });
+
+  });
+</script>
+</body>
+</html>

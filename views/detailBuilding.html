@@ -2,53 +2,54 @@
 <html>
 
 <head>
-    <title>GREMI</title>
+  <title>GREMI</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <!-- css lib import -->
-    <link href="/css/bootstrap-3.3.7/bootstrap.min.css" rel="stylesheet">
+  <!-- css lib import -->
+  <link href="/css/bootstrap-3.3.7/bootstrap.min.css" rel="stylesheet">
 
-    <!-- js lib import -->
-    <script src="/js/lib/contract/bignumber.min.js"></script>
-    <script src="/js/lib/contract/crypto-js.js"></script>
-    <script src="/js/lib/contract/utf8.js"></script>
-    <script src="/js/lib/contract/web3.js"></script>
-    <script src="/js/lib/jquery-3.2.1/jquery-3.2.1.js"></script>
-    <script src="/js/lib/bootstrap-3.3.7/bootstrap.min.js"></script>
+  <!-- js lib import -->
+  <script src="/js/lib/contract/bignumber.min.js"></script>
+  <script src="/js/lib/contract/crypto-js.js"></script>
+  <script src="/js/lib/contract/utf8.js"></script>
+  <script src="/js/lib/contract/web3.js"></script>
+  <script src="/js/lib/jquery-3.2.1/jquery-3.2.1.js"></script>
+  <script src="/js/lib/bootstrap-3.3.7/bootstrap.min.js"></script>
 
-    <!-- costom css import -->
+  <!-- costom css import -->
 
-    <!-- costom js import -->
-    <script src="/js/common.js"></script>
-    <script src="/js/building.js"></script>
+  <!-- costom js import -->
+  <script src="/js/contract.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/building.js"></script>
 
 </head>
 
 <body data-spy="scroll" data-target="#navbar-scroll" style="">
-    <%- include partial/loginedHeader.html %>
+  <%- include partial/loginedHeader.html %>
 
-        <section id="content">
-            <div class="container">
-                <div class="row">
-                    <%= building.id %>
-                        <%= building.title %>
-                            <%= building.country %>
-                                <%= building.state %>
-                                    <%= building.city %>
-                                        <%= building.street %>
-                                            <%= building.price %>
-                                                <%= building.lat %>
-                                                    <%= building.lng %>
+  <section id="content">
+    <div class="container">
+      <div class="row">
+        <%= building.id %>
+        <%= building.title %>
+        <%= building.country %>
+        <%= building.state %>
+        <%= building.city %>
+        <%= building.street %>
+        <%= building.price %>
+        <%= building.lat %>
+        <%= building.lng %>
 
-                                                        <input id="amount" type="number">
-                                                        <button id="invest_btn" class="btn btn-primary">투자신청하기</button>
-                </div>
-            </div>
-        </section>
+        <input id="amount" type="number">
+        <button id="invest_btn" class="btn btn-primary" data-building-id="22">투자신청하기</button>
+      </div>
+    </div>
+  </section>
 
-        <!-- /.footer -->
-        <%- include partial/footer.html %>
+  <!-- /.footer -->
+  <%- include partial/footer.html %>
 </body>
 
 </html>

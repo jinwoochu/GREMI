@@ -12,6 +12,8 @@ $(document).ready(function() {
     var url = "http://61.75.63.149:8545"
     var web3 = new Web3();
     var provider = new web3.providers.HttpProvider(url);
+    web3.setProvider(provider);
+
     var passwoard = $('#password').val(),
     passwoard_check = $('#password_check').val();
 
@@ -20,7 +22,7 @@ $(document).ready(function() {
       return;
     }
 
-    web3.setProvider(provider);
+    
 
     var address = web3.personal.newAccount(passwoard);
     $('#wallet_address').val(address);

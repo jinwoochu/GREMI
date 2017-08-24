@@ -1,75 +1,75 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>GREMI</title>
+  <title>GREMI</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <!-- css lib import -->
-    <link href="/css/bootstrap-3.3.7/bootstrap.min.css" rel="stylesheet">
+  <!-- css lib import -->
+  <link href="/css/bootstrap-3.3.7/bootstrap.min.css" rel="stylesheet">
 
-    <!-- js lib import -->
-    <script src="/js/lib/contract/bignumber.min.js"></script>
-    <script src="/js/lib/contract/crypto-js.js"></script>
-    <script src="/js/lib/contract/utf8.js"></script>
-    <script src="/js/lib/contract/web3.js"></script>
-    <script src="/js/lib/jquery-3.2.1/jquery-3.2.1.js"></script>
-    <script src="/js/lib/bootstrap-3.3.7/bootstrap.min.js"></script>
+  <!-- js lib import -->
+  <script src="/js/lib/contract/bignumber.min.js"></script>
+  <script src="/js/lib/contract/crypto-js.js"></script>
+  <script src="/js/lib/contract/utf8.js"></script>
+  <script src="/js/lib/contract/web3.js"></script>
+  <script src="/js/lib/contract/jquery.min.js"></script>
+  <!-- <script src="/js/lib/jquery-3.2.1/jquery-3.2.1.js"></script> -->
+  <script src="/js/lib/bootstrap-3.3.7/bootstrap.min.js"></script>
 
-    <!-- costom css import -->
+  <!-- costom css import -->
 
-    <!-- costom js import -->
-    <script src="/js/common.js"></script>
-    <script src="/js/adminBuilding.js"></script>
+  <!-- costom js import -->
+  <script src="/js/contract.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/adminBuilding.js"></script>
 
 </head>
 
 <body data-spy="scroll" data-target="#navbar-scroll" style="">
-    <%- include partial/loginedHeader.html %>
+  <section id="content">
+    <div class="container">
+      <% for(var i = 0 ; i < buildings.length ; i++) { %>
+      <div class="building-content">
+        <div class="col-md-8 col-md-offset-2" style="margin-top: 20px; border-radius: 5px; border: 1px solid; padding: 10px;">
+          <form id="building_register_form" method="post" role="form">
+            <input type="hidden" name="b_id" value="">
 
-        <section id="content">
-            <div class="container">
-                <% for(var i = 0 ; i < buildings.length ; i++) {%>
-                    <div class="building-content">
-                        <div class="col-md-8 col-md-offset-2" style="margin-top: 20px; border-radius: 5px; border: 1px solid; padding: 10px;">
-                            <form id="building_register_form" method="post" role="form">
-                                <input type="hidden" name="b_id" value="">
-
-                                <div class="form-group">
-                                    <input type="text" class="form-control" readonly value="<%= buildings[i].country %>">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" class="form-control" readonly value="<%= buildings[i].state %>">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" class="form-control" readonly value="<%= buildings[i].city %>">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" class="form-control" readonly value="<%= buildings[i].street %>">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" class="form-control" readonly value="<%= buildings[i].price %>">
-                                </div>
-
-                                <div class="text-center">
-                                    <button class="btn btn-primary confirm-building" data-building-id="<%= buildings[i].b_id %>" role="button">확인</button>
-                                    <button class="btn btn-warning reject-building" role="button">거절</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <% } %>
-
+            <div class="form-group">
+              <input type="text" class="form-control" readonly value="<%= buildings[i].country %>">
             </div>
-        </section>
 
-        <!-- /.footer -->
-        <%- include partial/footer.html %>
+            <div class="form-group">
+              <input type="text" class="form-control" readonly value="<%= buildings[i].state %>">
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control" readonly value="<%= buildings[i].city %>">
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control" readonly value="<%= buildings[i].street %>">
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control" readonly value="<%= buildings[i].price %>">
+            </div>
+
+            <div class="text-center">
+              <button class="btn btn-primary confirm-building" data-building-id="<%= buildings[i].b_id %>" data-price="<%= buildings[i].price %>" data-address="<%= buildings[i].wallet_address %>" role="button">확인</button>
+              <!--  -->
+              <button class="btn btn-warning reject-building" role="button">거절</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <% } %>
+      
+    </div>
+  </section>
+
+  <!-- /.footer -->
+  <%- include partial/footer.html %>
 </body>
 
 </html>
