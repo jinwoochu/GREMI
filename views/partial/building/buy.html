@@ -21,10 +21,14 @@
 
         <div>
           <div class="col-md-9" style="padding: 0px;">
-            <div class=" progress"></div>
+            <div class=" progress">
+              <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: ${parseInt(((fundraising_amount / price) * 10000)) / 100}%; "> ${fundraising_amount} (${participant_count} 명)
+                </div>
+            </div>
           </div>
           <div class="col-md-3">
             <span>${price}</span>
+            <span>${parseInt(((fundraising_amount / price) * 10000)) / 100} %</span> 
           </div>
         </div>
       </div>
