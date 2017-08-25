@@ -21,7 +21,7 @@ exports.register = function(req, res) {
   var selectQuery = "SELECT * FROM users WHERE email=?";
   var selectQueryParams = [email];
 
-  con.query(readSql, function(err, result, field) {
+  con.query(selectQuery, selectQueryParams, function(err, result, field) {
     if (err) {
       response = makeResponse(0, "회원가입에 실패했습니다.", {});
       res.json(response);

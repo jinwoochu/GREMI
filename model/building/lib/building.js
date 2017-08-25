@@ -101,17 +101,16 @@ exports.search = function(req, res) {
   var sw_x = req.query.southwest_lng;
   var sw_y = req.query.southwest_lat;
 
-  var query = "SELECT * FROM buildings WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 1";
-  var queryParams = [sw_x, ne_x, sw_y, ne_y];
+  var selectQuery = "SELECT b.b_id, b.country, b.state, b.city, b.street, b.lat, b.lng, b.price, sum(c.invest_amount) AS fundraising_amount, count(distinct(c.email)) AS participant_count FROM buildings AS b, b_buyer_log AS c, (SELECT * FROM buildings WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 1) AS a WHERE b.b_id=a.b_id AND c.b_id=b.b_id GROUP BY b.b_id;"
+  var selectQueryParams = [sw_x, ne_x, sw_y, ne_y];
 
-  "SELECT * FROM buildings WHERE 126.92577122233729 <= lng AND lng <= 126.9303309776626 AND 37.486790035434474 <= lat AND lat <= 37.489131146223265 AND status = 1";
-
-  con.query(query, queryParams, function(err, rows, fields) {
+  con.query(selectQuery, selectQueryParams, function(err, rows, fields) {
     if (err) {
       response = makeResponse(0, "검색에 실패했습니다.", {});
       res.json(response);
       return;
     } else {
+      console.log(rows);
       for (var i = 0; i < rows.length; i++) {
         var imageDirPath = './public/building_images/' + rows[i]['b_id'];
 
@@ -135,6 +134,8 @@ exports.investment = function(req, res) {
   var email = req.signedCookies.email;
   var insertQuery = "INSERT INTO b_buyer_log (b_id, tx_id, invest_amount, stake, email) VALUES (?,?,?,?,?)";
   var insertQueryParams = [data.b_id, data.tx_id, data.invest_amount, data.stake, email];
+
+  console.log(data.b_id, data.tx_id, data.invest_amount, data.stake, email);
 
   con.query(insertQuery, insertQueryParams, function(err, result, field) {
     if (err) {
