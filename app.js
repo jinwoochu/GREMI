@@ -109,11 +109,11 @@ app.delete('/building/delete/:building_id', function(req, res) {
 })
 
 //여행가기
-app.get('/traveling', function(req, res) {
+app.get('/travel', function(req, res) {
   if (req.signedCookies.email === undefined) {
     res.render('app.html');
   } else {
-    res.render('traveling.html');
+    res.render('travel.html');
   }
 });
 
@@ -128,6 +128,8 @@ app.get('/logout', function(req, res) {
 app.get('/buildingSearch', function(req, res) {
   building.search(req, res)
 });
+
+
 
 
 //관리자가 사용자가 올린 confirm되지 않은 빌딩리스트를 보는 곳
