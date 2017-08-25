@@ -104,6 +104,8 @@ exports.search = function(req, res) {
   var query = "SELECT * FROM buildings WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 1";
   var queryParams = [sw_x, ne_x, sw_y, ne_y];
   
+  "SELECT * FROM buildings WHERE 126.92577122233729 <= lng AND lng <= 126.9303309776626 AND 37.486790035434474 <= lat AND lat <= 37.489131146223265 AND status = 1";
+
   con.query(query, queryParams, function(err, rows, fields) {
     if (err) {
       response = makeResponse(0, "검색에 실패했습니다.", {});
@@ -111,6 +113,26 @@ exports.search = function(req, res) {
       return ;
     } else {
       console.log(rows);
+      var Web3 = require('web3');
+      var web3 = new Web3();
+      var provider = new web3.providers.HttpProvider('http://61.75.63.149:8545');
+      web3.setProvider(provider);
+
+      var abi = [{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"},{"name":"seller","type":"address"},{"name":"buyer","type":"address"}],"name":"sellfunder","outputs":[{"name":"reached_","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"}],"name":"checkGoalReached","outputs":[{"name":"reached_","type":"bool"},{"name":"goal_","type":"uint256"},{"name":"funders_","type":"uint256"},{"name":"amount_","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"},{"name":"total","type":"uint256"}],"name":"distribution","outputs":[{"name":"revenue_","type":"uint256"},{"name":"revenue_result","type":"uint256"},{"name":"addr_","type":"address"},{"name":"amount_","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"}],"name":"contribute","outputs":[{"name":"reached_","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"},{"name":"funder","type":"address"}],"name":"checkfunders","outputs":[{"name":"reached_","type":"bool"},{"name":"fund_","type":"address"},{"name":"amount_","type":"uint256"},{"name":"num","type":"uint256"},{"name":"funda_","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_beneficiary","type":"address"},{"name":"_goal","type":"uint256"},{"name":"_compaignId","type":"uint256"}],"name":"newCampaign","outputs":[{"name":"m","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"},{"name":"funder","type":"address"}],"name":"returncontribute","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}];
+
+      var contractAddress = "0x6663caeeef1d0035deb1b77fffa72fc289331446";
+      console.log(web3.eth);
+      // var crowd = web3.eth.contract(abi).at(contractAddress);
+
+      // var result = crowd.checkGoalReached.call(campaignID, {
+      //   from: "0x072fc66f7505db74e9dc242afd2df8a861271d4a"
+      // });
+
+      // // 목표 1
+      // // 투자인원 2
+      // // 투자금액 3
+      // console.log(result);
+
 
       for (var i = 0; i < rows.length; i++) {
         var imageDirPath = './public/building_images/' + rows[i]['b_id'];
