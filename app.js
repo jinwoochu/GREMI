@@ -5,12 +5,13 @@ var fs = require('fs');
 var userdb = require('./model/user');
 var building = require('./model/building');
 
-// express router
+// express
 var express = require('express'),
-path = require("path"),
-app = express(),
-fileUpload = require('express-fileupload');
+  path = require("path"),
+  app = express(),
+  fileUpload = require('express-fileupload');
 
+//파일 업로더
 app.use(fileUpload());
 
 //static폴더
@@ -34,103 +35,107 @@ app.use(cookie('!@#%%@#@'));
 
 //회원가입
 app.post('/user_register', function(req, res) {
-    userdb.register(req, res);
+  userdb.register(req, res);
 });
 
 //로그인
 app.post('/login', function(req, res) {
-    userdb.login(req, res);
+  userdb.login(req, res);
 });
 
 //집등록
 app.post('/building', function(req, res) {
-    building.register(req, res);
+  building.register(req, res);
 });
 
 
 //집사기 
 // 잠시 보류 ^^
 app.post('/building/buy/:building_id', function(req, res) {
-    console.log(req.params.building_id);
-    console.log(req.body.price);
+  console.log(req.params.building_id);
+  console.log(req.body.price);
 });
 
 //집정보 수정
 app.post('/building/:building_id', function(req, res) {
-    building.edit(req, res);
+  building.edit(req, res);
 });
 
 
+// 사용자가 올린 빌딩을 관리자가 확인하고 등록시켜주는 곳
 app.post('/admin/building/confirm', function(req, res) {
-    building.confirmBuilding(req, res);
+  building.confirmBuilding(req, res);
 });
 
+// 등록된 빌딩을 사용자가 투자하는 곳
 app.post('/investment', function(req, res) {
-    building.investment(req, res);
+  building.investment(req, res);
 });
+
 
 
 // ------------------------------------------------------- get ------------------------------------------------ //
 
 
-
 //메인
 app.get('/', function(req, res) {
-    if (req.signedCookies.email === undefined) {
-        res.render('app.html');
-    } else {
-        res.redirect('/building');
-    }
+  if (req.signedCookies.email === undefined) {
+    res.render('app.html');
+  } else {
+    res.redirect('/building');
+  }
 });
 
 //프로필
 app.get('/profile', userdb.isLogined, function(req, res) {
-    userdb.getProfile(req, res);
+  userdb.getProfile(req, res);
 });
 
 
 //집
 app.get('/building', userdb.isLogined, function(req, res) {
-    res.render('building.html');
+  res.render('building.html');
 });
-
 
 
 //집상세정보
 app.get('/building/:building_id', function(req, res) {
-    building.detailBuilding(req, res);
+  building.detailBuilding(req, res);
 })
 
 //집등록 취소
 app.delete('/building/delete/:building_id', function(req, res) {
-    building.delete(req, res)
+  building.delete(req, res)
 })
 
 //여행가기
 app.get('/traveling', function(req, res) {
-    if (req.signedCookies.email === undefined) {
-        res.render('app.html');
-    } else {
-        res.render('traveling.html');
-    }
+  if (req.signedCookies.email === undefined) {
+    res.render('app.html');
+  } else {
+    res.render('traveling.html');
+  }
 });
 
 //로그아웃 
 app.get('/logout', function(req, res) {
-    res.clearCookie("email");
-    res.redirect('/');
+  res.clearCookie("email");
+  res.redirect('/');
 });
 
 
+//범위 내의 집 검색
 app.get('/buildingSearch', function(req, res) {
-    building.search(req, res)
+  building.search(req, res)
 });
 
+
+//관리자가 사용자가 올린 confirm되지 않은 빌딩리스트를 보는 곳
 app.get('/admin/building', function(req, res) {
-    building.getListOfUnconfirmedBuilding(req, res)
+  building.getListOfUnconfirmedBuilding(req, res)
 });
 
 
 app.listen(3000, function() {
-    console.log("Server listening on http://localhost:3000");
+  console.log("Server listening on http://localhost:3000");
 })

@@ -28,11 +28,11 @@ exports.register = function(req, res) {
       return;
     }
 
-    if (result.length != 0) { 
+    if (result.length != 0) {
       response = makeResponse(0, "이미 등록된 아이디입니다.", {});
       res.json(response);
       return;
-    } else { 
+    } else {
       var insertQuery = "INSERT INTO users (email, password,country,wallet_address) VALUES (?,?,?,?)";
       var insertQueryParams = [email, password, country, walletAddress];
 
@@ -66,7 +66,7 @@ exports.isLogined = function(req, res, next) {
 exports.login = function(req, res) {
   var email = req.body.email;
   var password = getSecretPassword(req.body.password);
-  
+
   var selectQuery = 'SELECT wallet_address FROM users WHERE email=? AND password=?';
   var selectQueryParams = [email, password];
 
@@ -93,7 +93,7 @@ exports.login = function(req, res) {
 // 해당 email 주소를 가진 user 정보를 profile.html에 던져야한다.
 exports.getProfile = function(req, res) {
   var email = req.signedCookies.email;
-  
+
   var selectQuery = "SELECT * FROM users WHERE email=?";
   var selectQueryParams = [email];
 
@@ -113,12 +113,17 @@ exports.getProfile = function(req, res) {
   });
 }
 
+
+//패스워드 암호화 함수
 function getSecretPassword(password) {
   var cipher = crypto.createCipher('aes-256-cbc', '열쇠');
   var secretPassword = cipher.update(password, 'utf8', 'base64');
   return secretPassword + cipher.final('base64');
 }
 
+
+
+// 리스폰스 만드는 함수
 function makeResponse(status, errorMessage, data) {
   var response = {
     status: status,

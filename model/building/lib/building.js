@@ -1,5 +1,3 @@
-var SynJS = require('synjs');
-
 // mysql
 var mysql = require('mysql');
 var con = mysql.createConnection({
@@ -15,7 +13,7 @@ var fs = require('fs');
 // 암복호화
 var crypto = require('crypto');
 
-//집 등록 (돌아는 가나 수정필요) ---------------------------
+//집 등록
 exports.register = function(req, res) {
   var data = req.body;
   var email = req.signedCookies.email;
@@ -49,7 +47,7 @@ exports.register = function(req, res) {
 
           if (req.files.images) {
             var buildingImages = req.files.images;
-            
+
             for (var i = 0; i < buildingImages.length; i++) {
               var imagePath = imageDirPath + '/' + buildingImages[i].name;
 
@@ -75,21 +73,23 @@ exports.register = function(req, res) {
   });
 }
 
+
+// 사용자가 올린 빌딩을 관리자가 확인하고 등록시켜주는 곳
 exports.confirmBuilding = function(req, res) {
-  var searchQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
-  var searchQueryParams = [req.body.tx_id, req.body.b_id];
-  
-  con.query(searchQuery, searchQueryParams, function(err, result, field) {
-    if (err) {
-      response = makeResponse(0, "컨펌 실패", {});
+    var searchQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
+    var searchQueryParams = [req.body.tx_id, req.body.b_id];
+
+    con.query(searchQuery, searchQueryParams, function(err, result, field) {
+      if (err) {
+        response = makeResponse(0, "컨펌 실패", {});
+        res.json(response);
+        return;
+      }
+      response = makeResponse(1, "", {});
       res.json(response);
-      return;
-    }
-    response = makeResponse(1, "", {});
-    res.json(response);
-  });
-}
-//------------------------------------------------------
+    });
+  }
+  //------------------------------------------------------
 
 //범위 내의 집 검색
 exports.search = function(req, res) {
@@ -103,14 +103,14 @@ exports.search = function(req, res) {
 
   var query = "SELECT * FROM buildings WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 1";
   var queryParams = [sw_x, ne_x, sw_y, ne_y];
-  
+
   "SELECT * FROM buildings WHERE 126.92577122233729 <= lng AND lng <= 126.9303309776626 AND 37.486790035434474 <= lat AND lat <= 37.489131146223265 AND status = 1";
 
   con.query(query, queryParams, function(err, rows, fields) {
     if (err) {
       response = makeResponse(0, "검색에 실패했습니다.", {});
       res.json(response);
-      return ;
+      return;
     } else {
       console.log(rows);
       var Web3 = require('web3');
@@ -118,7 +118,7 @@ exports.search = function(req, res) {
       var provider = new web3.providers.HttpProvider('http://61.75.63.149:8545');
       web3.setProvider(provider);
 
-      var abi = [{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"},{"name":"seller","type":"address"},{"name":"buyer","type":"address"}],"name":"sellfunder","outputs":[{"name":"reached_","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"}],"name":"checkGoalReached","outputs":[{"name":"reached_","type":"bool"},{"name":"goal_","type":"uint256"},{"name":"funders_","type":"uint256"},{"name":"amount_","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"},{"name":"total","type":"uint256"}],"name":"distribution","outputs":[{"name":"revenue_","type":"uint256"},{"name":"revenue_result","type":"uint256"},{"name":"addr_","type":"address"},{"name":"amount_","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"}],"name":"contribute","outputs":[{"name":"reached_","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"},{"name":"funder","type":"address"}],"name":"checkfunders","outputs":[{"name":"reached_","type":"bool"},{"name":"fund_","type":"address"},{"name":"amount_","type":"uint256"},{"name":"num","type":"uint256"},{"name":"funda_","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_beneficiary","type":"address"},{"name":"_goal","type":"uint256"},{"name":"_compaignId","type":"uint256"}],"name":"newCampaign","outputs":[{"name":"m","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_campaignId","type":"uint256"},{"name":"funder","type":"address"}],"name":"returncontribute","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}];
+      var abi = [{ "constant": false, "inputs": [{ "name": "_campaignId", "type": "uint256" }, { "name": "seller", "type": "address" }, { "name": "buyer", "type": "address" }], "name": "sellfunder", "outputs": [{ "name": "reached_", "type": "bool" }], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_campaignId", "type": "uint256" }], "name": "checkGoalReached", "outputs": [{ "name": "reached_", "type": "bool" }, { "name": "goal_", "type": "uint256" }, { "name": "funders_", "type": "uint256" }, { "name": "amount_", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_campaignId", "type": "uint256" }, { "name": "total", "type": "uint256" }], "name": "distribution", "outputs": [{ "name": "revenue_", "type": "uint256" }, { "name": "revenue_result", "type": "uint256" }, { "name": "addr_", "type": "address" }, { "name": "amount_", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_campaignId", "type": "uint256" }], "name": "contribute", "outputs": [{ "name": "reached_", "type": "bool" }], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_campaignId", "type": "uint256" }, { "name": "funder", "type": "address" }], "name": "checkfunders", "outputs": [{ "name": "reached_", "type": "bool" }, { "name": "fund_", "type": "address" }, { "name": "amount_", "type": "uint256" }, { "name": "num", "type": "uint256" }, { "name": "funda_", "type": "address" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_beneficiary", "type": "address" }, { "name": "_goal", "type": "uint256" }, { "name": "_compaignId", "type": "uint256" }], "name": "newCampaign", "outputs": [{ "name": "m", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_campaignId", "type": "uint256" }, { "name": "funder", "type": "address" }], "name": "returncontribute", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function" }];
 
       var contractAddress = "0x6663caeeef1d0035deb1b77fffa72fc289331446";
       console.log(web3.eth);
@@ -144,12 +144,14 @@ exports.search = function(req, res) {
         });
       }
 
-      response = makeResponse(1, "", {buildings: rows});
+      response = makeResponse(1, "", { buildings: rows });
       res.json(response);
     }
   });
 };
 
+
+//등록된 빌딩을 사용자가 투자하는 곳
 exports.investment = function(req, res) {
   var data = req.body;
   var email = req.signedCookies.email;
@@ -215,7 +217,7 @@ exports.detailBuilding = function(req, res) {
       throw err;
     }
 
-    if(result.length != 0) {
+    if (result.length != 0) {
       var imageDirPath = './public/building_images/' + buildingId;
 
       result[0]['images'] = [];
@@ -224,11 +226,11 @@ exports.detailBuilding = function(req, res) {
         result[0]['images'].push('/building_images/' + buildingId + '/' + file);
       });
 
-      res.render('detailBuilding.html', { "building": result[0]});
+      res.render('detailBuilding.html', { "building": result[0] });
       return;
-    } 
+    }
     res.redirect('/building');
-    
+
   });
 }
 
@@ -238,6 +240,8 @@ exports.delete = function(req, res) {
   var email = req.signedCookies.email;
 };
 
+
+//관리자가 사용자가 올린 confirm되지 않은 빌딩리스트를 보는 곳
 exports.getListOfUnconfirmedBuilding = function(req, res) {
   var sql = "SELECT b.b_id, b.country, b.state, b.city, b.street, b.price, b.lat, b.lng ,u.wallet_address FROM buildings AS b LEFT JOIN users AS u ON b.email=u.email WHERE status=0";
 
@@ -249,6 +253,7 @@ exports.getListOfUnconfirmedBuilding = function(req, res) {
   });
 }
 
+// 리스폰스 만드는 함수
 function makeResponse(status, errorMessage, data) {
   var response = {
     status: status,
