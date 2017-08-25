@@ -65,7 +65,9 @@ app.post('/admin/building/confirm', function(req, res) {
     building.confirmBuilding(req, res);
 });
 
-
+app.post('/investment', function(req, res) {
+    building.investment(req, res);
+});
 
 
 // ------------------------------------------------------- get ------------------------------------------------ //

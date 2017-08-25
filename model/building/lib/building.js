@@ -34,8 +34,6 @@ exports.register = function(req, res) {
       var insertQuery = "INSERT INTO buildings (lat, lng, country, state, city, street, price, email) VALUES (?,?,?,?,?,?,?,?)";
       var insertQueryParams = [data.lat, data.lng, data.country, data.state, data.city, data.street, data.price, email];
 
-      console.log(insertQueryParams);
-
       con.query(insertQuery, insertQueryParams, function(err2, result2, field2) {
         if (err2) {
           response = makeResponse(0, "실패1", {});
@@ -78,9 +76,10 @@ exports.register = function(req, res) {
 }
 
 exports.confirmBuilding = function(req, res) {
-  var sql = "UPDATE buildings SET status = 1 WHERE b_id = " + req.body.b_id;
-
-  con.query(sql, function(err, result, field) {
+  var searchQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
+  var searchQueryParams = [req.body.tx_id, req.body.b_id];
+  
+  con.query(searchQuery, searchQueryParams, function(err, result, field) {
     if (err) {
       response = makeResponse(0, "컨펌 실패", {});
       res.json(response);
@@ -91,7 +90,6 @@ exports.confirmBuilding = function(req, res) {
   });
 }
 //------------------------------------------------------
-
 
 //범위 내의 집 검색
 exports.search = function(req, res) {
@@ -106,7 +104,6 @@ exports.search = function(req, res) {
   var query = "SELECT * FROM buildings WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 1";
   var queryParams = [sw_x, ne_x, sw_y, ne_y];
   
-
   con.query(query, queryParams, function(err, rows, fields) {
     if (err) {
       response = makeResponse(0, "검색에 실패했습니다.", {});
@@ -129,7 +126,24 @@ exports.search = function(req, res) {
       res.json(response);
     }
   });
+};
 
+exports.investment = function(req, res) {
+  var data = req.body;
+  var email = req.signedCookies.email;
+  var insertQuery = "INSERT INTO b_buyer_log (b_id, tx_id, invest_amount, stake, email) VALUES (?,?,?,?,?)";
+  var insertQueryParams = [data.b_id, data.tx_id, data.invest_amount, data.stake, email];
+
+  con.query(insertQuery, insertQueryParams, function(err, result, field) {
+    if (err) {
+      response = makeResponse(0, "실패1", {});
+      res.json(response);
+      return;
+    } else {
+      response = makeResponse(1, '', {});
+      res.json(response);
+    }
+  });
 };
 
 //집정보 수정
@@ -170,24 +184,29 @@ exports.search = function(req, res) {
 
 //집상세정보
 exports.detailBuilding = function(req, res) {
-  var selectBuildingId = req.params.building_id;
-  var readSql =
-  " SELECT * FROM buildings where b_id=" + selectBuildingId;
-  con.query(readSql, function(err, result, field) {
-    if (err) throw err;
+  var buildingId = req.params.building_id;
+  var selectQuery = 'SELECT * FROM buildings WHERE b_id=?';
+  var selectQueryParams = [buildingId];
 
-    var imageSql =
-    " SELECT * FROM building_images where b_id=" + selectBuildingId;
-    con.query(imageSql, function(err2, result2, field2) {
+  con.query(selectQuery, selectQueryParams, function(err, result, field) {
+    if (err) {
+      throw err;
+    }
 
-      var imageArr = [];
+    if(result.length != 0) {
+      var imageDirPath = './public/building_images/' + buildingId;
 
-      for (var i = 0; i < result2.length; i++) {
-        imageArr[i] = result2[i].path;
-      }
-      res.render('detailBuilding.html', { "building": result[0], "images": imageArr });
+      result[0]['images'] = [];
 
-    });
+      fs.readdirSync(imageDirPath).forEach(file => {
+        result[0]['images'].push('/building_images/' + buildingId + '/' + file);
+      });
+
+      res.render('detailBuilding.html', { "building": result[0]});
+      return;
+    } 
+    res.redirect('/building');
+    
   });
 }
 
@@ -195,17 +214,16 @@ exports.detailBuilding = function(req, res) {
 //집등록 취소
 exports.delete = function(req, res) {
   var email = req.signedCookies.email;
-  // console.log(req.body);
-  // console.log(email);
 };
 
 exports.getListOfUnconfirmedBuilding = function(req, res) {
-  var sql = "select b.b_id, b.country, b.state, b.city, b.street, b.price, b.lat, b.lng ,u.wallet_address from buildings as b left join users as u on b.email = u.email where status = 0;";
+  var sql = "SELECT b.b_id, b.country, b.state, b.city, b.street, b.price, b.lat, b.lng ,u.wallet_address FROM buildings AS b LEFT JOIN users AS u ON b.email=u.email WHERE status=0";
 
   con.query(sql, function(err, result, field) {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    }
     res.render('adminBuilding.html', { "buildings": result });
-    console.log(result.length);
   });
 }
 
@@ -220,5 +238,3 @@ function makeResponse(status, errorMessage, data) {
   }
   return response;
 }
-
-

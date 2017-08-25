@@ -16,6 +16,7 @@
   <script src="/js/lib/contract/web3.js"></script>
   <script src="/js/lib/jquery-3.2.1/jquery-3.2.1.js"></script>
   <script src="/js/lib/bootstrap-3.3.7/bootstrap.min.js"></script>
+  <script src="/js/lib/jquery.cookie/jquery.cookie.js"></script>
 
   <!-- costom css import -->
 
@@ -42,6 +43,7 @@
         <%= building.lng %>
 
         <input id="amount" type="number">
+        <input id="price" type="hidden" value="<%= building.price %>">
         <button id="invest_btn" class="btn btn-primary" data-building-id="<%= building.b_id %>">투자신청하기</button>
       </div>
     </div>

@@ -30,25 +30,25 @@ $(document).ready(function() {
 				'lat': 37,
 				'lng': 133
 			}
-		*/
+			*/
 
-		$.ajax({
-			url: $(this).attr('action'),
-			type: 'POST',
-			data: data,
-			contentType: false,
-			processData: false,
-			dataType: "json",
-			success: function(result) {
-				if (result.status == 0) {
-					alert(result.error_message);
-				} else {
-					window.location.href = "/building";
-				}
-			} 
+			$.ajax({
+				url: $(this).attr('action'),
+				type: 'POST',
+				data: data,
+				contentType: false,
+				processData: false,
+				dataType: "json",
+				success: function(result) {
+					if (result.status == 0) {
+						alert(result.error_message);
+					} else {
+						window.location.href = "/building";
+					}
+				} 
+			});
+
 		});
-
-	});
 
 	// 메뉴변경
 	$('#building_menu').on('click', 'a', function(event) {
@@ -62,12 +62,37 @@ $(document).ready(function() {
 		if (confirm('투자 ㄲ??')) {
 			var campaignId = $(this).data('building-id');
 			var amount = $('#amount').val();
-			var broker = "0x072fc66f7505db74e9dc242afd2df8a861271d4a";
+			var userAddress = $.cookie('wallet_address');
 
-			contract.investment(campaignId, amount, broker);
+			contract.investment(campaignId, amount, userAddress, saveTransactionHistory);
 		}
 	});
 
+	function saveTransactionHistory(txId, campaignId, amount) {
+		var data = new FormData();
+
+		data.append('tx_id', txId);
+		data.append('b_id', campaignId);
+		data.append('invest_amount', amount);
+		data.append('stake', amount / ($('#price').val() - 0) * 100);
+
+		$.ajax({
+			url: '/investment',
+			type: 'POST',
+			data: data,
+			contentType: false,
+			processData: false,
+			dataType: "json",
+			success: function(result) {
+				if (result.status == 0) {
+					alert(result.error_message);
+				} else {
+					alert('완료!');  
+					window.location.href = "/building";
+				}
+			}  
+		}); 
+	}
 	// 빌딩 판매 주소 검색
 	$('#country, #state, #city, #street').on('change', function(event) {
 		var address = 

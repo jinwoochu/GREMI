@@ -1,6 +1,3 @@
-//코인스택쨔응
-var CoinStack = require('coinstack-sdk-js')
-
 // crypto!!
 const crypto = require('crypto');
 
@@ -8,138 +5,128 @@ const crypto = require('crypto');
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "mysql!!",
-    database: "gremi"
+  host: "localhost",
+  user: "root",
+  password: "mysql!!",
+  database: "gremi"
 });
 
 //회원가입
 exports.register = function(req, res) {
-    var email = req.body.email;
-    var password = req.body.password;
-    var country = req.body.country;
-    var wallet_address = req.body.wallet_address;
+  var email = req.body.email;
+  var password = getSecretPassword(req.body.password);
+  var country = req.body.country;
+  var walletAddress = req.body.wallet_address;
 
-    // console.log(wallet_address)
-    // console.log(password)
+  var selectQuery = "SELECT * FROM users WHERE email=?";
+  var selectQueryParams = [email];
 
-    //암호화 
-    var cipher = crypto.createCipher('aes-256-cbc', '열쇠');
-    var secret_password = cipher.update(password, 'utf8', 'base64');
-    secret_password += cipher.final('base64');
+  con.query(readSql, function(err, result, field) {
+    if (err) {
+      response = makeResponse(0, "회원가입에 실패했습니다.", {});
+      res.json(response);
+      return;
+    }
 
+    if (result.length != 0) { 
+      response = makeResponse(0, "이미 등록된 아이디입니다.", {});
+      res.json(response);
+      return;
+    } else { 
+      var insertQuery = "INSERT INTO users (email, password,country,wallet_address) VALUES (?,?,?,?)";
+      var insertQueryParams = [email, password, country, walletAddress];
 
-    var exists_email = false;
-
-    var readSql = " SELECT * FROM USERS";
-    con.query(readSql, function(err, result, field) {
-        if (err) throw err;
-        for (var i = 0; i < result.length; i++) { // 등록된 이메일이 있는지 체크함.
-            if (result[i].email === email) exists_email = true;
+      con.query(insertQuery, insertQueryParams, function(err2, result2, field2) {
+        if (err2) {
+          response = makeResponse(0, "회원가입에 실패했습니다.", {});
+          res.json(response);
+          return;
         }
 
-        if (exists_email) { //등록된 이메일 있으면 등록실패
-            response = makeResponse(0, "이미 등록된 아이디입니다.", {});
-            res.json(response);
-        } else { // 등록 성공시
-            var insert_sql =
-                "INSERT INTO USERS (email, password,country,wallet_address) VALUES (?,?,?,?)";
-            var values = [email, secret_password, country, wallet_address];
-            con.query(insert_sql, values, function(err2, result2, field2) {
-                if (err2) {
-                    throw err2;
-                }
-
-                response = makeResponse(1, "", { 'key': email });
-                res.cookie('email', email, { signed: true });
-                console.log(response);
-                res.json(response);
-            });
-        }
-    });
+        response = makeResponse(1, "", {});
+        res.cookie('email', email, { signed: true });
+        res.cookie('wallet_address', walletAddress, { signed: false });
+        console.log(response);
+        res.json(response);
+      });
+    }
+  });
 }
 
 // 로그인되어있는지 , 쿠키 확인 
 exports.isLogined = function(req, res, next) {
-    if (req.signedCookies.email === undefined) {
-        res.redirect('/');
-    } else {
-        next();
-    }
+  if (req.signedCookies.email === undefined) {
+    res.redirect('/');
+  } else {
+    next();
+  }
 }
-
-
 
 // 로그인 체킹 로직
 exports.login = function(req, res) {
-    var email = req.body.email;
-    var origin_password = req.body.password;
+  var email = req.body.email;
+  var password = getSecretPassword(req.body.password);
+  
+  var selectQuery = 'SELECT wallet_address FROM users WHERE email=? AND password=?';
+  var selectQueryParams = [email, password];
 
-    var cipher = crypto.createCipher('aes-256-cbc', '열쇠');
-    var secret_password = cipher.update(origin_password, 'utf8', 'base64');
-    secret_password += cipher.final('base64');
-
-    var readSql =
-        'SELECT email,password FROM USERS where email="' + email + '" and password="' + secret_password + '"';
-
-
-    con.query(readSql, function(err, result, field) {
-        if (err) {
-            throw err;
-            response = makeResponse(0, "로그인에 실패했습니다.", {});
-            res.json(response);
-        } else {
-            if (result.length == 0) {
-                response = makeResponse(0, "로그인에 실패했습니다.", {});
-                res.json(response);
-            } else {
-                console.log("유저 로그인 성공");
-                response = makeResponse(1, "", { 'key': email });
-                res.cookie('email', email, { signed: true });
-                res.json(response);
-            }
-        }
-    });
+  con.query(selectQuery, selectQueryParams, function(err, result, field) {
+    if (err) {
+      throw err;
+      response = makeResponse(0, "로그인에 실패했습니다.", {});
+      res.json(response);
+    } else {
+      if (result.length == 0) {
+        response = makeResponse(0, "로그인에 실패했습니다.", {});
+        res.json(response);
+      } else {
+        console.log("유저 로그인 성공");
+        response = makeResponse(1, "", {});
+        res.cookie('email', email, { signed: true });
+        res.cookie('wallet_address', result[0].wallet_address, { signed: false });
+        res.json(response);
+      }
+    }
+  });
 };
-
 
 // 해당 email 주소를 가진 user 정보를 profile.html에 던져야한다.
 exports.getProfile = function(req, res) {
-    var email = req.signedCookies.email;
-    var readSql =
-        'SELECT * FROM USERS where email="' + email + '"';
+  var email = req.signedCookies.email;
+  
+  var selectQuery = "SELECT * FROM users WHERE email=?";
+  var selectQueryParams = [email];
 
-    con.query(readSql, function(err, result, field) {
-        if (err) {
-            throw err;
-            response = makeResponse(0, "Errer", {});
-            res.json(response);
-        } else {
-            if (result.length == 0) {
-                response = makeResponse(0, "쿠키 조작하지마세요", {});
-                res.json(response);
-            } else {
-                // console.log("프로필 정보 가져오기 성공");
-                // console.log(result)
-                res.render('profile.html', { "profile": result });
-            }
-        }
-    });
+  con.query(selectQuery, selectQueryParams, function(err, result, field) {
+    if (err) {
+      response = makeResponse(0, "Errer", {});
+      res.json(response);
+      return;
+    } else {
+      if (result.length == 0) {
+        response = makeResponse(0, "쿠키 조작하지마세요", {});
+        res.json(response);
+      } else {
+        res.render('profile.html', { "profile": result });
+      }
+    }
+  });
 }
 
-
-
-
+function getSecretPassword(password) {
+  var cipher = crypto.createCipher('aes-256-cbc', '열쇠');
+  var secretPassword = cipher.update(password, 'utf8', 'base64');
+  return secretPassword + cipher.final('base64');
+}
 
 function makeResponse(status, errorMessage, data) {
-    var response = {
-        status: status,
-        error_message: errorMessage
-    };
+  var response = {
+    status: status,
+    error_message: errorMessage
+  };
 
-    for (var key in data) {
-        response[key] = data[key];
-    }
-    return response;
+  for (var key in data) {
+    response[key] = data[key];
+  }
+  return response;
 }

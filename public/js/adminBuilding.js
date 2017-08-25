@@ -67,10 +67,10 @@ $(document).ready(function() {
     contract.createCampaign(buildingId, price, userWalletAddress,updateBuildingStatus);
   });
 
-  function updateBuildingStatus(buildingId) {
-
+  function updateBuildingStatus(txId, buildingId) {
     var data = new FormData();
 
+    data.append('tx_id', txId);
     data.append('b_id', buildingId);
 
     $.ajax({
