@@ -14,37 +14,31 @@
             3,333,333
           </span>
         </div>
-        <div class="row">
-          <div class="currency-form col-md-6">
+        <div class="currency-form row">
+          <div class="col-md-6">
             <div class="input-group"> 
-              <input class="form-control" aria-label="Text input with segmented button dropdown" placeholder="Expacted Money"> 
+              <input id="deposit_input" class="currency-input form-control" aria-label="Text input with segmented button dropdown" placeholder="Expacted Money" data-type="usd"> 
               <div class="input-group-btn"> 
-                <button type="button" class="currency-info btn btn-default">G-coin</button> 
+                <button type="button" class="currency-info btn btn-default">DALLAR</button> 
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
                   <span class="caret"></span> 
                   <span class="sr-only">Toggle Dropdown</span> 
                 </button> 
-                <ul class="currency-type dropdown-menu dropdown-menu-right"> 
+                <ul class="currency-type dropdown-menu dropdown-menu-right" data-input-type="#deposit_input"> 
                   <li>
-                    <a href="#" data-currency-type="G-coin">
-                      <img src="/images/g-coin.png" width="40px" height="40px">
-                      G-coin
-                    </a>
-                  </li> 
-                  <li>
-                    <a href="#" data-currency-type="DALLAR">
+                    <a href="#" data-currency-type="usd" data-currency-info="DOLLAR">
                       <img src="/images/us.png" width="40px" height="40px">
                       DALLAR
                     </a>
                   </li> 
                   <li>
-                    <a href="#" data-currency-type="WON">
+                    <a href="#" data-currency-type="krw" data-currency-info="WON">
                       <img src="/images/won.png" width="40px" height="40px">
                       WON
                     </a>
                   </li>
                   <li>
-                    <a href="#" data-currency-type="EURO">
+                    <a href="#" data-currency-type="eur" data-currency-info="EURO">
                       <img src="/images/euro.png" width="40px" height="40px">
                       EURO
                     </a>
@@ -54,36 +48,43 @@
             </div>
           </div>
 
-          <div class="currency-form col-md-6">
+          <div class="col-md-6">
+            <input id="expected_deposit_money" class="form-control" placeholder="Expacted Money" disabled=""> 
+          </div>
+
+          <div style="text-align: center; margin-top: 10px;">
+            <button id="deposit_button" type="button" class="btn btn-default btn-lg">DEPOSIT</button>
+          </div>
+        </div>
+
+        <div class="currency-form row">
+          <div class="col-md-6">
+            <input id="widthraw_input" class="currency-input form-control" placeholder="INPUT G-coin" data-type="usd"> 
+          </div>
+          <div class="col-md-6">
             <div class="input-group"> 
-              <input class="form-control" aria-label="Text input with segmented button dropdown" placeholder="Expacted Money" disabled=""> 
+              <input id="expected_widthraw_money" class="form-control" aria-label="Text input with segmented button dropdown" placeholder="Expacted Money" disabled> 
               <div class="input-group-btn"> 
-                <button type="button" class="currency-info btn btn-default">G-coin</button> 
+                <button type="button" class="currency-info btn btn-default">DALLA</button> 
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
                   <span class="caret"></span> 
                   <span class="sr-only">Toggle Dropdown</span> 
                 </button> 
-                <ul class="currency-type dropdown-menu dropdown-menu-right"> 
+                <ul class="currency-type dropdown-menu dropdown-menu-right" data-input-type="#widthraw_input"> 
                   <li>
-                    <a href="#" data-currency-type="G-coin">
-                      <img src="/images/g-coin.png" width="40px" height="40px">
-                      G-coin
-                    </a>
-                  </li> 
-                  <li>
-                    <a href="#" data-currency-type="DALLAR">
+                    <a href="#" data-currency-type="usd" data-currency-info="DOLLAR">
                       <img src="/images/us.png" width="40px" height="40px">
                       DALLAR
                     </a>
                   </li> 
                   <li>
-                    <a href="#" data-currency-type="WON">
+                    <a href="#" data-currency-type="krw" data-currency-info="WON">
                       <img src="/images/won.png" width="40px" height="40px">
                       WON
                     </a>
                   </li>
                   <li>
-                    <a href="#" data-currency-type="EURO">
+                    <a href="#" data-currency-type="eur" data-currency-info="EURO">
                       <img src="/images/euro.png" width="40px" height="40px">
                       EURO
                     </a>
@@ -92,11 +93,11 @@
               </div> 
             </div>
           </div>
-        </div>
 
-        <div style="text-align: center; margin-top: 10px;">
-          <button type="button" class="btn btn-default btn-lg">EXCHANGE</button>
-        </div>
+          <div style="text-align: center; margin-top: 10px;">
+            <button id="widthraw_button" type="button" class="btn btn-default btn-lg">WIDTHRAW</button>
+          </div>
+        </div>        
       </div>
     </div>
   </div>
