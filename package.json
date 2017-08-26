@@ -10,10 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.2",
-    "coinstack-sdk-js": "^1.1.18",
     "ejs": "^2.5.7",
     "express": "^4.15.4",
     "express-fileupload": "^0.1.4",
-    "mysql": "^2.14.1"
+    "mysql": "^2.14.1",
+    "xml-parser": "^1.2.1"
   }
 }

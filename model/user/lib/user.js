@@ -1,5 +1,13 @@
+// xmlparser
+var parser = require('xml-parser');
+
+// request 
+var request = require('request');
+
+
 // crypto!!
 const crypto = require('crypto');
+
 
 // mysql
 var mysql = require('mysql');
@@ -112,6 +120,62 @@ exports.getProfile = function(req, res) {
     }
   });
 }
+
+
+// 코인 환율 보여주기 
+exports.expectCoin = function(req, res) {
+  var email = req.signedCookies.email;
+  var data = req.query;
+
+  // console.log(data);
+
+  //요청 페이지의 내용을 받아온다.
+  request('http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote', function(error, response, body) {
+
+    var obj = parser(body);
+    //환율 정보 
+    var UsdToKrw = obj.root.children[1].children[0].children[1].content;
+    var UsdToEur = obj.root.children[1].children[63].children[1].content;
+
+    if (data.type === undefined || data.money === undefined) {
+      response = makeResponse(0, "입력 에러", {});
+      res.json(response);
+      return;
+    } else if (data.type = "krw") { //한화 일때
+      console.log(data.money / UsdToKrw);
+      response = makeResponse(1, "", { "expectCoin": data.money / UsdToKrw });
+      res.json(response);
+    } else if (data.type == "eur") { // 유로화 일때
+      console.log(data.money / UsdToEur);
+      response = makeResponse(1, "", { "expectCoin": data.money / UsdToEur });
+      res.json(response);
+    } else { // 달러일때
+      console.log(data.money);
+      response = makeResponse(1, "", { "expectCoin": data.money });
+      res.json(response);
+    }
+
+  });
+
+
+  // var insertQuery = "INSERT INTO wallet (email, krw, usd, eur) VALUES (?,?,?,?)";
+  // var insertQueryParams = [email, data.krw, data.usd, data.eur];
+  // console.log(insertQueryParams)
+
+  // con.query(insertQuery, insertQueryParams, function(err2, result2, field2) {
+  //   if (err2) {
+  //     response = makeResponse(0, "환전에 실패했습니다.", {});
+  //     res.json(response);
+  //     return;
+  //   } else {
+  //     console.log(result2)
+  //     res.redirect('/test2.html');
+  //   }
+  // });
+}
+
+
+
 
 
 //패스워드 암호화 함수

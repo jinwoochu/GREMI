@@ -73,8 +73,24 @@ app.post('/investment', function(req, res) {
 });
 
 
+// 코인 환율 보여주기
+app.get('/expectCoin', function(req, res) {
+  userdb.expectCoin(req, res);
+});
 
+
+// 돈 환전 
+app.post('/exchangeCoinToMoney', function(req, res) {
+  // userdb.exchangeMoney(req, res);
+  console.log("코인 환전");
+});
 // ------------------------------------------------------- get ------------------------------------------------ //
+
+
+//test2.html g_coin으로 변경
+app.get('/test2', function(req, res) {
+  res.render('test2.html');
+});
 
 
 //메인
