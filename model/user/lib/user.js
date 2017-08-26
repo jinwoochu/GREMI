@@ -3,7 +3,14 @@ var parser = require('xml-parser');
 
 // request 
 var request = require('request');
+//요청 페이지의 내용을 받아온다.
+request('http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote', function(error, response, body) {
 
+  var obj = parser(body);
+  //환율 정보 
+  var UsdToKrw = obj.root.children[1].children[0].children[1].content;
+  var UsdToEur = obj.root.children[1].children[63].children[1].content;
+});
 
 // crypto!!
 const crypto = require('crypto');
@@ -18,6 +25,8 @@ var con = mysql.createConnection({
   password: "mysql!!",
   database: "gremi"
 });
+
+
 
 //회원가입
 exports.register = function(req, res) {
@@ -128,44 +137,42 @@ exports.expectCoin = function(req, res) {
   var email = req.signedCookies.email;
   var data = req.query;
   console.log(data);
-  // console.log(data);
-
-  //요청 페이지의 내용을 받아온다.
-  request('http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote', function(error, response, body) {
-
-    var obj = parser(body);
-    //환율 정보 
-    var UsdToKrw = obj.root.children[1].children[0].children[1].content;
-    var UsdToEur = obj.root.children[1].children[63].children[1].content;
-
-    if (data.type === undefined || data.money === undefined) {
-      response = makeResponse(0, "입력 에러", {});
-      res.json(response);
-      return;
-    } else if (data.type == "krw") { //한화 일때
-      console.log(data.money / UsdToKrw);
-      response = makeResponse(1, "", { "expectCoin": data.money / UsdToKrw });
-      res.json(response);
-    } else if (data.type == "eur") { // 유로화 일때
-      console.log(data.money / UsdToEur);
-      response = makeResponse(1, "", { "expectCoin": data.money / UsdToEur });
-      res.json(response);
-    } else { // 달러일때
-      console.log(data.money);
-      response = makeResponse(1, "", { "expectCoin": data.money });
-      res.json(response);
-    }
-
-  });
+  if (data.type === undefined || data.money === undefined) {
+    response = makeResponse(0, "입력 에러", {});
+    res.json(response);
+    return;
+  } else if (data.type == "krw") { //한화 일때
+    console.log(data.money / UsdToKrw);
+    response = makeResponse(1, "", { "expectCoin": data.money / UsdToKrw });
+    res.json(response);
+  } else if (data.type == "eur") { // 유로화 일때
+    console.log(data.money / UsdToEur);
+    response = makeResponse(1, "", { "expectCoin": data.money / UsdToEur });
+    res.json(response);
+  } else { // 달러일때
+    console.log(data.money);
+    response = makeResponse(1, "", { "expectCoin": data.money });
+    res.json(response);
+  }
 }
 
-
+// 코인 충전 
 exports.chargeCoin = function(req, res) {
   var email = req.signedCookies.email;
   var data = req.body;
-  console.log(email);
-  console.log(data);
 
+  console.log(data);
+  if (data.type === undefined || data.money === undefined) {
+    response = makeResponse(0, "입력 에러", {});
+    res.json(response);
+    return;
+  } else if (data.type == "krw") { //한화 일때
+    updateGCoin(data.money / UsdToKrw);
+  } else if (data.type == "eur") { // 유로화 일때
+    updateGCoin(data.money / UsdToEur);
+  } else { // 달러일때
+    updateGCoin(data.money);
+  }
 }
 
 
@@ -192,4 +199,24 @@ function makeResponse(status, errorMessage, data) {
     response[key] = data[key];
   }
   return response;
+}
+
+
+
+
+// G_coin update함수
+
+function updateGCoin(coin) {
+  var updateQuery = "UPDATE users SET g_coin=? WHERE email=?";
+  var updateQueryParams = [coin, email];
+
+  con.query(updateQuery, updateQueryParams, function(err2, result2, field2) {
+    if (err2) {
+      response = makeResponse(0, "코인충전에 실패했습니다.", {});
+      res.json(response);
+      return;
+    }
+    response = makeResponse(1, "", {});
+    res.json(response);
+  });
 }

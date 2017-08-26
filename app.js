@@ -82,7 +82,6 @@ app.get('/expectCoin', function(req, res) {
 // 코인 충전
 app.post('/chargeCoin', function(req, res) {
   userdb.chargeCoin(req, res);
-  console.log("코인 환전");
 });
 
 // ------------------------------------------------------- get ------------------------------------------------ //
