@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "cron": "^1.2.1",
     "ejs": "^2.5.7",
     "express": "^4.15.4",
     "express-fileupload": "^0.1.4",

@@ -30,7 +30,6 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 5
 var cookie = require('cookie-parser');
 app.use(cookie('!@#%%@#@'));
 
-
 // --------------------------------------------- post,delete ------------------------------------------------ //
 
 //회원가입
@@ -48,7 +47,6 @@ app.post('/building', function(req, res) {
   building.register(req, res);
 });
 
-
 //집사기 
 // 잠시 보류 ^^
 app.post('/building/buy/:building_id', function(req, res) {
@@ -61,7 +59,6 @@ app.post('/building/:building_id', function(req, res) {
   building.edit(req, res);
 });
 
-
 // 사용자가 올린 빌딩을 관리자가 확인하고 등록시켜주는 곳
 app.post('/admin/building/confirm', function(req, res) {
   building.confirmBuilding(req, res);
@@ -71,7 +68,6 @@ app.post('/admin/building/confirm', function(req, res) {
 app.post('/investment', function(req, res) {
   building.investment(req, res);
 });
-
 
 // 코인 환율 보여주기
 app.get('/expectCoin', function(req, res) {
@@ -91,7 +87,6 @@ app.post('/chargeCoin', function(req, res) {
 app.get('/test2', function(req, res) {
   res.render('test2.html');
 });
-
 
 //메인
 app.get('/', function(req, res) {
@@ -139,14 +134,10 @@ app.get('/logout', function(req, res) {
   res.redirect('/');
 });
 
-
 //범위 내의 집 검색
 app.get('/buildingSearch', function(req, res) {
   building.search(req, res)
 });
-
-
-
 
 //관리자가 사용자가 올린 confirm되지 않은 빌딩리스트를 보는 곳
 app.get('/admin/building', function(req, res) {

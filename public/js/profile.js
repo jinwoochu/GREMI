@@ -84,7 +84,6 @@ $(document).ready(function() {
       type: "get",
       dataType: "json",
       success: function(result) {
-        console.log(result);
         var sum = 0;
 
         for(var i = 0 ; i < result.buyerLogs.length ; i++) {
@@ -93,7 +92,7 @@ $(document).ready(function() {
 
         $("#buyTempl").tmpl({'logs': result.buyerLogs, 'totalAmount': sum}).appendTo("#buy_list");
 
-        var sum = 0;
+        sum = 0;
         for(var i = 0 ; i < result.buildings.length ; i++) {
           sum += result.buildings[i].price;
         }
@@ -109,6 +108,111 @@ $(document).ready(function() {
 
 
   $('.currency-type').on('click', 'a', function() {
-    $(this).parents('.currency-form').find('.currency-info').text($(this).data('currency-type'));
+
+    $(this).parents('.currency-form').find('.currency-info').text($(this).data('currency-info'));
+
+    $(this).parents('.currency-form').find('.currency-input').data('type', $(this).data('currency-type'));
+    
+    $($(this).parents('ul').data('input-type')).keyup();
   });
+
+  $('#deposit_input').on('keyup', function() {
+    var money = $(this).val();
+    var type = $(this).data('type');
+    
+    console.log(money, type);
+    getExpectCoin(type, money, function(result) {
+      // {status: 1 / 0, error_message: "" ,expectCoin}
+      if(result.status) {
+        $('#expected_deposit_money').val(result.expectCoin);
+        return;
+      } 
+      alert(result.error_message);
+    });
+  });
+
+  $('#widthraw_input').on('keyup', function() {
+    var money = $(this).val();
+    var type = $(this).data('type');
+    
+    console.log(money, type);
+    getExpectCoin(type, money, function(result) {
+      // {status: 1 / 0, error_message: "" ,expectCoin}
+      if(result.status) {
+        $('#expected_widthraw_money').val(result.expectCoin);
+        return;
+      } 
+      alert(result.error_message);
+    });
+  });
+
+  function getExpectCoin(type, money, callback) {
+    var data = {
+      'type': type,
+      'money': money
+    };
+
+    $.ajax({
+      url: '/expectCoin',
+      type: 'GET',
+      data: data,
+      dataType: "json",
+      success: callback
+    });
+  }
+
+  $('#deposit_button').on('click', function() {
+    var money = $('#deposit_input').val();
+    var type = $('#deposit_input').data('type');
+
+    var data = new FormData();
+
+    data.append('type', type);
+    data.append('money', money);
+
+    $.ajax({
+      url: '/expectCoin',
+      type: 'GET',
+      data: data,
+      contentType: false,
+      processData: false,
+      dataType: "json",
+      success: function(result) {
+        // {status: 1 / 0, error_message: "" ,expectCoin}
+        if(!result) {
+          alert('성공');
+          return;
+        } 
+        alert(result.error_message);
+      }
+    });
+  });
+
+  $('#widthraw_button').on('click', function() {
+    var money = $('#widthraw_input').val();
+    var type = $('#widthraw_input').data('type');
+
+    var data = new FormData();
+
+    data.append('type', type);
+    data.append('money', money);
+
+    $.ajax({
+      url: '/expectCoin',
+      type: 'GET',
+      data: data,
+      contentType: false,
+      processData: false,
+      dataType: "json",
+      success: function(result) {
+        // {status: 1 / 0, error_message: "" ,expectCoin}
+        if(!result) {
+          alert('성공');
+          return;
+        } 
+        alert(result.error_message);
+      }
+    });
+  });
+
 });

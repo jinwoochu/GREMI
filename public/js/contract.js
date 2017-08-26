@@ -38,7 +38,7 @@ contract.createCampaign = function(campaignId, price, owner, callback) {
     if(!error) {
       contract.crowd.newCampaign.sendTransaction(owner, priceWei, campaignId, {
         from: contract.ownerAddress,
-        gas: 500000 // toWei
+        gas: 500000
       }, function(error, txId) {
         if(!error) {
           debugger;
