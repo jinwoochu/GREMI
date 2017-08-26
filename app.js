@@ -7,9 +7,9 @@ var building = require('./model/building');
 
 // express
 var express = require('express'),
-  path = require("path"),
-  app = express(),
-  fileUpload = require('express-fileupload');
+path = require("path"),
+app = express(),
+fileUpload = require('express-fileupload');
 
 //파일 업로더
 app.use(fileUpload());

@@ -18,6 +18,9 @@ contract.init = function() {
 
   this.crowd = web3.eth.contract(abi).at(this.address);
   this.web3 = web3;
+
+  debugger;
+  console.log(web3.version);
 };
 
 contract.createCampaign = function(campaignId, price, owner, callback) {
@@ -46,6 +49,7 @@ contract.createCampaign = function(campaignId, price, owner, callback) {
     }  
   });
 };
+
 
 contract.investment = function(campaignId, amount, buyer, callback) {
   var web3 = this.web3;
