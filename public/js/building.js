@@ -77,8 +77,6 @@ $(document).ready(function() {
 		data.append('invest_amount', amount);
 		data.append('stake', amount / ($('#price').val() - 0) * 100);
 
-		debugger;
-
 		$.ajax({
 			url: '/investment',
 			type: 'POST',
@@ -96,6 +94,7 @@ $(document).ready(function() {
 			}  
 		}); 
 	}
+	
 	// 빌딩 판매 주소 검색
 	$('#country, #state, #city, #street').on('change', function(event) {
 		var address = 
