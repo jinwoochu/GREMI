@@ -17,11 +17,13 @@
   <script src="/js/lib/contract/web3.js"></script>
   <script src="/js/lib/jquery-3.2.1/jquery-3.2.1.js"></script>
   <script src="/js/lib/bootstrap-3.3.7/bootstrap.min.js"></script>
+  <script src="/js/lib/jquery.tmpl/jquery.tmpl.js"></script>
   <script src='/js/lib/moment/moment.js'></script>
   <script src='/js/lib/fullcalendar/fullcalendar.min.js'></script>
 
   <!-- costom css import -->
   <link href="/css/common.css" rel="stylesheet">
+  <link href="/css/profile.css" rel="stylesheet">
 
   <!-- costom js import -->
   <script src="/js/profile.js" "> </script>
@@ -30,7 +32,32 @@
 
 <body data-spy="scroll " data-target="#navbar-scroll">
   <%- include partial/loginedHeader.html %>
-  <div class="container">
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2" style="padding-top: 160px;
+      padding-left: 64px;">
+      <%- include partial/profile/sideMenu.html %>
+    </div>
+
+    <div class="col-md-10" style="height: 300px; padding-top: 82px; padding-bottom: 20px;">
+      <div class="profile-contents" id="profile_content">
+        <%- include partial/profile/profile.html %>
+      </div>
+
+      <div class="profile-contents hidden" id="wallet_content">
+        <%- include partial/profile/wallet.html %>
+      </div>
+
+      <div class="profile-contents hidden" id="callandar_content">
+        <%- include partial/profile/calandar.html %>
+      </div>
+      <div class="profile-contents hidden" id="asset_content">
+        <%- include partial/profile/asset.html %>
+      </div>
+    </div>
   </div>
+</div>
+</div>
 </body>
 </html>

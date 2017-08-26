@@ -76,19 +76,19 @@ exports.register = function(req, res) {
 
 // 사용자가 올린 빌딩을 관리자가 확인하고 등록시켜주는 곳
 exports.confirmBuilding = function(req, res) {
-    var searchQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
-    var searchQueryParams = [req.body.tx_id, req.body.b_id];
+  var searchQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
+  var searchQueryParams = [req.body.tx_id, req.body.b_id];
 
-    con.query(searchQuery, searchQueryParams, function(err, result, field) {
-      if (err) {
-        response = makeResponse(0, "컨펌 실패", {});
-        res.json(response);
-        return;
-      }
-      response = makeResponse(1, "", {});
+  con.query(searchQuery, searchQueryParams, function(err, result, field) {
+    if (err) {
+      response = makeResponse(0, "컨펌 실패", {});
       res.json(response);
-    });
-  }
+      return;
+    }
+    response = makeResponse(1, "", {});
+    res.json(response);
+  });
+}
   //------------------------------------------------------
 
 //범위 내의 집 검색
@@ -126,7 +126,6 @@ exports.search = function(req, res) {
     }
   });
 };
-
 
 //등록된 빌딩을 사용자가 투자하는 곳
 exports.investment = function(req, res) {
@@ -182,9 +181,6 @@ exports.investment = function(req, res) {
 //   });
 // }
 
-
-
-
 //집상세정보
 exports.detailBuilding = function(req, res) {
   var buildingId = req.params.building_id;
@@ -229,6 +225,27 @@ exports.getListOfUnconfirmedBuilding = function(req, res) {
       throw err;
     }
     res.render('adminBuilding.html', { "buildings": result });
+  });
+}
+
+exports.getAsset = function(req, res) {
+  var buyLogSelectQuery = "SELECT a.*, b.* FROM b_buyer_log as a, buildings as b WHERE a.email=? and a.b_id=b.b_id;";
+  var buyLogSelectQueryParams = [req.signedCookies.email];
+
+  con.query(buyLogSelectQuery, buyLogSelectQueryParams, function(err, result, field) {
+    if (err) {
+      throw err;
+    }
+
+    var buildingSelectQuery = "SELECT * FROM buildings WHERE email=?";
+    con.query(buildingSelectQuery, buyLogSelectQueryParams, function(err1, result1, field1) {
+      if (err) {
+        throw err;
+      }
+
+      response = makeResponse(1, '', { "buildings": result1, "buyerLogs": result});
+      res.json(response);
+    });
   });
 }
 

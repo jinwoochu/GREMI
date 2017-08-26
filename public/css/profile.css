@@ -1,44 +1,24 @@
-.form-control {
- display: inline;
- width: 70%;
- height: 40px;
- padding: 6px 12px;
- font-size: 20px;
- line-height: 1.42857143;
- color: white;
- background-color: rgba(0,0,0,0.5);
- background-image: none;
- border: 1px solid rgba(0,0,0,0.5);
- border-radius: 0px;
- margin-bottom: 10px;
+.table-bordered,
+.table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
+  /*border: 2px solid raba(255, 255, 255, 1);*/
+  border: 2px solid;
+  border-color:rgb(0,0,0);
+  border-color:rgba(0,0,0, 0.7);
 }
 
-.select-money {
-  display: inline-block;
-  padding: 5px 12px;
-  margin-bottom: 0;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 1.42857143;
+th {
   text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  background-image: none;
-  border: 1px solid rgba(0,0,0,0.5);
-  border-radius: 0px;
-  background-color: rgba(0,0,0,0.5);
 }
 
-.input-group {
-  position: relative;
-  display: inline-table;
-  border-collapse: separate;
-  width: 70%;
+td {
+  margin: 3px;
+}
+
+.profile-menu a {
+  color: white; 
+  font-size: 13.333px;
+}
+
+.profile-menu li {
+  margin-bottom: 7px;
 }

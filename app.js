@@ -137,6 +137,9 @@ app.get('/admin/building', function(req, res) {
   building.getListOfUnconfirmedBuilding(req, res)
 });
 
+app.get('/asset', function(req, res) {
+  building.getAsset(req, res)
+});
 
 app.listen(3000, function() {
   console.log("Server listening on http://localhost:3000");
