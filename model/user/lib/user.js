@@ -124,9 +124,10 @@ exports.getProfile = function(req, res) {
 
 // 코인 환율 보여주기 
 exports.expectCoin = function(req, res) {
+
   var email = req.signedCookies.email;
   var data = req.query;
-
+  console.log(data);
   // console.log(data);
 
   //요청 페이지의 내용을 받아온다.
@@ -141,7 +142,7 @@ exports.expectCoin = function(req, res) {
       response = makeResponse(0, "입력 에러", {});
       res.json(response);
       return;
-    } else if (data.type = "krw") { //한화 일때
+    } else if (data.type == "krw") { //한화 일때
       console.log(data.money / UsdToKrw);
       response = makeResponse(1, "", { "expectCoin": data.money / UsdToKrw });
       res.json(response);
@@ -156,22 +157,15 @@ exports.expectCoin = function(req, res) {
     }
 
   });
+}
 
 
-  // var insertQuery = "INSERT INTO wallet (email, krw, usd, eur) VALUES (?,?,?,?)";
-  // var insertQueryParams = [email, data.krw, data.usd, data.eur];
-  // console.log(insertQueryParams)
+exports.chargeCoin = function(req, res) {
+  var email = req.signedCookies.email;
+  var data = req.body;
+  console.log(email);
+  console.log(data);
 
-  // con.query(insertQuery, insertQueryParams, function(err2, result2, field2) {
-  //   if (err2) {
-  //     response = makeResponse(0, "환전에 실패했습니다.", {});
-  //     res.json(response);
-  //     return;
-  //   } else {
-  //     console.log(result2)
-  //     res.redirect('/test2.html');
-  //   }
-  // });
 }
 
 

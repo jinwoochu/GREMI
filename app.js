@@ -7,9 +7,9 @@ var building = require('./model/building');
 
 // express
 var express = require('express'),
-path = require("path"),
-app = express(),
-fileUpload = require('express-fileupload');
+  path = require("path"),
+  app = express(),
+  fileUpload = require('express-fileupload');
 
 //파일 업로더
 app.use(fileUpload());
@@ -79,11 +79,12 @@ app.get('/expectCoin', function(req, res) {
 });
 
 
-// 돈 환전 
-app.post('/exchangeCoinToMoney', function(req, res) {
-  // userdb.exchangeMoney(req, res);
+// 코인 충전
+app.post('/chargeCoin', function(req, res) {
+  userdb.chargeCoin(req, res);
   console.log("코인 환전");
 });
+
 // ------------------------------------------------------- get ------------------------------------------------ //
 
 
