@@ -270,6 +270,42 @@ exports.viewExchangeLog = function(req, res) {
 }
 
 
+// confirm된 빌딩 목록을 모두 반환해서 사용자들이 여행가고싶을때 선택할 수 있도록 함.
+exports.travelSearch = function(req, res) {
+  // res.send("ggg");
+  var ne_x = req.query.northeast_lng;
+  var ne_y = req.query.northeast_lat;
+  var sw_x = req.query.southwest_lng;
+  var sw_y = req.query.southwest_lat;
+
+  // console.log(req.query);
+  var selectQuery = "SELECT b_id, country, state, city, street, lat, lng, price FROM buildings WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 2";
+  var selectQueryParams = [sw_x, ne_x, sw_y, ne_y];
+
+  con.query(selectQuery, selectQueryParams, function(err, rows, fields) {
+    if (err) {
+      response = makeResponse(0, "검색에 실패했습니다.", {});
+      res.json(response);
+      return;
+    } else {
+      for (var i = 0; i < rows.length; i++) {
+        var imageDirPath = './public/building_images/' + rows[i]['b_id'];
+
+        rows[i]['images'] = [];
+
+        fs.readdirSync(imageDirPath).forEach(file => {
+          rows[i]['images'].push('/building_images/' + rows[i]['b_id'] + '/' + file);
+        });
+      }
+      // console.log(rows);
+      response = makeResponse(1, "", { buildings: rows });
+      res.json(response);
+    }
+  });
+}
+
+
+
 
 //패스워드 암호화 함수
 function getSecretPassword(password) {

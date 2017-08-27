@@ -99,6 +99,10 @@ app.get('/test2', function(req, res) {
   res.render('test2.html');
 });
 
+
+
+
+
 //메인
 app.get('/', function(req, res) {
   if (req.signedCookies.email === undefined) {
@@ -140,6 +144,13 @@ app.get('/travel', function(req, res) {
     res.render('travel.html');
   }
 });
+
+//여행갈 수 있는 곳 검색
+app.get('/travelSearch', function(req, res) {
+  userdb.travelSearch(req, res);
+})
+
+
 
 //로그아웃 
 app.get('/logout', function(req, res) {

@@ -76,24 +76,23 @@ exports.register = function(req, res) {
 
 // 사용자가 올린 빌딩을 관리자가 확인하고 등록시켜주는 곳
 exports.confirmBuilding = function(req, res) {
-  var searchQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
-  var searchQueryParams = [req.body.tx_id, req.body.b_id];
+    var searchQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
+    var searchQueryParams = [req.body.tx_id, req.body.b_id];
 
-  con.query(searchQuery, searchQueryParams, function(err, result, field) {
-    if (err) {
-      response = makeResponse(0, "컨펌 실패", {});
+    con.query(searchQuery, searchQueryParams, function(err, result, field) {
+      if (err) {
+        response = makeResponse(0, "컨펌 실패", {});
+        res.json(response);
+        return;
+      }
+      response = makeResponse(1, "", {});
       res.json(response);
-      return;
-    }
-    response = makeResponse(1, "", {});
-    res.json(response);
-  });
-}
+    });
+  }
   //------------------------------------------------------
 
 //범위 내의 집 검색
 exports.search = function(req, res) {
-  var buildingList = [];
   var building = [];
 
   var ne_x = req.query.northeast_lng;
@@ -121,7 +120,7 @@ exports.search = function(req, res) {
         });
       }
 
-      response = makeResponse(1, "", { buildings: rows });
+      response = makeResponse(1, "", { "buildings": rows });
       res.json(response);
     }
   });
@@ -243,7 +242,7 @@ exports.getAsset = function(req, res) {
         throw err;
       }
 
-      response = makeResponse(1, '', { "buildings": result1, "buyerLogs": result});
+      response = makeResponse(1, '', { "buildings": result1, "buyerLogs": result });
       res.json(response);
     });
   });
