@@ -1,3 +1,7 @@
+var contract = require('./model/contract');
+
+contract.init();
+
 // fileSystem
 var fs = require('fs');
 
@@ -174,6 +178,9 @@ app.get('/admin/building', function(req, res) {
 });
 
 
+app.post('/travel', function(req, res) {
+  userdb.travel(req, res)
+});
 
 app.get('/asset', function(req, res) {
   building.getAsset(req, res)

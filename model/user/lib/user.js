@@ -4,6 +4,8 @@ var fs = require('fs');
 // xmlparser
 var parser = require('xml-parser');
 
+var contract = require('../../contract');
+
 // request 
 var request = require('request');
 //요청 페이지의 내용을 받아온다.
@@ -211,23 +213,103 @@ exports.expectCoin = function(req, res) {
 exports.buyCoin = function(req, res) {
   var email = req.signedCookies.email;
   var data = req.body;
+  var coin = 0;
 
   if (data.type === undefined || data.money === undefined) {
     response = makeResponse(0, "입력 에러", {});
     res.json(response);
     return;
   } else if (data.type == "krw") { //한화 일때
-    insertExchangeLog(data.money / UsdToKrw, 0, email, data);
-    updateGCoin(data.money / UsdToKrw, email, res);
+    coin = data.money / UsdToKrw;
   } else if (data.type == "eur") { // 유로화 일때
-    insertExchangeLog(data.money / UsdToEur, 0, email, data);
-    updateGCoin(data.money / UsdToEur, email, res);
+    coin = data.money / UsdToEur;
   } else { // 달러일때
-    insertExchangeLog(data.money, 0, email, data);
-    updateGCoin(data.money, email, res);
+    coin = data.money;
   }
+
+  var selectQuery = "SELECT g_coin, wallet_address FROM users WHERE email=?";
+  var selectQueryParams = [email];
+
+  con.query(selectQuery, selectQueryParams, function(err, result, field) {
+    var request = {
+      'walletAddress': result[0].wallet_address, 
+      'value': coin
+    };
+
+    contract.depositCoin(request, function(txId) {
+      var insertQuery = "INSERT INTO exchange_log (email, exchange_type, currency_type, currency_amount, g_coin, tx_id) VALUES (?,?,?,?,?,?)";
+      var insertQueryParams = [email, 0, data.type, data.money, coin, txId];
+
+      console.log(insertQueryParams);
+
+      con.query(insertQuery, insertQueryParams, function(err2, result2, field2) {
+        if (err2) {
+          response = makeResponse(-1, "알수없는에러", {});
+          res.json(response);
+          return;
+        }
+        console.log((result[0].g_coin - 0) + (coin-0));
+        updateGCoin((result[0].g_coin - 0) + (coin-0), email, res);
+      });
+    });
+    
+  });
 }
 
+// 코인 팔기 (코인 --> 통화) 수수료 0.15% 받음.
+exports.sellCoin = function(req, res) {
+  var email = req.signedCookies.email;
+  var data = req.body;
+  var exchangeType = 1;
+  var meney = 0;
+
+  if (data.type === undefined || data.coin === undefined) {
+    response = makeResponse(0, "입력 에러", {});
+    res.json(response);
+    return;
+  } else if (data.type == "krw") { //한화 일때
+    money = data.coin * UsdToKrw * 0.9985; 
+    
+  } else if (data.type == "eur") { // 유로화 일때
+    money = data.coin * UsdToEur * 0.9985;
+  } else { // 달러일때
+    money = data.coin * 0.9985;
+  }
+
+  var readQuery = "SELECT g_coin, wallet_address FROM users WHERE email=?";
+  var readQueryParams = [email];
+
+  con.query(readQuery, readQueryParams, function(err, result, field) {
+    if (result[0].g_coin - data.coin < 0) {
+      response = makeResponse(-1, "코인이 부족합니다.", {});
+      res.json(response);
+      return -1;
+    }
+    
+    var request = {
+      'walletAddress': result[0].wallet_address, 
+      'password': data.password,
+      'value': data.coin
+    };
+
+    contract.widthrawCoin(request, function(txId) {
+
+      console.log(txId);
+
+      var insertQuery = "INSERT INTO exchange_log (email, exchange_type, currency_type, currency_amount, g_coin, tx_id) VALUES (?,?,?,?,?,?)";
+      var insertQueryParams = [email, 1, data.type, money, data.coin, txId];
+
+      con.query(insertQuery, insertQueryParams, function(err2, result2, field2) {
+        if (err2) {
+          response = makeResponse(-1, "알수없는에러", {});
+          res.json(response);
+          return;
+        }
+        updateGCoin(result[0].g_coin - data.coin, email, res); 
+      });
+    });
+  });  
+}
 
 // 코인 팔때 환율 보여주기 수수료 0.15% 받음 
 exports.expectMoney = function(req, res) {
@@ -236,47 +318,46 @@ exports.expectMoney = function(req, res) {
   if (data.type === undefined || data.coin === undefined) {
     response = makeResponse(0, "입력 에러", {});
     res.json(response);
-    return;
   } else if (data.type == "krw") { //한화 일때
     console.log(data.coin * UsdToKrw);
-    response = makeResponse(1, "", { "expectMoney": data.coin * UsdToKrw * 0.85 });
+    response = makeResponse(1, "", { "expectMoney": data.coin * UsdToKrw * 0.9985 });
     res.json(response);
   } else if (data.type == "eur") { // 유로화 일때
     console.log(data.coin * UsdToEur);
-    response = makeResponse(1, "", { "expectMoney": data.coin * UsdToEur * 0.85 });
+    response = makeResponse(1, "", { "expectMoney": data.coin * UsdToEur * 0.9985 });
     res.json(response);
   } else { // 달러일때
     console.log(data.coin);
-    response = makeResponse(1, "", { "expectMoney": data.coin * 0.85 });
+    response = makeResponse(1, "", { "expectMoney": data.coin * 0.9985 });
     res.json(response);
   }
 }
 
-
-
-
-
-// 코인 팔기 (코인 --> 통화) 수수료 0.15% 받음.
-exports.sellCoin = function(req, res) {
-  var email = req.signedCookies.email;
+exports.travel = function(req, res) {
   var data = req.body;
+  var email = req.signedCookies.email;
+  var request = {
+    'walletAddress': req.cookies.wallet_address, 
+    'password': data.password,
+    'value': data.price,
+    'campaignId': data.buildingId
+  };
 
-  if (data.type === undefined || data.money === undefined) {
-    response = makeResponse(0, "입력 에러", {});
-    res.json(response);
-    return;
-  } else if (data.type == "krw") { //한화 일때
-    insertExchangeLog((data.money / UsdToKrw) * 1.15, 1, email, data, res);
-    updateGCoin((data.money / UsdToKrw) * -1.15, email, res);
-  } else if (data.type == "eur") { // 유로화 일때
-    insertExchangeLog((data.money / UsdToEur) * 1.15, 1, email, data, res);
-    updateGCoin((data.money / UsdToEur) * -1.15, email, res);
-  } else { // 달러일때
-    insertExchangeLog(data.money * 1.15, 1, email, data, res);
-    updateGCoin(data.money * -1.15, email, res);
-  }
-}
+  contract.revenueContribute(request, function(txId) {
+    var insertQuery = "INSERT INTO travel (b_id, start_date, end_date, price, email, tx_id) VALUES (?,?,?,?,?,?)";
+    var insertQueryParams = [data.buildingId, data.start_date, data.end_date, data.price, email, txId];
 
+    con.query(insertQuery, insertQueryParams, function(err, result, field) {
+      if (err) {
+        response = makeResponse(1, "알수없는에러", {});
+        res.json(response);
+        return;
+      }
+      response = makeResponse(0, "", {});
+      res.json(response);
+    });
+  });
+};
 
 // 해당 유저의 모든 입출금 내역 보기.
 exports.viewExchangeLog = function(req, res) {
@@ -294,7 +375,6 @@ exports.viewExchangeLog = function(req, res) {
     res.json(response);
   });
 }
-
 
 // confirm된 빌딩 목록을 모두 반환해서 사용자들이 여행가고싶을때 선택할 수 있도록 함.
 exports.travelSearch = function(req, res) {
@@ -351,62 +431,17 @@ function makeResponse(status, errorMessage, data) {
 
 // G_coin update함수
 function updateGCoin(coin, email, res) {
-  var readQuery = "SELECT g_coin FROM users WHERE email=?";
-  var readQueryParams = [email];
-  var previousCoin;
-  con.query(readQuery, readQueryParams, function(err, result, field) {
-    previousCoin = result[0].g_coin;
+  var updateQuery = "UPDATE users SET g_coin=? WHERE email=?";
+  var updateQueryParams = [coin, email];
 
-    var updateQuery = "UPDATE users SET g_coin=? WHERE email=?";
-    var updateQueryParams = [(coin - 0 + previousCoin), email];
-
-    var validation = (coin - 0 + previousCoin);
-    // console.log(validation);
-    if (validation < 0) {
-      return -1;
-    }
-
-    con.query(updateQuery, updateQueryParams, function(err2, result2, field2) {
-      if (err2) {
-        response = makeResponse(0, "작업 실패", {});
-        res.json(response);
-        return;
-      }
-      response = makeResponse(1, "", {});
+  con.query(updateQuery, updateQueryParams, function(err2, result2, field2) {
+    if (err2) {
+      response = makeResponse(0, "작업 실패", {});
       res.json(response);
-    });
-  });
-}
-
-function insertExchangeLog(coin, exchange_type, email, data, res) {
-  var readQuery = "SELECT g_coin FROM users WHERE email=?";
-  var readQueryParams = [email];
-  var previousCoin;
-  con.query(readQuery, readQueryParams, function(err, result, field) {
-    previousCoin = result[0].g_coin;
-
-    // console.log("이전 코인:" + previousCoin)
-    var validation;
-    if (exchange_type == 1) {
-      validation = (-coin - 0 + previousCoin);
+      return;
     }
-    // console.log(validation);
-    if (validation < 0) {
-      response = makeResponse(-1, "코인이 부족합니다.", {});
-      res.json(response);
-      return -1;
-    }
-
-    var insertQuery = "INSERT INTO exchange_log (email, exchange_type, currency_type, currency_amount, g_coin) VALUES (?,?,?,?,?)";
-    var insertQueryParams = [email, exchange_type, data.type, data.money, coin];
-
-    con.query(insertQuery, insertQueryParams, function(err2, result2, field2) {
-      if (err2) {
-        console.log("로그 입력실패");
-        return;
-      }
-      console.log("로그 입력성공");
-    });
+    response = makeResponse(1, "", {'coin': coin});
+    res.json(response);
   });
 }
 

@@ -1,0 +1,4 @@
+{
+  "name": "contract",
+  "main": "./lib/contract.js"
+}

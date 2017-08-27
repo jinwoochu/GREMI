@@ -76,10 +76,10 @@ exports.register = function(req, res) {
 
 // 사용자가 올린 빌딩을 관리자가 확인하고 등록시켜주는 곳
 exports.confirmBuilding = function(req, res) {
-    var searchQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
-    var searchQueryParams = [req.body.tx_id, req.body.b_id];
+    var updateQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
+    var updateQueryParams = [req.body.tx_id, req.body.b_id];
 
-    con.query(searchQuery, searchQueryParams, function(err, result, field) {
+    con.query(updateQuery, updateQueryParams, function(err, result, field) {
       if (err) {
         response = makeResponse(0, "컨펌 실패", {});
         res.json(response);

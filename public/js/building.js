@@ -62,8 +62,7 @@ $(document).ready(function() {
 		if (confirm('투자 ㄲ??')) {
 			var campaignId = $(this).data('building-id');
 			var amount = $('#amount').val();
-			// var userAddress = $.cookie('wallet_address');
-			var userAddress = "0x072fc66f7505db74e9dc242afd2df8a861271d4a";
+			var userAddress = $.cookie('wallet_address');
 
 			contract.investment(campaignId, amount, userAddress, saveTransactionHistory);
 		}

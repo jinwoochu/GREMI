@@ -1,9 +1,12 @@
+var travel = {};
+
 $(document).ready(function() {
   $('#building_list').on('click', '.list-group-item', function(){
     $('#building_list').find('.list-group-item').removeClass('active');
     $(this).addClass('active');
     $('#calendar').fullCalendar('removeEvents');
-    $('#total_price').text(0);
+    $('#total_price').text(0);  
+    $('#travel_btn').data('building-id', $(this).data('building-id'));
   });  
 
   $('#calendar').fullCalendar({
@@ -37,6 +40,9 @@ $(document).ready(function() {
       end: end
     };
 
+    travel.startDate = start;
+    travel.endDate = end;
+
     var totalPrice = $('#total_price').text() - 0;
     var perDayPrice = $('#building_list').find('.active').find('.price').text() - 0;
     var days = Math.ceil((end - start) / (1000 * 3600 * 24));
@@ -59,4 +65,31 @@ $(document).ready(function() {
 
     $('#calendar').fullCalendar('removeEvents', calEvent._id);
   }
+
+  $('#travel_btn').on('click', function() {
+    var password = prompt("Please enter your password:");
+    var data = new FormData();
+
+    data.append('buildingId', $(this).data('building-id'));
+    data.append('start_date', new Date(travel.startDate).toISOString().slice(0, 19).replace('T', ' '));
+    data.append('end_date', new Date(travel.endDate - 1).toISOString().slice(0, 19).replace('T', ' '));
+    data.append('price', $('#total_price').text() - 0);
+    data.append('password', password);
+
+    $.ajax({
+      url: '/travel',
+      type: 'POST',
+      data: data,
+      contentType: false,
+      processData: false,
+      dataType: "json",
+      success: function(result) {
+        debugger;
+        if(result.status == 1) {
+          $('#balance').text(result.coin);
+        } 
+        alert(result.error_message);
+      }
+    });
+  });
 });
