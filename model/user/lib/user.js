@@ -17,7 +17,6 @@ request('http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote', fu
   //환율 정보 
   UsdToKrw = obj.root.children[1].children[0].children[1].content;
   UsdToEur = obj.root.children[1].children[63].children[1].content;
-  console.log(UsdToKrw);
 });
 
 // crypto!!
@@ -62,7 +61,6 @@ exports.register = function(req, res) {
 
       var randomNum = makeRandom(1, 5);
       var userDefaultImagePath = "/default_images/" + randomNum + ".jpg";
-      console.log(userDefaultImagePath);
       var insertQuery = "INSERT INTO users (email, password,country,wallet_address, profile_image) VALUES (?,?,?,?,?)";
       var insertQueryParams = [email, password, country, walletAddress, userDefaultImagePath];
 
@@ -76,7 +74,6 @@ exports.register = function(req, res) {
         response = makeResponse(1, "", {});
         res.cookie('email', email, { signed: true });
         res.cookie('wallet_address', walletAddress, { signed: false });
-        console.log(response);
         res.json(response);
       });
     }
@@ -122,6 +119,42 @@ exports.profileImageUpload = function(req, res) {
 }
 
 
+// 프로필's new memory text upload
+exports.memoryText = function(req, res) {
+
+  var email = req.signedCookies.email;
+  var data = req.body;
+
+  var insertQuery = "INSERT INTO memory (title, start_date, end_date, memo, email) VALUES (?,?,?,?,?)";
+  var insertQueryParams = [data.title, data.start_date, data.end_date, data.memo, email];
+
+  con.query(insertQuery, insertQueryParams, function(err, result, field) {
+    if (err) {
+      response = makeResponse(0, "알맞은 날짜를 입력해 주세요.", {});
+      res.json(response);
+      return;
+    }
+
+    // 파일 디렉토리 생성
+    var memoryImageDir = './public/memory_images/' + result.insertId;
+    if (!fs.existsSync(memoryImageDir)) {
+      fs.mkdirSync(memoryImageDir);
+    }
+
+    response = makeResponse(1, "", {});
+    res.json(response);
+  });
+}
+
+
+exports.memoryImages = function(req, res) {
+  console.log("goodImages");
+}
+
+
+
+
+
 
 // 로그인되어있는지 , 쿠키 확인 
 exports.isLogined = function(req, res, next) {
@@ -150,7 +183,6 @@ exports.login = function(req, res) {
         response = makeResponse(0, "로그인에 실패했습니다.", {});
         res.json(response);
       } else {
-        console.log("유저 로그인 성공");
         response = makeResponse(1, "", {});
         res.cookie('email', email, { signed: true });
         res.cookie('wallet_address', result[0].wallet_address, { signed: false });
@@ -232,7 +264,7 @@ exports.buyCoin = function(req, res) {
 
   con.query(selectQuery, selectQueryParams, function(err, result, field) {
     var request = {
-      'walletAddress': result[0].wallet_address, 
+      'walletAddress': result[0].wallet_address,
       'value': coin
     };
 
@@ -248,11 +280,11 @@ exports.buyCoin = function(req, res) {
           res.json(response);
           return;
         }
-        console.log((result[0].g_coin - 0) + (coin-0));
-        updateGCoin((result[0].g_coin - 0) + (coin-0), email, res);
+        console.log((result[0].g_coin - 0) + (coin - 0));
+        updateGCoin((result[0].g_coin - 0) + (coin - 0), email, res);
       });
     });
-    
+
   });
 }
 
@@ -268,8 +300,8 @@ exports.sellCoin = function(req, res) {
     res.json(response);
     return;
   } else if (data.type == "krw") { //한화 일때
-    money = data.coin * UsdToKrw * 0.9985; 
-    
+    money = data.coin * UsdToKrw * 0.9985;
+
   } else if (data.type == "eur") { // 유로화 일때
     money = data.coin * UsdToEur * 0.9985;
   } else { // 달러일때
@@ -285,9 +317,9 @@ exports.sellCoin = function(req, res) {
       res.json(response);
       return -1;
     }
-    
+
     var request = {
-      'walletAddress': result[0].wallet_address, 
+      'walletAddress': result[0].wallet_address,
       'password': data.password,
       'value': data.coin
     };
@@ -305,10 +337,10 @@ exports.sellCoin = function(req, res) {
           res.json(response);
           return;
         }
-        updateGCoin(result[0].g_coin - data.coin, email, res); 
+        updateGCoin(result[0].g_coin - data.coin, email, res);
       });
     });
-  });  
+  });
 }
 
 // 코인 팔때 환율 보여주기 수수료 0.15% 받음 
@@ -337,7 +369,7 @@ exports.travel = function(req, res) {
   var data = req.body;
   var email = req.signedCookies.email;
   var request = {
-    'walletAddress': req.cookies.wallet_address, 
+    'walletAddress': req.cookies.wallet_address,
     'password': data.password,
     'value': data.price,
     'campaignId': data.buildingId
@@ -440,7 +472,7 @@ function updateGCoin(coin, email, res) {
       res.json(response);
       return;
     }
-    response = makeResponse(1, "", {'coin': coin});
+    response = makeResponse(1, "", { 'coin': coin });
     res.json(response);
   });
 }

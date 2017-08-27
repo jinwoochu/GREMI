@@ -46,6 +46,18 @@ app.post('/profileImageUpload', function(req, res) {
   userdb.profileImageUpload(req, res);
 });
 
+// 프로필's new memory text upload
+app.post('/memoryText', function(req, res) {
+  userdb.memoryText(req, res);
+});
+
+// 프로필's new memory image upload
+app.post('/memoryImages', function(req, res) {
+  userdb.memoryImages(req, res);
+});
+
+
+
 //로그인
 app.post('/login', function(req, res) {
   userdb.login(req, res);
