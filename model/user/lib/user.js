@@ -231,16 +231,14 @@ exports.buyCoin = function(req, res) {
 
 // 코인 팔때 환율 보여주기 수수료 0.15% 받음 
 exports.expectMoney = function(req, res) {
-
-  var email = req.signedCookies.email;
   var data = req.query;
+
   if (data.type === undefined || data.coin === undefined) {
     response = makeResponse(0, "입력 에러", {});
     res.json(response);
     return;
   } else if (data.type == "krw") { //한화 일때
     console.log(data.coin * UsdToKrw);
-    // 0.0892785428273357
     response = makeResponse(1, "", { "expectMoney": data.coin * UsdToKrw * 0.85 });
     res.json(response);
   } else if (data.type == "eur") { // 유로화 일때
@@ -248,8 +246,8 @@ exports.expectMoney = function(req, res) {
     response = makeResponse(1, "", { "expectMoney": data.coin * UsdToEur * 0.85 });
     res.json(response);
   } else { // 달러일때
-    console.log(data.money);
-    response = makeResponse(1, "", { "expectMoney": data.money * 0.85 });
+    console.log(data.coin);
+    response = makeResponse(1, "", { "expectMoney": data.coin * 0.85 });
     res.json(response);
   }
 }
@@ -286,16 +284,13 @@ exports.viewExchangeLog = function(req, res) {
   var readQuery = "SELECT exchange_type,dt,currency_type,currency_amount,g_coin,tx_id FROM exchange_log WHERE email = ?";
   var readQueryParams = email;
 
-  console.log(email);
-  console.log(readQueryParams);
-
   con.query(readQuery, readQueryParams, function(err, result, field) {
     if (err) {
       response = makeResponse(0, "로그 출력 실패", {});
       res.json(response);
       return;
     }
-    response = makeResponse(1, "", { "log": result[0] });
+    response = makeResponse(1, "", { "log": result });
     res.json(response);
   });
 }
@@ -309,7 +304,6 @@ exports.travelSearch = function(req, res) {
   var sw_x = req.query.southwest_lng;
   var sw_y = req.query.southwest_lat;
 
-  // console.log(req.query);
   var selectQuery = "SELECT b_id, country, state, city, street, lat, lng, price FROM buildings WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 2";
   var selectQueryParams = [sw_x, ne_x, sw_y, ne_y];
 
@@ -335,17 +329,12 @@ exports.travelSearch = function(req, res) {
   });
 }
 
-
-
-
 //패스워드 암호화 함수
 function getSecretPassword(password) {
   var cipher = crypto.createCipher('aes-256-cbc', '열쇠');
   var secretPassword = cipher.update(password, 'utf8', 'base64');
   return secretPassword + cipher.final('base64');
 }
-
-
 
 // 리스폰스 만드는 함수
 function makeResponse(status, errorMessage, data) {
@@ -359,7 +348,6 @@ function makeResponse(status, errorMessage, data) {
   }
   return response;
 }
-
 
 // G_coin update함수
 function updateGCoin(coin, email, res) {
@@ -390,14 +378,7 @@ function updateGCoin(coin, email, res) {
   });
 }
 
-
 function insertExchangeLog(coin, exchange_type, email, data, res) {
-
-  console.log(coin);
-  console.log(email);
-  console.log(exchange_type);
-  console.log(data);
-
   var readQuery = "SELECT g_coin FROM users WHERE email=?";
   var readQueryParams = [email];
   var previousCoin;
@@ -428,7 +409,6 @@ function insertExchangeLog(coin, exchange_type, email, data, res) {
     });
   });
 }
-
 
 // 랜덤 함수(정수)
 function makeRandom(min, max) {

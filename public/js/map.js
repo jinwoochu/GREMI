@@ -33,7 +33,6 @@ map.createMap = function(position) {
     });
   });
 
-
   map.moveMap = function(address, callback) {
     geocoder.geocode({ 'address': address }, function(results, status) {
       if (status === 'OK') {
@@ -100,33 +99,33 @@ map.createMap = function(position) {
       southwest_lng: bounds.getSouthWest().lng()
     };
 
-  //TODO
-  $.ajax({
-    url: '/buildingSearch',
-    type: "get",
-    data: formData,
-    dataType: "json",
-    success: function(result) {
-      var buildings = result.buildings;
-      resetMarker();
+    $.ajax({
+      url: '/buildingSearch',
+      type: "get",
+      data: formData,
+      dataType: "json",
+      success: function(result) {
+        var buildings = result.buildings;
+        resetMarker();
 
-      for (var i in buildings) {
-        buildings[i].address = ((((buildings[i]['country'] + ' ' + buildings[i]['state']).trim() + ' ' + buildings[i]['#city']).trim()) + ' ' + buildings[i]['street']).trim();
+        for (var i in buildings) {
+          buildings[i].address = ((((buildings[i]['country'] + ' ' + buildings[i]['state']).trim() + ' ' + buildings[i]['#city']).trim()) + ' ' + buildings[i]['street']).trim();
 
-        var position = new google.maps.LatLng(buildings[i].lat, buildings[i].lng);
-        makeMarker(buildings[i].building_id, position);
+          var position = new google.maps.LatLng(buildings[i].lat, buildings[i].lng);
+          makeMarker(buildings[i].building_id, position);
+        }
+
+        $("#building_list").html('');
+        $("#buildingTmpl").tmpl(buildings).appendTo("#building_list");
       }
-
-      $("#building_list").html('');
-      $("#movieTmpl").tmpl(buildings).appendTo("#building_list");
-    }
-  });
-}
+    });
+  }
 }
 
 $(document).ready(function() {
   $(window).on('resize', function() {
-    $('#googleMap').css('height', this.innerHeight - 136);
-    $('#building_list').css('height', this.innerHeight - 174);
+    $('.frame').css('height', this.innerHeight - 144);
+    $('#googleMap').css('height', this.innerHeight - 144 - 55);
+    
   }).resize();
 });

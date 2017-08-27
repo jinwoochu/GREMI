@@ -8,6 +8,9 @@
 
   <!-- css lib import -->
   <link href="/css/bootstrap-3.3.7/bootstrap.min.css" rel="stylesheet">
+  <link href='/css/fullcalendar/fullcalendar.min.css' rel='stylesheet' />
+  <link href='/css/fullcalendar/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+
 
   <!-- js lib import -->
   <script src="/js/lib/contract/bignumber.min.js"></script>
@@ -16,16 +19,20 @@
   <script src="/js/lib/contract/web3.js"></script>
   <script src="/js/lib/jquery-3.2.1/jquery-3.2.1.js"></script>
   <script src="/js/lib/bootstrap-3.3.7/bootstrap.min.js"></script>
+  <script src='/js/lib/moment/moment.js'></script>
+  <script src='/js/lib/fullcalendar/fullcalendar.min.js'></script>
   <script src="/js/lib/jquery.tmpl/jquery.tmpl.js"></script>
   <script src="/js/lib/jquery.form/jquery.form.min.js"></script>
 
   <!-- costom css import -->
   <link href="/css/common.css" rel="stylesheet">
+  <link href="/css/travel.css" rel="stylesheet">
 
   <!-- costom js import -->
   <script src="/js/common.js"></script>
   <script src="/js/map.js"></script>
   <script src="/js/building.js"></script>
+  <script src="/js/travel.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwU-cbgXFnLRSM-Qh5rjAnsXu0SjGBQac&callback=map.initMap"></script>
 
 </head>
@@ -33,23 +40,33 @@
 <body data-spy="scroll" data-target="#navbar-scroll" style="">
   <%- include partial/loginedHeader.html %>
 
-    <div id="content" class="container" style="margin-left:2%">
-      <h1 style="margin-left:1%; color:white;">TRAVEL</h1>
-      <div class="row">
-        <div class="col-md-5 map">
-          <%- include partial/map.html %>
+  <div id="content" class="container">
+    <h1 style="margin-left:1%; color:white;">TRAVEL</h1>
+    <div class="row">
+      <div class="col-md-4">
+        <%- include partial/map.html %>
+      </div>
+      <div class="col-md-4">
+        <div class="frame">
+          <%- include partial/travel/buildingList.html %>
         </div>
-        <div class="frame col-md-7" style="width:40%;">
-          <div class="list-group" id="building_list" style="height: 300px;"></div>
+      </div>
+      <div class="col-md-4">
+        <div class="frame">
+          <div id='calendar'></div>
+          <div style="text-align: center; border: 2px solid #777; position: relative; padding: 5px; margin-bottom: 10px;;">
+          <span style="color: #FA2F09;
+          font-size: 25px;">TOTAL G-COIN: </span>
+          <span id="total_price" style="color: #777;
+          font-size: 25px;">0</span>
+        </div>
+
+        <div style="text-align: center; border: 2px solid #777; position: relative; padding: 5px;">
+          <button>CONFIRM</button>
         </div>
       </div>
     </div>
-    <footer id="footer" style="height: 55px; background: rgba(50,50,50,0.5); margin-top:5%; margin-bottom:6%;">
-      <div class="text-center">
-
-      </div>
-    </footer>
-
+  </div>
+</div>
 </body>
-
 </html>

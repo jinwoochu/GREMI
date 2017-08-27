@@ -1,0 +1,38 @@
+<div class="building-content">
+  <div class="list-group" id="building_list"></div>
+
+  <script id="buildingTmpl" type="text/x-jquery-tmpl">
+    <a href="#">
+      <div class="list-group-item row">
+
+        <div class="col-md-3" style="padding: 0;">
+          <div>
+            {{each images}}
+            {{if $index == 0}}
+            <img src="${images[$index]}" width="100%" height="80%">
+            {{else}}
+            <img src="${images[$index]}" width="100%" height="80%" class="hidden">
+            {{/if}}
+            {{/each}}
+          </div>
+          <div>
+            ${country}
+          </div>
+        </div>
+
+        <div class="col-md-7">
+
+          <span style="display: block;">${state} ${city}</span>
+          <span style="display: block;">${street}</span>
+
+        </div>
+
+        <div class="col-md-2">
+
+          <span class="price" style="display: block;">${parseInt(price * 100 / 365 + 1) / 100}</span>
+          <a href="#"><span>detail</span></a>
+        </div>
+      </div>
+    </a>
+  </script>
+</div>

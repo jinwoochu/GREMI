@@ -117,11 +117,13 @@ $(document).ready(function() {
   });
 
   $('#deposit_input').on('keyup', function() {
-    var money = $(this).val();
-    var type = $(this).data('type');
-    
-    console.log(money, type);
-    getExpectCoin(type, money, function(result) {
+    var data = {
+      'type': $(this).data('type'),
+      'money': $(this).val()
+    };
+
+  
+    getExpectCoin('/expectCoin', data, function(result) {
       // {status: 1 / 0, error_message: "" ,expectCoin}
       if(result.status) {
         $('#expected_deposit_money').val(result.expectCoin);
@@ -132,28 +134,25 @@ $(document).ready(function() {
   });
 
   $('#widthraw_input').on('keyup', function() {
-    var money = $(this).val();
-    var type = $(this).data('type');
-    
-    console.log(money, type);
-    getExpectCoin(type, money, function(result) {
+    var data = {
+      'type': $(this).data('type'),
+      'coin': $(this).val()
+    };
+    getExpectCoin('/expectMoney', data, function(result) {
       // {status: 1 / 0, error_message: "" ,expectCoin}
       if(result.status) {
-        $('#expected_widthraw_money').val(result.expectCoin);
+        $('#expected_widthraw_money').val(result.expectMoney);
         return;
       } 
       alert(result.error_message);
     });
   });
 
-  function getExpectCoin(type, money, callback) {
-    var data = {
-      'type': type,
-      'money': money
-    };
+  function getExpectCoin(url, data, callback) {
+    
 
     $.ajax({
-      url: '/expectCoin',
+      url: url,
       type: 'GET',
       data: data,
       dataType: "json",
@@ -171,8 +170,8 @@ $(document).ready(function() {
     data.append('money', money);
 
     $.ajax({
-      url: '/expectCoin',
-      type: 'GET',
+      url: '/buyCoin',
+      type: 'POST',
       data: data,
       contentType: false,
       processData: false,
@@ -198,14 +197,13 @@ $(document).ready(function() {
     data.append('money', money);
 
     $.ajax({
-      url: '/expectCoin',
-      type: 'GET',
+      url: '/sellCoin',
+      type: 'POST',
       data: data,
       contentType: false,
       processData: false,
       dataType: "json",
       success: function(result) {
-        // {status: 1 / 0, error_message: "" ,expectCoin}
         if(!result) {
           alert('성공');
           return;
@@ -235,6 +233,20 @@ $(document).ready(function() {
       }
     });
 
+  });
+
+  $('#calendar').fullCalendar({
+    header: {
+      left: 'prev',
+      right: 'next',
+      center: 'title',
+    },
+    defaultDate: new Date(),
+    selectable: true,
+    selectHelper: true,
+    editable: true,
+    eventLimit: true,
+    events: []
   });
 
 });
