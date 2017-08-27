@@ -1,27 +1,24 @@
 <div class="profile_item container-fluid " id="wallet ">
   <div class="row ">
 
-
-    <!-- 돈 충전 -->
-    <form action="/expectCoin" method="get">
-      <input type="number" class="form-control " name="krw" placeholder="KRW"> KRW
+    <h1>krw usd eur</h1>
+    <!-- 코인 넣기 -->
+    <form action="/buyCoin" method="post">
+      <input type="text" class="form-control " name="type" placeholder="type"> type
       <br>
-      <input type="number" class="form-control " name="usd" placeholder="USD"> USD
+      <input type="number" class="form-control " name="money" placeholder="money"> money
       <br>
-      <input type="number" class="form-control " name="eur" placeholder="EUR"> EUR
-      <br>
-      <input type="submit" value="CHARGE">
+      <input type="submit" value="buyCoin!!">
     </form>
 
-    <!-- 돈 환전 g_coin으로 -->
-    <form action="/chargeCoin" method="post">
-      <input type="number" class="form-control " name="krw" placeholder="KRW"> KRW
+    <!-- 코인 빼기 -->
+    <form action="/sellCoin" method="post">
+      <input type="text" class="form-control " name="type" placeholder="type"> type
       <br>
-      <input type="number" class="form-control " name="usd" placeholder="USD"> USD
+      <input type="number" class="form-control " name="money" placeholder="money"> money
       <br>
-      <input type="number" class="form-control " name="eur" placeholder="EUR"> EUR
-      <br>
-      <input type="submit" value="EXCHANGE">
+      <input type="submit" value="sellCoin!!">
     </form>
+
   </div>
 </div>

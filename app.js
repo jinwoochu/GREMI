@@ -37,6 +37,11 @@ app.post('/user_register', function(req, res) {
   userdb.register(req, res);
 });
 
+//유저 프로필 이미지 등록
+app.post('/profileImageUpload', function(req, res) {
+  userdb.profileImageUpload(req, res);
+});
+
 //로그인
 app.post('/login', function(req, res) {
   userdb.login(req, res);
@@ -75,10 +80,16 @@ app.get('/expectCoin', function(req, res) {
 });
 
 
-// 코인 충전
-app.post('/chargeCoin', function(req, res) {
-  userdb.chargeCoin(req, res);
+// 코인 넣기
+app.post('/buyCoin', function(req, res) {
+  userdb.buyCoin(req, res);
 });
+
+// 코인 빼기
+app.post('/sellCoin', function(req, res) {
+  userdb.sellCoin(req, res);
+});
+
 
 // ------------------------------------------------------- get ------------------------------------------------ //
 
@@ -96,6 +107,8 @@ app.get('/', function(req, res) {
     res.redirect('/building');
   }
 });
+
+
 
 //프로필
 app.get('/profile', userdb.isLogined, function(req, res) {
@@ -144,10 +157,19 @@ app.get('/admin/building', function(req, res) {
   building.getListOfUnconfirmedBuilding(req, res)
 });
 
+
+
 app.get('/asset', function(req, res) {
   building.getAsset(req, res)
 });
 
+// 해당 유저의 모든 입출금 내역 보기.
+app.get('/viewExchangeLog', function(req, res) {
+  userdb.viewExchangeLog(req, res);
+});
+
+
+
 app.listen(3000, function() {
   console.log("Server listening on http://localhost:3000");
-})
+});
