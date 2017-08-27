@@ -100,23 +100,22 @@ exports.profileImageUpload = function(req, res) {
       res.json(response);
       return;
     }
-    response = makeResponse(1, "", {});
-    res.json(response);
+
+    // db에 등록된 이미지 path 
+    var imagePath = profileImagePath.replace('/public', "");
+    var updateQuery = "UPDATE users SET profile_image=? WHERE email=?";
+    var updateQueryParams = [imagePath, email];
+
+    con.query(updateQuery, updateQueryParams, function(err, result, field) {
+      if (err) {
+        response = makeResponse(0, "이미지 등록 실패", {});
+        res.json(response);
+        return;
+      }
+      response = makeResponse(1, "", { "path": imagePath });
+      res.json(response);
+    });
   });
-
-  // var updateQuery = "UPDATE users SET profile_image=? WHERE u_id=?";
-  // var updateQueryParams = [, email];
-
-  // con.query(updateQuery, updateQueryParams, function(err, result, field) {
-  //   if (err) {
-  //     response = makeResponse(0, "이미지 등록 실패", {});
-  //     res.json(response);
-  //     return;
-  //   }
-  //   response = makeResponse(1, "", {});
-  //   res.json(response);
-  // });
-
 }
 
 
