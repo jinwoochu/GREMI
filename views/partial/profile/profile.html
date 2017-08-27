@@ -11,8 +11,11 @@
       <div style="font-size: 15px; margin-top: 35px; height: 185px;padding-left: 100px;">
 
 
-        <img src="https://goo.gl/27k1CB" width="100%" height="100%">
-        <span>사진업로드</span>
+        <img src="<%= profile.profile_image %>" width="100%" height="100%">
+        <form id="profile_image_form">
+          <input type="file" name="profile_image">
+          <button type="submit">사진업로드</button>
+        </form>
       </div>
     </div>
   </div>

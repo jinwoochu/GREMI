@@ -215,4 +215,26 @@ $(document).ready(function() {
     });
   });
 
+  $('#profile_image_form').on('submit',  function(event) {
+    event.preventDefault();
+    var data = new FormData($(this)[0]);
+
+    $.ajax({
+      url: '/profileImageUpload',
+      type: 'POST',
+      data: data,
+      contentType: false,
+      processData: false,
+      dataType: "json",
+      success: function(result) {
+        if(result.status == 1) {
+          window.location.href = '/profile';
+          return;
+        } 
+        alert(result.error_message);
+      }
+    });
+
+  });
+
 });

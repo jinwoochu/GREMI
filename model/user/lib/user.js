@@ -83,11 +83,7 @@ exports.register = function(req, res) {
 
 //유저 프로필 이미지 등록
 exports.profileImageUpload = function(req, res) {
-  // var email = req.signedCookies.email;
-  var email = req.body.email;
-
-  // console.log(image);
-  // console.log(email);
+  var email = req.signedCookies.email;
 
   // 디렉토리생성
   var profileDirPath = './public/profile_images/' + email;
@@ -95,10 +91,10 @@ exports.profileImageUpload = function(req, res) {
     fs.mkdirSync(profileDirPath);
   }
 
-  var profileImage = req.files.profileImage;
+  var profileImage = req.files.profile_image;
   var profileImagePath = profileDirPath + '/' + profileImage.name;
 
-  profileImage.mv(imagePath, function(err) {
+  profileImage.mv(profileImagePath, function(err) {
     if (err) {
       response = makeResponse(0, "이미지 업로드 실패", {});
       res.json(response);
