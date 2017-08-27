@@ -15,6 +15,7 @@ request('http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote', fu
   //환율 정보 
   UsdToKrw = obj.root.children[1].children[0].children[1].content;
   UsdToEur = obj.root.children[1].children[63].children[1].content;
+  console.log(UsdToKrw);
 });
 
 // crypto!!
@@ -181,7 +182,7 @@ exports.getProfile = function(req, res) {
 }
 
 
-// 코인 환율 보여주기 
+// 코인 살때 환율 보여주기 
 exports.expectCoin = function(req, res) {
 
   var email = req.signedCookies.email;
@@ -226,6 +227,36 @@ exports.buyCoin = function(req, res) {
     updateGCoin(data.money, email, res);
   }
 }
+
+
+// 코인 팔때 환율 보여주기 수수료 0.15% 받음 
+exports.expectMoney = function(req, res) {
+
+  var email = req.signedCookies.email;
+  var data = req.query;
+  if (data.type === undefined || data.coin === undefined) {
+    response = makeResponse(0, "입력 에러", {});
+    res.json(response);
+    return;
+  } else if (data.type == "krw") { //한화 일때
+    console.log(data.coin * UsdToKrw);
+    // 0.0892785428273357
+    response = makeResponse(1, "", { "expectMoney": data.coin * UsdToKrw * 0.85 });
+    res.json(response);
+  } else if (data.type == "eur") { // 유로화 일때
+    console.log(data.coin * UsdToEur);
+    response = makeResponse(1, "", { "expectMoney": data.coin * UsdToEur * 0.85 });
+    res.json(response);
+  } else { // 달러일때
+    console.log(data.money);
+    response = makeResponse(1, "", { "expectMoney": data.money * 0.85 });
+    res.json(response);
+  }
+}
+
+
+
+
 
 // 코인 팔기 (코인 --> 통화) 수수료 0.15% 받음.
 exports.sellCoin = function(req, res) {

@@ -74,9 +74,14 @@ app.post('/investment', function(req, res) {
   building.investment(req, res);
 });
 
-// 코인 환율 보여주기
+// 코인 살때 환율 보여주기
 app.get('/expectCoin', function(req, res) {
   userdb.expectCoin(req, res);
+});
+
+// 코인 팔때 환율 보여주기
+app.get('/expectMoney', function(req, res) {
+  userdb.expectMoney(req, res);
 });
 
 
