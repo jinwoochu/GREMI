@@ -175,7 +175,7 @@ exports.memoryImages = function(req, res) {
       })(i, imagePath);
     }
   }
-  response = makeResponse(1, '', {});
+  response = makeResponse(1, '', { "imagesPath": imageDirPath });
   res.json(response);
 }
 
