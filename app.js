@@ -85,10 +85,22 @@ app.post('/admin/building/confirm', function(req, res) {
   building.confirmBuilding(req, res);
 });
 
-// 등록된 빌딩을 사용자가 투자하는 곳
+// 등록된 빌딩을 사용자가 투자하는 곳 (지분 받음)
 app.post('/investment', function(req, res) {
   building.investment(req, res);
 });
+
+// 지분 판매 등록
+app.post('/sellStake', function(req, res) {
+  userdb.sellStake(req, res);
+})
+
+// 지분 사기
+app.post('/buyStake', function(req, res) {
+  userdb.buyStake(req, res);
+})
+
+
 
 // 코인 살때 환율 보여주기
 app.get('/expectCoin', function(req, res) {

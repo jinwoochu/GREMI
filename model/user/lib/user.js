@@ -152,7 +152,7 @@ exports.memoryText = function(req, res) {
 }
 
 
-
+// 프로필's new memory images upload
 exports.memoryImages = function(req, res) {
 
   var memoryId = memId;

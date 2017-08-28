@@ -126,7 +126,7 @@ exports.search = function(req, res) {
   });
 };
 
-//등록된 빌딩을 사용자가 투자하는 곳
+//등록된 빌딩을 사용자가 투자하는 곳 (지분 받음)
 exports.investment = function(req, res) {
   var data = req.body;
   var email = req.signedCookies.email;
@@ -140,12 +140,29 @@ exports.investment = function(req, res) {
       response = makeResponse(0, "실패1", {});
       res.json(response);
       return;
-    } else {
-      response = makeResponse(1, '', {});
-      res.json(response);
     }
+    var insertStakeQuery = "INSERT INTO stakes (b_id, stake, price, email) VALUES (?,?,?,?,?)";
+    var insertStakeQueryParams = [data.b_id, data.stake, data.price, email];
+
+    con.query(insertStakeQuery, insertStakeQueryParams, function(err, result, field) {
+      if (err) {
+        response = makeResponse(0, "실패2", {});
+        res.json(response);
+        return;
+      }
+      response = makeResponse(1, "", {});
+      res.json(response);
+    });
+
   });
 };
+
+
+
+
+
+
+
 
 //집정보 수정
 // exports.edit = function(req, res) {
