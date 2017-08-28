@@ -11,9 +11,9 @@ var building = require('./model/building');
 
 // express
 var express = require('express'),
-  path = require("path"),
-  app = express(),
-  fileUpload = require('express-fileupload');
+path = require("path"),
+app = express(),
+fileUpload = require('express-fileupload');
 
 //파일 업로더
 app.use(fileUpload());
@@ -184,7 +184,6 @@ app.get('/travelSearch', function(req, res) {
 })
 
 
-
 //로그아웃 
 app.get('/logout', function(req, res) {
   res.clearCookie("email");
@@ -193,7 +192,11 @@ app.get('/logout', function(req, res) {
 
 //범위 내의 집 검색
 app.get('/buildingSearch', function(req, res) {
-  building.search(req, res)
+  building.search(req, res);
+});
+
+app.get('/stakeSearch', function(req, res) {
+  userdb.search(req, res);
 });
 
 //관리자가 사용자가 올린 confirm되지 않은 빌딩리스트를 보는 곳
@@ -214,8 +217,6 @@ app.get('/asset', function(req, res) {
 app.get('/viewExchangeLog', function(req, res) {
   userdb.viewExchangeLog(req, res);
 });
-
-
 
 app.listen(3000, function() {
   console.log("Server listening on http://localhost:3000");

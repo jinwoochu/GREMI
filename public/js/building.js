@@ -5,56 +5,31 @@ $(document).ready(function() {
 		event.preventDefault();
 		var data = new FormData($(this)[0]);
 
-		/*
-			data = {
-				'country': 'korea',
-				'state': 'seoul',
-				'city': 'seoul',
-				'street': '379',
-				'price': 1000,
-				'lat': 37,
-				'lng': 133,
-				'images': [] 
-			}
-
-			bulding = {
-				'b_id': 1,
-				'email': 'stompesi@gmail.com',
-				'status': 0 / 1 / 2
-
-				'country': 'korea',
-				'state': 'seoul',
-				'city': 'seoul',
-				'street': '379',
-				'price': 1000,
-				'lat': 37,
-				'lng': 133
-			}
-			*/
-
-			$.ajax({
-				url: $(this).attr('action'),
-				type: 'POST',
-				data: data,
-				contentType: false,
-				processData: false,
-				dataType: "json",
-				success: function(result) {
-					if (result.status == 0) {
-						alert(result.error_message);
-					} else {
-						window.location.href = "/building";
-					}
-				} 
-			});
-
+		$.ajax({
+			url: $(this).attr('action'),
+			type: 'POST',
+			data: data,
+			contentType: false,
+			processData: false,
+			dataType: "json",
+			success: function(result) {
+				if (result.status == 0) {
+					alert(result.error_message);
+				} else {
+					window.location.href = "/building";
+				}
+			} 
 		});
+	});
 
 	// 메뉴변경
 	$('#building_menu').on('click', 'a', function(event) {
 		event.preventDefault();
-		$('#building_menu li').toggleClass('active');
-		$('.building-content').toggleClass('hidden');
+		$('.building-content').addClass('hidden');
+		$('#building_menu li').removeClass('active');
+
+		$(this).parent('li').addClass('active');
+		$('#' + $(this).data('content')).removeClass('hidden');
 	});
 
 	// 투자하기
@@ -105,4 +80,32 @@ $(document).ready(function() {
 		$('#lat').val(location.lat());
 		$('#lng').val(location.lng());
 	}
+
+	$('#stake_buy_content').on('click', '.buy-stake', function() {
+		var password = prompt('password');	
+
+		if(password) {
+			var data = new FormData();
+			data.append('s_id', $(this).data('stake-id'));
+			data.append('password', password);
+
+			$.ajax({
+				url: '/buyStake',
+				type: 'POST',
+				data: data,
+				contentType: false,
+				processData: false,
+				dataType: "json",
+				success: function(result) {
+					if (result.status == 0) {
+						alert(result.error_message);
+					} else {
+						alert('완료!');  
+						window.location.href = "/building";
+					}
+				}  
+			}); 
+
+		}
+	});
 });

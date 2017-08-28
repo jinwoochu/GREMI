@@ -1,0 +1,39 @@
+<div id="stake_buy_content" class="building-content">
+  <div class="list-group" id="stake_list"></div>
+
+  <script id="stakeTmpl" type="text/x-jquery-tmpl">
+    <div class="list-group-item row">
+      <div class="col-md-3" style="    padding: 0;">
+        {%each images%}
+        {%if $index == 0%}
+        <img src="${images[$index]}" width="100%" height="80%">
+        {%else%}
+        <img src="${images[$index]}" width="100%" height="80%" class="hidden">
+        {%/if%}
+        {%/each%}
+        
+      </div>
+
+      <div class="col-md-7">
+        <div style="margin-bottom: 0%; padding: 6% 0;">
+          <span style="font-size: 15px; color: #333;">${address}</span>
+        </div>
+
+        <div>
+          <div class="col-md-9" style="padding: 0px;">
+            <span>지분</span>
+            <span>${stake}</span> %
+          </div>
+          <div class="col-md-3">
+            <span>가격</span>
+            <span>${price}</span> G
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-2">
+        <a href="#" data-stake-id="${s_id}" class="btn btn-primary buy-stake">구매하기</a>
+      </div>
+    </div>
+  </script>
+</div>

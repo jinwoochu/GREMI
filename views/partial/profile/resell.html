@@ -6,7 +6,7 @@
           <img src="/images/x.png" width="30px" >
         </button>
       </div>
-      <form id="login_form" action="/login" method="post" role="form">
+      <form id="stake_register_form" action="/login" method="post" role="form">
         <div class="modal-body">
           <div class="form-group">
             <span style="font-size: 15px;color: white;font-weight: bold;margin-bottom: 10px;display: block;">
@@ -24,19 +24,19 @@
           <div class="form-group">
             <span style="font-size: 15px;color: white;font-weight: bold;margin-bottom: 10px;display: block;">STAKE</span>
             <label for="stake" class="sr-only hidden-xs">stake</label>
-            <input type="number" class="form-control" name="stake" autofocus="true">
+            <input id="stake_input" type="number" class="form-control" name="stake" autofocus="true">
           </div>
 
           <div class="form-group">
             <span style="font-size: 15px;color: white;font-weight: bold;margin-bottom: 10px;display: block;">TARGET AMOUNT</span>
             <label for="price" class="sr-only hidden-xs">price</label>
-            <input type="number" class="form-control" name="price">
+            <input id="price_input" type="number" class="form-control" name="price">
           </div>
           
         </div>
         <div class="modal-footer">
           <div class="text-center">
-            <button id="resell_btn" type="submit" tabindex="1" style="border: 0; padding: 0">
+            <button type="submit" tabindex="1" style="border: 0; padding: 0">
               <img src="/images/ok.png" 
               onmouseover = "this.src='/images/ok_hover.png'"
               onmouseout = "this.src='/images/ok.png'" height="60px;">

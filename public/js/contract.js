@@ -7,7 +7,7 @@ $(document).ready(function() {
 
 contract.url = "http://61.75.63.149:8545";
 contract.ownerAddress = "0x072fc66f7505db74e9dc242afd2df8a861271d4a";
-contract.address = "0x995c7f8a9b6da44d27708ab62aa6582caffb17a9";
+contract.address = "0xf670a35b569ee4e73e97ddd6b565523d65eab6d1";
 
 contract.init = function() {
   var web3 = new Web3();
@@ -66,12 +66,14 @@ contract.investment = function(campaignId, amount, buyer, callback) {
         gas: 500000,
         value: wei
       }, function(error, txId) {
-        debugger;
         if(!error) {
           callback(txId, campaignId, amount);
         }
         web3.personal.lockAccount(contract.ownerAddress);
       });
+    } else {
+      alert('비밀번호가 틀립니다');
+      
     }
   });
 };

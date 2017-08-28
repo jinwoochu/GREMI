@@ -99,6 +99,41 @@ map.createMap = function(position) {
       southwest_lng: bounds.getSouthWest().lng()
     };
 
+    var type = $('#building_menu').find('li.active').data('type');
+
+    if(type == 'building') {
+      buildingSearch(formData);
+    } else {
+      stakeSearch(formData)
+    }
+  }
+
+  function stakeSearch(formData) {
+    $.ajax({
+      url: '/stakeSearch',
+      type: "get",
+      data: formData,
+      dataType: "json",
+      success: function(result) {
+        debugger;
+        var buildings = result.buildings;
+        resetMarker();
+
+        for (var i in buildings) {
+          buildings[i].address = ((((buildings[i]['country'] + ' ' + buildings[i]['state']).trim() + ' ' + buildings[i]['#city']).trim()) + ' ' + buildings[i]['street']).trim();
+
+          var position = new google.maps.LatLng(buildings[i].lat, buildings[i].lng);
+          makeMarker(buildings[i].building_id, position);
+        }
+        
+        $("#stake_list").html('');
+        $("#stakeTmpl").tmpl(buildings).appendTo("#stake_list");
+      }
+    });
+  }
+
+  function buildingSearch(formData) {
+    debugger;
     $.ajax({
       url: '/buildingSearch',
       type: "get",
@@ -109,7 +144,7 @@ map.createMap = function(position) {
         resetMarker();
 
         for (var i in buildings) {
-          buildings[i].address = ((((buildings[i]['country'] + ' ' + buildings[i]['state']).trim() + ' ' + buildings[i]['#city']).trim()) + ' ' + buildings[i]['street']).trim();
+          buildings[i].address = ((((buildings[i]['country'] + ' ' + buildings[i]['state']).trim() + ' ' + buildings[i]['city']).trim()) + ' ' + buildings[i]['street']).trim();
 
           var position = new google.maps.LatLng(buildings[i].lat, buildings[i].lng);
           makeMarker(buildings[i].building_id, position);
@@ -121,6 +156,8 @@ map.createMap = function(position) {
     });
   }
 }
+
+
 
 $(document).ready(function() {
   $(window).on('resize', function() {

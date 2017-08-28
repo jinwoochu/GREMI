@@ -1,16 +1,16 @@
-<div class="building-content">
+<div id="building_buy_content" class="building-content">
   <div class="list-group" id="building_list"></div>
 
   <script id="buildingTmpl" type="text/x-jquery-tmpl">
     <div class="list-group-item row">
       <div class="col-md-3" style="    padding: 0;">
-      {{each images}}
-        {{if $index == 0}}
+      {%each images%}
+        {%if $index == 0%}
           <img src="${images[$index]}" width="100%" height="80%">
-        {{else}}
+        {%else%}
           <img src="${images[$index]}" width="100%" height="80%" class="hidden">
-        {{/if}}
-      {{/each}}
+        {%/if%}
+      {%/each%}
         
       </div>
 

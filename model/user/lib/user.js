@@ -481,18 +481,33 @@ exports.travelSearch = function(req, res) {
 
 //지분 판매 등록 (일단 돌아는 가나, 나중 되면 고쳐야 할것같음 --> 해당 지분의 주인이 맞는지 validation)
 exports.sellStake = function(req, res) {
+  // var s_id = req.body.s_id;
+  // var email = req.signedCookies.email;
 
-  var s_id = req.body.s_id;
+  // //원래 있던 stake의 상태를 update 한다. 1 ==> 2
+  // var updateQuery = "UPDATE stakes SET status=2,dt=now() WHERE s_id=? AND status=1 ";
+  // var updateQueryParams = [s_id];
+
+  // con.query(updateQuery, updateQueryParams, function(err, rows, fields) {
+  //   if (err) {
+  //     response = makeResponse(0, "오류", {});
+  //     res.json(response);
+  //     return;
+  //   }
+  //   response = makeResponse(1, "", {});
+  //   res.json(response);
+  // });
+
+  var data = req.body;
   var email = req.signedCookies.email;
+  var insertStakeQuery = "INSERT INTO stakes (b_id, stake, price, email) VALUES (?,?,?,?)";
+  var insertStakeQueryParams = [data.b_id, data.stake, data.price, email];
 
+  console.log('invest insertStakeQueryParams: ' + insertStakeQueryParams);
 
-  //원래 있던 stake의 상태를 update 한다. 1 ==> 2
-  var updateQuery = "UPDATE stakes SET status=2,dt=now() WHERE s_id=? AND status=1 ";
-  var updateQueryParams = [s_id];
-
-  con.query(updateQuery, updateQueryParams, function(err, rows, fields) {
+  con.query(insertStakeQuery, insertStakeQueryParams, function(err, result, field) {
     if (err) {
-      response = makeResponse(0, "오류", {});
+      response = makeResponse(0, "실패2", {});
       res.json(response);
       return;
     }
@@ -501,17 +516,14 @@ exports.sellStake = function(req, res) {
   });
 }
 
-
 // 지분 사기
 exports.buyStake = function(req, res) {
+  var data = req.body;
+  var email = req.signedCookies.email;
+  var buyerAddress = req.cookies.wallet_address;
 
-  var s_id = req.body.s_id;
-  // var email = req.signedCookies.email;
-  var email = req.body.email;
-  // s_id에 해당하는 지분정보를 가져온다. 로그에 찍기 위해서.
-
-  var selectQuery = "SELECT * FROM stakes WHERE s_id=?";
-  var selectQueryParams = [s_id];
+  var selectQuery = "SELECT * FROM stakes as A, users as B WHERE s_id=? AND A.email=B.email;";
+  var selectQueryParams = [data.s_id];
 
   con.query(selectQuery, selectQueryParams, function(err, rows, fields) {
     if (err) {
@@ -519,16 +531,48 @@ exports.buyStake = function(req, res) {
       res.json(response);
       return;
     }
-    //s_buyer_log를 남긴다.
-    // console.log(rows[0]);
-    makeBLog(rows[0], email, res);
+
+    var request = {
+      'sellerAddress': rows[0].wallet_address,
+      'buyerAddress': buyerAddress,
+      'stake': rows[0].stake,
+      'buyerPassword': data.password,
+      'campaignId': rows[0].b_id
+    };
+
+    contract.sellfunder(request, function(error, txId) {
+      var insertQuery = "INSERT INTO s_buyer_log (s_id,invest_amount,stake,email,tx_id) VALUES (?,?,?,?,?)";
+      var insertQueryParams = [data.s_id, rows[0].price, rows[0].stake, email, txId];
+
+      console.log(insertQuery);
+      console.log(insertQueryParams);
+
+      con.query(insertQuery, insertQueryParams, function(err, rows, fields) {
+        if (err) {
+          response = makeResponse(0, "오류3", {});
+          res.json(response);
+          return;
+        }
+
+        var updateQuery = "UPDATE stakes SET status=1, dt=now() WHERE s_id=?";
+        var updateQueryParams = [data.s_id];
+
+        con.query(updateQuery, updateQueryParams, function(err2, rows2, fields2) {
+          if (err2) {
+            response = makeResponse(0, "오류2", {});
+            res.json(response);
+            return;
+          } 
+          response = makeResponse(1, "", {});
+          res.json(response);
+        });
+      });
+      
+    });
+    
   });
-  // 원래 있던 stake의 상태를 update 한다. 2 ==> 1, 주인을 바꾼다.(이메일 변경)
-  updateStake(email, s_id, res);
+  
 }
-
-
-
 //패스워드 암호화 함수
 function getSecretPassword(password) {
   var cipher = crypto.createCipher('aes-256-cbc', '열쇠');
@@ -571,42 +615,6 @@ function makeRandom(min, max) {
   return Math.floor(RandVal);
 }
 
-
-
-// 원래 있던 stake의 상태를 update 한다. 2 ==> 1, 주인을 바꾼다.(이메일 변경)
-function updateStake(email, s_id, res) {
-  var updateQuery = "UPDATE stakes SET status=1,dt=now(),email=? WHERE s_id=? AND status=2";
-  var updateQueryParams = [email, s_id];
-
-  con.query(updateQuery, updateQueryParams, function(err2, rows2, fields2) {
-    if (err2) {
-      response = makeResponse(0, "오류2", {});
-      res.json(response);
-      return;
-    }
-  });
-}
-
-
-
-//s_buyer_log를 남긴다.
-function makeBLog(data, email, res) {
-  // console.log("data.price:" + data.price);
-  var insertQuery = "INSERT INTO s_buyer_log (s_id,invest_amount,stake,email,tx_id) VALUES (?,?,?,?,?)";
-  var insertQueryParams = [data.s_id, data.price, data.stake, email, "0x995c7f8a9b6da44d27708ab62aa6582caffb17a9"];
-
-  con.query(insertQuery, insertQueryParams, function(err3, rows3, fields3) {
-    if (err3) {
-      response = makeResponse(0, "오류3", {});
-      res.json(response);
-      return;
-    }
-    response = makeResponse(1, "", {});
-    res.json(response);
-  });
-}
-
-
 // sleep 함수
 function wait(msecs) {
   var start = new Date().getTime();
@@ -615,3 +623,39 @@ function wait(msecs) {
     cur = new Date().getTime();
   }
 }
+
+
+exports.search = function(req, res) {
+  var building = [];
+
+  var ne_x = req.query.northeast_lng;
+  var ne_y = req.query.northeast_lat;
+  var sw_x = req.query.southwest_lng;
+  var sw_y = req.query.southwest_lat;
+
+  var selectQuery = "SELECT B.s_id, A.b_id, A.country, A.state, A.city, A.street, A.lat, A.lng, B.price, B.stake FROM buildings AS A LEFT JOIN stakes AS B on A.b_id=B.b_id WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND B.status = 0;";
+
+  var selectQueryParams = [sw_x, ne_x, sw_y, ne_y];
+
+  con.query(selectQuery, selectQueryParams, function(err, rows, fields) {
+    if (err) {
+      response = makeResponse(0, "검색에 실패했습니다.", {});
+      res.json(response);
+      return;
+    } else {
+      console.log(rows);
+      for (var i = 0; i < rows.length; i++) {
+        var imageDirPath = './public/building_images/' + rows[i]['b_id'];
+
+        rows[i]['images'] = [];
+
+        fs.readdirSync(imageDirPath).forEach(file => {
+          rows[i]['images'].push('/building_images/' + rows[i]['b_id'] + '/' + file);
+        });
+      }
+
+      response = makeResponse(1, "", { "buildings": rows });
+      res.json(response);
+    }
+  });
+};

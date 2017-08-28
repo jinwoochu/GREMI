@@ -63,10 +63,10 @@
       <td style="background: rgb(53,53,53);">${logs[$index].country}</td>
       <td style="background: rgb(53,53,53);">${logs[$index].street} </td>
       <td style="background: rgb(53,53,53);">${logs[$index].invest_amount}</td>
-      <td style="background: rgb(53,53,53);">뭐넣냐..</td>
-      <td style="background: rgb(53,53,53);">얼마벌까?</td>
+      <td style="background: rgb(53,53,53);">${logs[$index].currentPrice}</td>
+      <td style="background: rgb(53,53,53);">${logs[$index].gCoin}</td>
       <td style="background: rgb(53,53,53);">
-        <button data-toggle="modal" data-target="#resell_modal"  class="btn resell-btn" data-b-id="${logs[$index].b_id}" data-current-stake="${logs[$index].stake}" data-current-price="${logs[$index].invest_amount}">다시팔기</button>
+        <button data-toggle="modal" data-target="#resell_modal"  class="btn resell-btn" data-b-id="${logs[$index].b_id}" data-current-stake="${logs[$index].stake}" data-current-price="${logs[$index].currentPrice}">다시팔기</button>
       </td>
       <td style="background: rgb(53,53,53);">${logs[$index].tx_id}</td>
     </tr>
@@ -78,8 +78,8 @@
       <td></td>
       <td></td>
       <td style="background: rgb(53,53,53); color: red;">${totalAmount}</td>
-      <td style="background: rgb(53,53,53); color: red;">${totalAmount}</td>
-      <td style="background: rgb(53,53,53); color: red;">${totalAmount}</td>
+      <td style="background: rgb(53,53,53); color: red;">${currentPriceTotal}</td>
+      <td style="background: rgb(53,53,53); color: red;">${gCoinTotal}</td>
       <td></td>
       <td></td>
     </tr>
@@ -94,9 +94,7 @@
       </th>       
       <th width="10%" style="vertical-align: top">COUNTRY</th>       
       <th width="15%" style="vertical-align: top">ADDRESS</th>       
-      <th width="10%" style="vertical-align: top">PURCHASED<span style="font-size: 5px; display: block; text-align: center; color: #666;">PRICE</span></th>       
-      <th width="10%" style="vertical-align: top">CURRENT<span style="font-size: 5px; display: block; text-align: center; color: #666;">PRICE</span></th>       
-      <th width="10%" style="vertical-align: top">G-GOIN<span style="font-size: 5px; display: block; text-align: center; color: #666;">PER DAY IN AVERAGE</span></th>      
+      <th width="10%" style="vertical-align: top">PURCHASED<span style="font-size: 5px; display: block; text-align: center; color: #666;">PRICE</span></th>            
       <th width="15%" style="vertical-align: top">CONTRACT</th>     
     </tr>
   </thead>
@@ -111,8 +109,6 @@
       </td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
     </tr>
     <tr>
       <td></td>
@@ -120,8 +116,6 @@
       <td style="background: rgb(53,53,53);">${logs[$index].country}</td>
       <td style="background: rgb(53,53,53);">${logs[$index].street} </td>
       <td style="background: rgb(53,53,53);">${logs[$index].price}</td>
-      <td style="background: rgb(53,53,53);">뭐넣냐..</td>
-      <td style="background: rgb(53,53,53);">얼마벌까?</td>
       <td style="background: rgb(53,53,53);">${logs[$index].tx_id}</td>
     </tr>
     {%/each%}
@@ -131,8 +125,6 @@
       <td></td>
       <td></td>
       <td style="background: rgb(53,53,53); color: red;">${totalAmount}</td>
-      <td style="background: rgb(53,53,53); color: red;">${totalAmount}</td>  
-      <td style="background: rgb(53,53,53); color: red;">${totalAmount}</td>  
       <td></td>
     </tr>
   </tbody>

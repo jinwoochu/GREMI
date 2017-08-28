@@ -42,16 +42,20 @@
       <div class="col-md-7">
         <div class="frame">
           <ul id="building_menu" class="nav nav-tabs" >
-            <li class="active">
-              <a href="#">집 구매하기</a>
+            <li class="active" data-type="building">
+              <a href="#" data-content="building_buy_content">집 구매하기</a>
             </li>
-            <li>
-              <a href="#">지분 구매하기</a>
+            <li data-type="stake">
+              <a href="#" data-content="stake_buy_content">지분 구매하기</a>
+            </li>
+            <li data-type="building">
+              <a href="#" data-content="sell_content">집 판매하기</a>
             </li>
           </ul>
 
           <div>
             <%- include partial/building/buy.html %>
+            <%- include partial/building/stakeBuy.html %>
             <%- include partial/building/sell.html %>
           </div>
         </div>

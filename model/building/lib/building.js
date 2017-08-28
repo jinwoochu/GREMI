@@ -106,9 +106,9 @@ exports.search = function(req, res) {
 
   var selectQueryParams = [sw_x, ne_x, sw_y, ne_y];
 
-
   console.log(selectQuery);
   console.log(selectQueryParams);
+
   con.query(selectQuery, selectQueryParams, function(err, rows, fields) {
     if (err) {
       response = makeResponse(0, "검색에 실패했습니다.", {});
@@ -180,85 +180,54 @@ exports.investment = function(req, res) {
         return;
       }
 
-      var insertStakeQuery = "INSERT INTO stakes (b_id, stake, price, email) VALUES (?,?,?,?)";
-      var insertStakeQueryParams = [data.b_id, data.stake, data.invest_amount, email];
+      if(price == sum_amount + invest_amount) {
+        var updateQuery = "UPDATE buildings SET status=2, dt=NOW() WHERE b_id=" + data.b_id;
 
-      console.log('invest insertStakeQueryParams: ' + insertStakeQueryParams);
-      con.query(insertStakeQuery, insertStakeQueryParams, function(err2, result2, field2) {
-        if (err2) {
-          response = makeResponse(0, "실패2", {});
-          res.json(response);
-          return;
-        }
+        console.log('invest updateQuery: ' + updateQuery);
+        con.query(updateQuery, function(err4, result4, field4) {
+          if (err4) {
+            response = makeResponse(0, "실패1", {});
+            res.json(response);
+            return;
+          }
+          var request = {
+            'campaignId': data.b_id
+          };
 
-        if(price == sum_amount + invest_amount) {
-          var updateQuery = "UPDATE stakes SET status=1, dt=NOW() WHERE b_id=?";
-          var updateQueryParams = [data.b_id];
-
-          console.log('invest updateQueryParams: ' + updateQueryParams);
-          con.query(updateQuery, updateQueryParams, function(err3, result3, field3) {
-            if (err3) {
-              response = makeResponse(0, "실패1", {});
+          contract.checkGoalReached(request, function(err5, txId5) {
+            if (err5) {
+              response = makeResponse(0, "실패2", {});
               res.json(response);
               return;
             }
 
-            var updateQuery = "UPDATE buildings SET status=2, dt=NOW() WHERE b_id=" + data.b_id;
-
-            console.log('invest updateQuery: ' + updateQuery);
-            con.query(updateQuery, function(err4, result4, field4) {
-              if (err4) {
-                response = makeResponse(0, "실패1", {});
+            contract.getBalance(ownerAddress, function(err6, gCoin) {
+              if (err6) {
+                response = makeResponse(0, "실패3", {});
                 res.json(response);
                 return;
               }
-              var request = {
-                'campaignId': data.b_id
-              };
+              var updateQuery = "UPDATE users SET g_coin=" + gCoin + " WHERE email='" + ownerEmail + "'";
 
+              console.log(updateQuery);
 
-              contract.checkGoalReached(request, function(err5, txId5) {
-                if (err5) {
-                  response = makeResponse(0, "실패2", {});
+              con.query(updateQuery, function(err7, result7, field7) {
+                if (err7) {
+                  response = makeResponse(0, "실패4", {});
                   res.json(response);
                   return;
                 }
 
-                console.log(ownerEmail);
-                console.log(ownerAddress);
-
-                contract.getBalance(ownerAddress, function(err6, gCoin) {
-                  if (err6) {
-                    response = makeResponse(0, "실패3", {});
-                    res.json(response);
-                    return;
-                  }
-                  var updateQuery = "UPDATE users SET g_coin=" + gCoin + " WHERE email='" + ownerEmail + "'";
-
-                  console.log(updateQuery);
-
-                  con.query(updateQuery, updateQueryParams, function(err7, result7, field7) {
-                    if (err7) {
-                      response = makeResponse(0, "실패4", {});
-                      res.json(response);
-                      return;
-                    }
-
-                    response = makeResponse(1, "", {});
-                    res.json(response);
-                  });
-                });
+                response = makeResponse(1, "", {});
+                res.json(response);
               });
             });
           });
-        } else {
-          response = makeResponse(1, "", {});
-          res.json(response);
-        }
-
-      });
-
-      
+        });
+      } else {
+        response = makeResponse(1, "", {});
+        res.json(response);
+      }
     });
   });
 };

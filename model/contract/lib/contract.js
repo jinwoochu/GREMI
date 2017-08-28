@@ -15,7 +15,7 @@ exports.init = function() {
   var Web3 = require('web3');
   var web3 = new Web3();
 
-  contract.contractAddress = "0x995c7f8a9b6da44d27708ab62aa6582caffb17a9";
+  contract.contractAddress = "0xf670a35b569ee4e73e97ddd6b565523d65eab6d1";
   contract.owner = {
     'address': "0x072fc66f7505db74e9dc242afd2df8a861271d4a",
     'password': '1'
@@ -108,6 +108,23 @@ exports.revenueContribute = function(req, callback) {
     } 
     callback(txId);
     contract.web3.personal.lockAccount(req.walletAddress);
+  });
+};
+
+exports.sellfunder = function(req, callback) {
+  contract.web3.personal.unlockAccount(req.buyerAddress, req.buyerPassword, function(error) {
+    if(error) {
+      callback(error);
+      return;
+    }
+
+    contract.crowd.sellfunder.sendTransaction(req.campaignId, req.sellerAddress, req.buyerAddress, {
+      from: req.buyerAddress,
+      gas: 500000,
+      value: req.stake
+    }, function(error, txId) {
+     callback(error, txId);
+   });
   });
 };
 

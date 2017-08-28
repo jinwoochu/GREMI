@@ -46,13 +46,21 @@ $(document).ready(function() {
       dataType: "json",
       success: function(result) {
         var sum = 0;
-
+        var currentPriceTotal = 0;
+        var gCoinTotal = 0;
         for(var i = 0 ; i < result.buyerLogs.length ; i++) {
           sum += result.buyerLogs[i].invest_amount;
+          result.buyerLogs[i]['currentPrice'] = parseInt(result.buyerLogs[i].invest_amount * (Math.floor(Math.random() * 10) + 1));
+          result.buyerLogs[i]['gCoin'] = parseInt(result.buyerLogs[i].invest_amount/365 * 1000) / 1000;
+
+          currentPriceTotal += result.buyerLogs[i]['currentPrice'];
+          gCoinTotal += result.buyerLogs[i]['gCoin'];
         }
 
+        debugger;
+
         $('#buy_list').html('');
-        $("#buyTempl").tmpl({'logs': result.buyerLogs, 'totalAmount': sum}).appendTo("#buy_list");
+        $("#buyTempl").tmpl({'logs': result.buyerLogs, 'totalAmount': sum, 'currentPriceTotal': currentPriceTotal, 'gCoinTotal': gCoinTotal}).appendTo("#buy_list");
 
         sum = 0;
         for(var i = 0 ; i < result.buildings.length ; i++) {
@@ -214,16 +222,34 @@ $(document).ready(function() {
 
     $('#current_stake').val(currentStake);
     $('#current_price').val(currentPrice);
-    $('#resell_btn').data('b-id', buildingId);
+    $('#stake_register_form').data('b-id', buildingId);
   });
 
-  $('#asset_content').on('submit', '#resell_btn', function(event) {
+  $('#asset_content').on('submit', '#stake_register_form', function(event) {
     event.preventDefault();
-    alert('a');
 
-    // $('#current_stake').val();
-    // $('#current_price').val();
-    // $('#resell_btn').data('b-id');
+    var data = new FormData();
+
+    data.append('stake', $('#stake_input').val());
+    data.append('price', $('#price_input').val());
+    data.append('b_id', $('#stake_register_form').data('b-id'));
+
+    $.ajax({
+      url: '/sellStake',
+      type: 'POST',
+      data: data,
+      contentType: false,
+      processData: false,
+      dataType: "json",
+      success: function(result) {
+        if (result.status == 0) {
+          alert(result.error_message);
+        } else {
+          alert('완료!');  
+          window.location.href = "/profile";
+        }
+      }  
+    }); 
 
   });
 });
