@@ -33,6 +33,10 @@ var con = mysql.createConnection({
   database: "gremi"
 });
 
+// 메모리 아이디 받을 용도로 사용한다.
+var memId;
+
+
 
 
 //회원가입 
@@ -135,8 +139,9 @@ exports.memoryText = function(req, res) {
       return;
     }
 
+    memId = result.insertId;
     // 파일 디렉토리 생성
-    var memoryImageDir = './public/memory_images/' + result.insertId;
+    var memoryImageDir = './public/memory_images/' + memId;
     if (!fs.existsSync(memoryImageDir)) {
       fs.mkdirSync(memoryImageDir);
     }
@@ -147,9 +152,33 @@ exports.memoryText = function(req, res) {
 }
 
 
+
 exports.memoryImages = function(req, res) {
-  console.log("goodImages");
+
+  var memoryId = memId;
+  var imageDirPath = './public/memory_images/' + memoryId;
+
+  if (req.files.images) {
+    var memoryImages = req.files.images;
+
+    for (var i = 0; i < memoryImages.length; i++) {
+      var imagePath = imageDirPath + '/' + memoryImages[i].name;
+
+      (function(i, imagePath) {
+        memoryImages[i].mv(imagePath, function(err) {
+          if (err) {
+            response = makeResponse(0, "실패2", {});
+            res.json(response);
+            return;
+          }
+        });
+      })(i, imagePath);
+    }
+  }
+  response = makeResponse(1, '', {});
+  res.json(response);
 }
+
 
 
 
