@@ -476,6 +476,56 @@ exports.travelSearch = function(req, res) {
   });
 }
 
+//지분 판매 등록 (일단 돌아는 가나, 나중 되면 고쳐야 할것같음 --> 해당 지분의 주인이 맞는지 validation)
+exports.sellStake = function(req, res) {
+
+  var s_id = req.body.s_id;
+  var email = req.signedCookies.email;
+
+
+  //원래 있던 stake의 상태를 update 한다. 1 ==> 2
+  var updateQuery = "UPDATE stakes SET status=2,dt=now() WHERE s_id=? AND status=1 ";
+  var updateQueryParams = [s_id];
+
+  con.query(updateQuery, updateQueryParams, function(err, rows, fields) {
+    if (err) {
+      response = makeResponse(0, "오류", {});
+      res.json(response);
+      return;
+    }
+    response = makeResponse(1, "", {});
+    res.json(response);
+  });
+}
+
+
+// 지분 사기
+exports.buyStake = function(req, res) {
+
+  var s_id = req.body.s_id;
+  // var email = req.signedCookies.email;
+  var email = req.body.email;
+  // s_id에 해당하는 지분정보를 가져온다. 로그에 찍기 위해서.
+
+  var selectQuery = "SELECT * FROM stakes WHERE s_id=?";
+  var selectQueryParams = [s_id];
+
+  con.query(selectQuery, selectQueryParams, function(err, rows, fields) {
+    if (err) {
+      response = makeResponse(0, "오류1", {});
+      res.json(response);
+      return;
+    }
+    //s_buyer_log를 남긴다.
+    // console.log(rows[0]);
+    makeBLog(rows[0], email, res);
+  });
+  // 원래 있던 stake의 상태를 update 한다. 2 ==> 1, 주인을 바꾼다.(이메일 변경)
+  updateStake(email, s_id, res);
+}
+
+
+
 //패스워드 암호화 함수
 function getSecretPassword(password) {
   var cipher = crypto.createCipher('aes-256-cbc', '열쇠');
@@ -516,4 +566,49 @@ function updateGCoin(coin, email, res) {
 function makeRandom(min, max) {
   var RandVal = Math.random() * (max - min) + min;
   return Math.floor(RandVal);
+}
+
+
+
+// 원래 있던 stake의 상태를 update 한다. 2 ==> 1, 주인을 바꾼다.(이메일 변경)
+function updateStake(email, s_id, res) {
+  var updateQuery = "UPDATE stakes SET status=1,dt=now(),email=? WHERE s_id=? AND status=2";
+  var updateQueryParams = [email, s_id];
+
+  con.query(updateQuery, updateQueryParams, function(err2, rows2, fields2) {
+    if (err2) {
+      response = makeResponse(0, "오류2", {});
+      res.json(response);
+      return;
+    }
+  });
+}
+
+
+
+//s_buyer_log를 남긴다.
+function makeBLog(data, email, res) {
+  // console.log("data.price:" + data.price);
+  var insertQuery = "INSERT INTO s_buyer_log (s_id,invest_amount,stake,email,tx_id) VALUES (?,?,?,?,?)";
+  var insertQueryParams = [data.s_id, data.price, data.stake, email, "tx아이디 넣어줘요 종빈이형"];
+
+  con.query(insertQuery, insertQueryParams, function(err3, rows3, fields3) {
+    if (err3) {
+      response = makeResponse(0, "오류3", {});
+      res.json(response);
+      return;
+    }
+    response = makeResponse(1, "", {});
+    res.json(response);
+  });
+}
+
+
+// sleep 함수
+function wait(msecs) {
+  var start = new Date().getTime();
+  var cur = start;
+  while (cur - start < msecs) {
+    cur = new Date().getTime();
+  }
 }
