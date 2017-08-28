@@ -359,9 +359,12 @@ exports.sellCoin = function(req, res) {
       'value': data.coin
     };
 
-    contract.widthrawCoin(request, function(txId) {
-
-      console.log(txId);
+    contract.widthrawCoin(request, function(error, txId) {
+      if (error) {
+        response = makeResponse(1, "비밀번호가 잘못되었습니다.", {});
+        res.json(response);
+        return;
+      }
 
       var insertQuery = "INSERT INTO exchange_log (email, exchange_type, currency_type, currency_amount, g_coin, tx_id) VALUES (?,?,?,?,?,?)";
       var insertQueryParams = [email, 1, data.type, money, data.coin, txId];
@@ -438,7 +441,7 @@ exports.viewExchangeLog = function(req, res) {
       res.json(response);
       return;
     }
-    response = makeResponse(1, "", { "log": result });
+    response = makeResponse(1, "", { "logs": result });
     res.json(response);
   });
 }

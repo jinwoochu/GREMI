@@ -22,3 +22,40 @@ td {
 .profile-menu li {
   margin-bottom: 7px;
 }
+
+
+.btn-default,
+.btn-default:active,
+.btn-default:focus {
+  color: white;
+  background-color: rgb(30,30,30);
+  border-color: #ccc;
+  outline:0;
+}
+
+.resell-btn,
+.resell-btn:active,
+.resell-btn:focus {
+  padding: 0px 7px;
+  font-size: 10px;
+  border: 1px solid #ccc;
+  border-radius: 0px;
+  color: white;
+  background-color: rgb(30,30,30);
+  outline:0;
+}
+
+.resell-btn:hover {
+  color: black;
+  background-color: white;
+}
+
+table {
+  width: 100%;
+}
+td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

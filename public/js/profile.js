@@ -7,6 +7,28 @@ $(document).ready(function() {
   $('#wallet_menu').on('click', function() {
     $('.profile-contents').addClass('hidden');
     $('#wallet_content').removeClass('hidden');
+
+    $.ajax({
+      url: '/viewExchangeLog',
+      type: "get",
+      dataType: "json",
+      success: function(result) {
+        var sum = 0;
+
+        for(var i = 0 ; i < result.logs.length ; i++) {
+          if(result.logs[i].exchange_type == 1) {
+            sum -= result.logs[i].g_coin;
+          } else {
+            sum += result.logs[i].g_coin;
+          }
+
+          result.logs[i].dt = new Date(result.logs[i].dt).toISOString().slice(0, 19).replace('T', ' ')
+        }
+        // $('#wallet_list').html('');
+        $("#walletTmpl").tmpl({'logs': result.logs, 'totalAmount': sum}).appendTo("#wallet_list");
+      }
+    });
+
   });
 
   $('#callandar_menu').on('click', function() {
@@ -29,6 +51,7 @@ $(document).ready(function() {
           sum += result.buyerLogs[i].invest_amount;
         }
 
+        $('#buy_list').html('');
         $("#buyTempl").tmpl({'logs': result.buyerLogs, 'totalAmount': sum}).appendTo("#buy_list");
 
         sum = 0;
@@ -36,22 +59,23 @@ $(document).ready(function() {
           sum += result.buildings[i].price;
         }
 
+        $('#sell_list').html('');
         $("#sellTmpl").tmpl({'logs': result.buildings, 'totalAmount': sum}).appendTo("#sell_list");
       }
     });
   });
 
   $('#asset_detail_menu').on('click', 'a', function() {
-    $('.asset_content').toggleClass('hidden');
+    $('.asset-content').toggleClass('hidden');
   });
 
+  $('#wallet_detail_menu').on('click', 'a', function() {
+    $('.wallet-content').toggleClass('hidden');
+  });
 
   $('.currency-type').on('click', 'a', function() {
-
     $(this).parents('.currency-form').find('.currency-info').text($(this).data('currency-info'));
-
     $(this).parents('.currency-form').find('.currency-input').data('type', $(this).data('currency-type'));
-    
     $($(this).parents('ul').data('input-type')).keyup();
   });
 
@@ -61,9 +85,7 @@ $(document).ready(function() {
       'money': $(this).val()
     };
 
-
     getExpectCoin('/expectCoin', data, function(result) {
-      // {status: 1 / 0, error_message: "" ,expectCoin}
       if(result.status) {
         $('#expected_deposit_money').val(result.expectCoin);
         return;
@@ -78,7 +100,6 @@ $(document).ready(function() {
       'coin': $(this).val()
     };
     getExpectCoin('/expectMoney', data, function(result) {
-      // {status: 1 / 0, error_message: "" ,expectCoin}
       if(result.status) {
         $('#expected_widthraw_money').val(result.expectMoney);
         return;
@@ -88,8 +109,6 @@ $(document).ready(function() {
   });
 
   function getExpectCoin(url, data, callback) {
-
-
     $.ajax({
       url: url,
       type: 'GET',
@@ -102,7 +121,6 @@ $(document).ready(function() {
   $('#deposit_button').on('click', function() {
     var money = $('#deposit_input').val();
     var type = $('#deposit_input').data('type');
-
     var data = new FormData();
 
     data.append('type', type);
@@ -116,7 +134,6 @@ $(document).ready(function() {
       processData: false,
       dataType: "json",
       success: function(result) {
-        // {status: 1 / 0, error_message: "" ,expectCoin}
         if(result.status == 1) {
           $('#balance').text(result.coin);
           return;
@@ -190,4 +207,23 @@ $(document).ready(function() {
     events: []
   });
 
+  $('#asset_content').on('click', '.resell-btn', function() {
+    var buildingId = $(this).data('b-id');
+    var currentStake = $(this).data('current-stake');
+    var currentPrice = $(this).data('current-price');
+
+    $('#current_stake').val(currentStake);
+    $('#current_price').val(currentPrice);
+    $('#resell_btn').data('b-id', buildingId);
+  });
+
+  $('#asset_content').on('submit', '#resell_btn', function(event) {
+    event.preventDefault();
+    alert('a');
+
+    // $('#current_stake').val();
+    // $('#current_price').val();
+    // $('#resell_btn').data('b-id');
+
+  });
 });

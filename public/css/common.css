@@ -83,3 +83,17 @@ body {
 .progress {
   margin-bottom: 0px; 
 }
+
+.modal-content {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-backdrop {
+  background: rgba(0,0,0,0);
+}
+
+.modal-dialog {
+  background: rgba(255,255,255,1);
+  padding: 15px;
+  margin-top: 60px;
+}

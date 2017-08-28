@@ -1,3 +1,5 @@
+var contract = require('../../contract');
+
 // mysql
 var mysql = require('mysql');
 var con = mysql.createConnection({
@@ -76,19 +78,19 @@ exports.register = function(req, res) {
 
 // 사용자가 올린 빌딩을 관리자가 확인하고 등록시켜주는 곳
 exports.confirmBuilding = function(req, res) {
-    var updateQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
-    var updateQueryParams = [req.body.tx_id, req.body.b_id];
+  var updateQuery = "UPDATE buildings SET status=1, tx_id=?, dt=NOW() WHERE b_id=?";
+  var updateQueryParams = [req.body.tx_id, req.body.b_id];
 
-    con.query(updateQuery, updateQueryParams, function(err, result, field) {
-      if (err) {
-        response = makeResponse(0, "컨펌 실패", {});
-        res.json(response);
-        return;
-      }
-      response = makeResponse(1, "", {});
+  con.query(updateQuery, updateQueryParams, function(err, result, field) {
+    if (err) {
+      response = makeResponse(0, "컨펌 실패", {});
       res.json(response);
-    });
-  }
+      return;
+    }
+    response = makeResponse(1, "", {});
+    res.json(response);
+  });
+}
   //------------------------------------------------------
 
 //범위 내의 집 검색
@@ -100,9 +102,13 @@ exports.search = function(req, res) {
   var sw_x = req.query.southwest_lng;
   var sw_y = req.query.southwest_lat;
 
-  var selectQuery = "SELECT b.b_id, b.country, b.state, b.city, b.street, b.lat, b.lng, b.price, sum(c.invest_amount) AS fundraising_amount, count(distinct(c.email)) AS participant_count FROM buildings AS b, b_buyer_log AS c, (SELECT * FROM buildings WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 1) AS a WHERE b.b_id=a.b_id AND c.b_id=b.b_id GROUP BY b.b_id;"
+  var selectQuery = "SELECT C.b_id, C.country, C.state, C.city, C.street, C.lat, C.lng, C.price, sum(C.invest_amount) AS fundraising_amount, count(distinct(C.email)) AS participant_count FROM (SELECT A.b_id, A.country, A.state, A.city, A.street, A.lat, A.lng, A.price, COALESCE(B.invest_amount, 0) AS invest_amount, B.email FROM buildings AS A LEFT JOIN b_buyer_log AS B on A.b_id=B.b_id WHERE ? <= lng AND lng <= ? AND ? <= lat AND lat <= ? AND status = 1) AS C GROUP BY C.b_id;";
+
   var selectQueryParams = [sw_x, ne_x, sw_y, ne_y];
 
+
+  console.log(selectQuery);
+  console.log(selectQueryParams);
   con.query(selectQuery, selectQueryParams, function(err, rows, fields) {
     if (err) {
       response = makeResponse(0, "검색에 실패했습니다.", {});
@@ -120,6 +126,7 @@ exports.search = function(req, res) {
         });
       }
 
+      console.log(rows);
       response = makeResponse(1, "", { "buildings": rows });
       res.json(response);
     }
@@ -130,32 +137,133 @@ exports.search = function(req, res) {
 exports.investment = function(req, res) {
   var data = req.body;
   var email = req.signedCookies.email;
-  var insertQuery = "INSERT INTO b_buyer_log (b_id, tx_id, invest_amount, stake, email) VALUES (?,?,?,?,?)";
-  var insertQueryParams = [data.b_id, data.tx_id, data.invest_amount, data.stake, email];
 
-  console.log(data.b_id, data.tx_id, data.invest_amount, data.stake, email);
+  var priceInvestAmountQuery = 'SELECT * FROM (SELECT D.wallet_address, B.email, B.price, COALESCE(sum(A.invest_amount), 0) AS sum_amount FROM users AS D, b_buyer_log AS A, buildings AS B WHERE D.email=B.email AND A.b_id=' + data.b_id + ' AND B.b_id=A.b_id) AS C WHERE C.price > C.sum_amount;'
+  console.log('invest priceInvestAmountQuery: ' + priceInvestAmountQuery);
 
-  con.query(insertQuery, insertQueryParams, function(err, result, field) {
-    if (err) {
+  con.query(priceInvestAmountQuery, function(err, result, field) {
+    console.log('invest reulst: ' + result);
+    console.log(result.length);
+
+
+    if (err || result.length == 0) {
       response = makeResponse(0, "실패1", {});
       res.json(response);
       return;
     }
-    var insertStakeQuery = "INSERT INTO stakes (b_id, stake, price, email) VALUES (?,?,?,?,?)";
-    var insertStakeQueryParams = [data.b_id, data.stake, data.price, email];
 
-    con.query(insertStakeQuery, insertStakeQueryParams, function(err, result, field) {
-      if (err) {
-        response = makeResponse(0, "실패2", {});
+    var price = result[0].price - 0;
+    var sum_amount = result[0].sum_amount - 0;
+    var invest_amount = data.invest_amount - 0;
+    var ownerAddress = result[0].wallet_address;
+    var ownerEmail = result[0].email;
+
+
+    console.log(ownerEmail);
+    console.log(ownerAddress);
+
+    if(price < sum_amount + invest_amount) {
+      response = makeResponse(0, "투자금이 너무많다.", {});
+      res.json(response);
+      return; 
+    } 
+
+    var buyerLogInsertQuery = "INSERT INTO b_buyer_log (b_id, tx_id, invest_amount, stake, email) VALUES (?,?,?,?,?)";
+    var buyerLogInsertQueryParams = [data.b_id, data.tx_id, invest_amount, data.stake, email];
+
+    console.log('invest buyerLogInsertQueryParams: ' + buyerLogInsertQueryParams);
+
+    con.query(buyerLogInsertQuery, buyerLogInsertQueryParams, function(err1, result1, field1) {
+      if (err1) {
+        response = makeResponse(0, "실패1", {});
         res.json(response);
         return;
       }
-      response = makeResponse(1, "", {});
-      res.json(response);
-    });
 
+      var insertStakeQuery = "INSERT INTO stakes (b_id, stake, price, email) VALUES (?,?,?,?)";
+      var insertStakeQueryParams = [data.b_id, data.stake, data.invest_amount, email];
+
+      console.log('invest insertStakeQueryParams: ' + insertStakeQueryParams);
+      con.query(insertStakeQuery, insertStakeQueryParams, function(err2, result2, field2) {
+        if (err2) {
+          response = makeResponse(0, "실패2", {});
+          res.json(response);
+          return;
+        }
+
+        if(price == sum_amount + invest_amount) {
+          var updateQuery = "UPDATE stakes SET status=1, dt=NOW() WHERE b_id=?";
+          var updateQueryParams = [data.b_id];
+
+          console.log('invest updateQueryParams: ' + updateQueryParams);
+          con.query(updateQuery, updateQueryParams, function(err3, result3, field3) {
+            if (err3) {
+              response = makeResponse(0, "실패1", {});
+              res.json(response);
+              return;
+            }
+
+            var updateQuery = "UPDATE buildings SET status=2, dt=NOW() WHERE b_id=" + data.b_id;
+
+            console.log('invest updateQuery: ' + updateQuery);
+            con.query(updateQuery, function(err4, result4, field4) {
+              if (err4) {
+                response = makeResponse(0, "실패1", {});
+                res.json(response);
+                return;
+              }
+              var request = {
+                'campaignId': data.b_id
+              };
+
+
+              contract.checkGoalReached(request, function(err5, txId5) {
+                if (err5) {
+                  response = makeResponse(0, "실패2", {});
+                  res.json(response);
+                  return;
+                }
+
+                console.log(ownerEmail);
+                console.log(ownerAddress);
+
+                contract.getBalance(ownerAddress, function(err6, gCoin) {
+                  if (err6) {
+                    response = makeResponse(0, "실패3", {});
+                    res.json(response);
+                    return;
+                  }
+                  var updateQuery = "UPDATE users SET g_coin=" + gCoin + " WHERE email='" + ownerEmail + "'";
+
+                  console.log(updateQuery);
+
+                  con.query(updateQuery, updateQueryParams, function(err7, result7, field7) {
+                    if (err7) {
+                      response = makeResponse(0, "실패4", {});
+                      res.json(response);
+                      return;
+                    }
+
+                    response = makeResponse(1, "", {});
+                    res.json(response);
+                  });
+                });
+              });
+            });
+          });
+        } else {
+          response = makeResponse(1, "", {});
+          res.json(response);
+        }
+
+      });
+
+      
+    });
   });
 };
+
+
 
 
 
