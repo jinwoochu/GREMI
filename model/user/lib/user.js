@@ -590,7 +590,7 @@ function updateStake(email, s_id, res) {
 function makeBLog(data, email, res) {
   // console.log("data.price:" + data.price);
   var insertQuery = "INSERT INTO s_buyer_log (s_id,invest_amount,stake,email,tx_id) VALUES (?,?,?,?,?)";
-  var insertQueryParams = [data.s_id, data.price, data.stake, email, "tx아이디 넣어줘요 종빈이형"];
+  var insertQueryParams = [data.s_id, data.price, data.stake, email, "0x995c7f8a9b6da44d27708ab62aa6582caffb17a9"];
 
   con.query(insertQuery, insertQueryParams, function(err3, rows3, fields3) {
     if (err3) {
