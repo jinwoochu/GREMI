@@ -164,7 +164,7 @@ exports.memoryImages = function(req, res) {
 
     for (var i = 0; i < memoryImages.length; i++) {
       var imagePath = imageDirPath + '/' + memoryImages[i].name;
-      iPath.push(imagePath);
+
       (function(i, imagePath) {
         memoryImages[i].mv(imagePath, function(err) {
           if (err) {
@@ -174,10 +174,15 @@ exports.memoryImages = function(req, res) {
           }
         });
       })(i, imagePath);
+
+      fs.readdirSync(imageDirPath).forEach(file => {
+        iPath[i].push(imageDirPath + '/' + file);
+      });
+
+      response = makeResponse(1, '', { "imagesPath": iPath });
+      res.json(response);
     }
   }
-  response = makeResponse(1, '', { "imagesPath": iPath });
-  res.json(response);
 }
 
 
