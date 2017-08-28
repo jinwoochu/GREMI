@@ -158,12 +158,13 @@ exports.memoryImages = function(req, res) {
   var memoryId = memId;
   var imageDirPath = './public/memory_images/' + memoryId;
 
+  var iPath = [];
   if (req.files.images) {
     var memoryImages = req.files.images;
 
     for (var i = 0; i < memoryImages.length; i++) {
       var imagePath = imageDirPath + '/' + memoryImages[i].name;
-
+      iPath.push(imagePath);
       (function(i, imagePath) {
         memoryImages[i].mv(imagePath, function(err) {
           if (err) {
@@ -175,7 +176,7 @@ exports.memoryImages = function(req, res) {
       })(i, imagePath);
     }
   }
-  response = makeResponse(1, '', { "imagesPath": imageDirPath });
+  response = makeResponse(1, '', { "imagesPath": iPath });
   res.json(response);
 }
 
