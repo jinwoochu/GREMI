@@ -134,6 +134,12 @@ app.get('/test2', function(req, res) {
 
 
 
+app.get('/bb',function(req,res){
+    building.addRealestate(req,res);
+})
+
+
+//배경화면 변경(준비 화면으로)
 app.get('/app2', function(req, res) {
     res.render('app2.html');
 })
@@ -211,11 +217,11 @@ app.get('/admin/building', function(req, res) {
 
 
 app.post('/travel', function(req, res) {
-    userdb.travel(req, res)
+    userdb.travel(req, res);
 });
 
 app.get('/asset', function(req, res) {
-    building.getAsset(req, res)
+    building.getAsset(req, res);
 });
 
 // 해당 유저의 모든 입출금 내역 보기.

@@ -12,8 +12,29 @@ var con = mysql.createConnection({
 // fileSystem
 var fs = require('fs');
 
+// 요청
+var request = require('request');
+
 // 암복호화
 var crypto = require('crypto');
+
+
+
+//서비스키
+var serviceKey = "5L4kildrWUpPkfVqVmECj0uEXBJE7V8hm0KOcoC4uL2VOm4KuGqHKyj%2BTw%2FGoPXZBdgX6rKttkc8YNCveXvZag%3D%3D";
+
+exports.addRealestate = function(req,res){
+
+    var dealYmd ='201701';
+    var lawdCd = '11110';
+    request('http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptRent?LAWD_CD='+lawdCd+'&DEAL_YMD='+dealYmd+'&numOfRows=117&serviceKey='+serviceKey, function (error, response, body) {
+    console.log(response);    
+       res.json(response);
+    });
+       
+}
+
+
 
 //집 등록
 exports.register = function(req, res) {
