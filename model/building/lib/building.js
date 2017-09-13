@@ -18,21 +18,85 @@ var request = require('request');
 // 암복호화
 var crypto = require('crypto');
 
-
+//xml2json
+var convert = require('xml-js');
 
 //서비스키
 var serviceKey = "5L4kildrWUpPkfVqVmECj0uEXBJE7V8hm0KOcoC4uL2VOm4KuGqHKyj%2BTw%2FGoPXZBdgX6rKttkc8YNCveXvZag%3D%3D";
 
+
+
+//아파트 전월세 
 exports.addRealestate = function(req,res){
 
-    var dealYmd ='201701';
+    var currntDate = new Date();
+    var currntMonth = currntDate.getMonth();
+    
+    var lawdCdArray = ['11110','11140','11170','11200',
+    '11215','11230','11260','11290','11305','11320','11350',
+    '11380','11410','11440','11470','11500','11530','11545',
+    '11560','11590','11620','11650','11680','11710','11740'
+    ];
     var lawdCd = '11110';
-    request('http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptRent?LAWD_CD='+lawdCd+'&DEAL_YMD='+dealYmd+'&numOfRows=117&serviceKey='+serviceKey, function (error, response, body) {
-    console.log(response);    
-       res.json(response);
-    });
-       
+
+    for(var index =4; index<=10;index++){
+        // console.log(lawdCdArray[index]);
+        for(var i=1;i<=currntMonth+1;i++){
+                if(i<10) i="0"+i;
+                var dealYmd ='2017'+i;
+                // console.log(dealYmd);
+                crawling(res, req, dealYmd,lawdCdArray[index]);
+        }
+    }
+            // dealYmd = "201702";
 }
+
+
+function crawling(res, req, dealYmd, lawdCd){
+    request('http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptRent?LAWD_CD='+lawdCd+'&DEAL_YMD='+dealYmd+'&numOfRows=117&serviceKey='+serviceKey, function (error, response, body) {
+        
+         
+        var xml = body;
+ 
+        var result1 = JSON.parse(convert.xml2json(xml, {compact: true, spaces: 1})); 
+        var contracts = result1.response.body.items.item;
+ 
+        var insertQuery = "INSERT INTO apartment (construct_year, contract_year, contract_month, contract_day, law_dong, name, guarantee_amount, monthly_amount, address_number, layer, exclusive_area, lat, lng) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+  
+        contracts.forEach(function(element, index) {
+        //   console.log('배열 요소 #' + index 
+        //   + '\n건축년도:', element['건축년도']._text
+        //   + '\n계약 년:', element['년']._text
+        //   + '\n계약 월:', element['월']._text
+        //   + '\n계약 일:', element['일']._text
+        //   + '\n법정동:', element['법정동']._text.trim()
+        //   + '\n아파트:', element['아파트']._text
+        //   + '\n보증금액:', element['보증금액']._text.trim()
+        //   + '\n월세금액:', element['월세금액']._text.trim()
+        //   + '\n지번:', element['지번']._text
+        //   + '\n층:', element['층']._text
+        //   + '\n전용면적:', element['전용면적']._text
+        //  );
+         
+       var insertQueryParams = [element['건축년도']._text, element['년']._text, element['월']._text,  element['일']._text, element['법정동']._text.trim(), element['아파트']._text, element['보증금액']._text.trim(), element['월세금액']._text.trim(), element['지번']._text, element['층']._text, element['전용면적']._text, 18.18, 28.28];
+ 
+        con.query(insertQuery, insertQueryParams, function(err2, result2, field2) {
+            if (err2) {
+                response = makeResponse(0, "실패1", {});
+                res.json(response);
+                return;
+            } else {
+            }
+         });
+        });
+     });
+}
+
+
+
+
+
+
 
 
 
